@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -39,11 +40,30 @@ android {
 }
 
 dependencies {
+    /** Base core libraries */
     implementation(localDeps.kotlin)
     implementation(localDeps.appCompat)
     implementation(localDeps.materialDesign)
     implementation(localDeps.constraintLayout)
+
+    /** Dagger2 */
+    implementation(localDeps.dagger)
+    kapt(localDeps.compiler)
+
+    /** Glide */
+    implementation(localDeps.glide)
+
+    /** Cicerone */
+    implementation(localDeps.cicerone)
+
+    /** Unit testing */
     testImplementation(unitTestDeps.jUnit)
+    testImplementation(unitTestDeps.robolectric)
+    testImplementation(unitTestDeps.mockito)
+
+    /** Instrumented testing */
     androidTestImplementation(uiTestDeps.extJUnit)
     androidTestImplementation(uiTestDeps.espresso)
+    androidTestImplementation(uiTestDeps.rules)
+    androidTestImplementation(uiTestDeps.runner)
 }
