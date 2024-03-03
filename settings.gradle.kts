@@ -10,6 +10,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://jitpack.io")
+        }
     }
 
     versionCatalogs {
@@ -23,8 +26,8 @@ dependencyResolutionManagement {
             library("compiler", "com.google.dagger:dagger-compiler:2.51")
 
             library("glide", "com.github.bumptech.glide:glide:3.7.0")
-
             library("cicerone", "com.github.terrakok:cicerone:7.1")
+            library("neumorphism", "com.github.fornewid:neumorphism:0.3.2")
         }
         create("unitTestDeps") {
             library("jUnit", "junit:junit:4.13.2")

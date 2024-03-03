@@ -56,6 +56,9 @@ dependencies {
     /** Cicerone */
     implementation(localDeps.cicerone)
 
+    /** Neumorphism */
+    implementation(localDeps.neumorphism)
+
     /** Unit testing */
     testImplementation(unitTestDeps.jUnit)
     testImplementation(unitTestDeps.robolectric)
