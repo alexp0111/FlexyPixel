@@ -1,7 +1,7 @@
 package ru.alexp0111.flexypixel.di.components
 
 import android.app.Activity
-import ru.alexp0111.flexypixel.MainActivity
+import ru.alexp0111.flexypixel.ui.MainActivity
 
 interface ActivityComponent {
 
