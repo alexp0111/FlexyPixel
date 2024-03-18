@@ -8,9 +8,11 @@ import androidx.fragment.app.Fragment
 import com.github.terrakok.cicerone.Router
 import ru.alexp0111.flexypixel.databinding.FragmentStartBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
+import ru.alexp0111.flexypixel.navigation.Screens
 import javax.inject.Inject
 
 private const val TAG = "StartFragment"
+private const val HAS_SAVED_DEVICE = false
 
 class StartFragment : Fragment() {
 
@@ -23,14 +25,21 @@ class StartFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectSelf()
+        resolveNextScreen()
         super.onCreate(savedInstanceState)
     }
 
-    /**
-     * TODO:
-     * Here we can check for existing devices.
-     * This is necessary to go straight to the menu!
-     * */
+    private fun resolveNextScreen() {
+        if (HAS_SAVED_DEVICE) {
+            // TODO: Navigate to menu screen directly
+        } else {
+            router.newRootChain(
+                Screens.SearchBluetoothDevicesScreen(),
+                Screens.BluetoothResolverScreen(),
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,

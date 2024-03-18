@@ -42,9 +42,12 @@ android {
 dependencies {
     /** Base core libraries */
     implementation(localDeps.kotlin)
+    implementation(localDeps.lifecycleRuntime)
+    implementation(localDeps.lifecycleViewModel)
     implementation(localDeps.appCompat)
     implementation(localDeps.materialDesign)
     implementation(localDeps.constraintLayout)
+    implementation(localDeps.swipeRefreshLayout)
 
     /** Dagger2 */
     implementation(localDeps.dagger)
@@ -58,6 +61,9 @@ dependencies {
 
     /** Neumorphism */
     implementation(localDeps.neumorphism)
+
+    /** Gson */
+    implementation(localDeps.gson)
 
     /** Unit testing */
     testImplementation(unitTestDeps.jUnit)
