@@ -1,6 +1,5 @@
 package ru.alexp0111.flexypixel.ui.util
 
-import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Bundle

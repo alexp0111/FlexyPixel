@@ -83,7 +83,6 @@ class SearchBluetoothDevicesFragment : Fragment() {
                     stateHolder.state.collect { state: UiState ->
                         availableDevicesAdapter.apply {
                             setConnectedDevice(state.connectedDevice)
-                            Log.d(TAG, state.toString())
                             updateList(state.foundDevices)
                         }
 

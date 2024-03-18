@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import ru.alexp0111.flexypixel.bluetooth.model.ConnectionResult
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResult
 import java.io.IOException
 
@@ -16,7 +15,6 @@ private const val INCOMING_MESSAGE_BYTE_BUFFER_SIZE: Int = 1024
 class BluetoothDataTransferService(
     private val socket: BluetoothSocket
 ) {
-    // TODO: Think about timeout logic
     fun listenForIncomingMessages(): Flow<TransferResult> {
         return flow {
             if (!socket.isConnected) {

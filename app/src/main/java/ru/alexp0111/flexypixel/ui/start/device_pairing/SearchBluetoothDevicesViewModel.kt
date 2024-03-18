@@ -73,7 +73,6 @@ class SearchBluetoothDevicesViewModel @Inject constructor(
         controller.startDiscovery()
         viewModelScope.plus(Dispatchers.IO).launch {
             controller.scannedDevices.collect {
-                Log.d(TAG, "in loading")
                 consumeAction(
                     Action.AvailableDevicesUpdated(
                         it.map { flexyPixelDevice ->

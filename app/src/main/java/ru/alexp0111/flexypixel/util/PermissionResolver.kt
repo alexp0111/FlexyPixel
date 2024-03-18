@@ -40,14 +40,6 @@ class PermissionResolver @Inject constructor(
                 )
             }
 
-            Build.VERSION.SDK_INT in (Build.VERSION_CODES.Q..<Build.VERSION_CODES.S) -> {
-                listOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                )
-            }
-
             else -> {
                 listOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
