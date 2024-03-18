@@ -18,14 +18,18 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("localDeps") {
             library("kotlin", "androidx.core:core-ktx:1.12.0")
+            library("lifecycleRuntime", "androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+            library("lifecycleViewModel", "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
             library("appCompat", "androidx.appcompat:appcompat:1.6.1")
             library("materialDesign", "com.google.android.material:material:1.11.0")
             library("constraintLayout", "androidx.constraintlayout:constraintlayout:2.1.4")
+            library("swipeRefreshLayout", "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
             library("dagger", "com.google.dagger:dagger:2.51")
             library("compiler", "com.google.dagger:dagger-compiler:2.51")
 
             library("glide", "com.github.bumptech.glide:glide:3.7.0")
+            library("gson", "com.google.code.gson:gson:2.10.1")
             library("cicerone", "com.github.terrakok:cicerone:7.1")
             library("neumorphism", "com.github.fornewid:neumorphism:0.3.2")
         }
