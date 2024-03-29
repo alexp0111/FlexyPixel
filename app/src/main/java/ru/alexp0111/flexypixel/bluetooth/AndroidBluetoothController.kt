@@ -127,7 +127,7 @@ class AndroidBluetoothController @Inject constructor(
                 }
             }
         }.catch { throwable ->
-            Log.d(TAG, throwable.localizedMessage.toString())
+            Log.d(TAG, throwable.message.toString())
         }.onCompletion {
             closeConnection()
         }.flowOn(Dispatchers.IO)
@@ -144,19 +144,10 @@ class AndroidBluetoothController @Inject constructor(
         )
     }
 
-    /** TODO:
-     *
-     * fun `transfer some complex data with feedback`() {
-     *      send data -> wainting for "OK" response -> send next part of data
-     * }
-     *
-     * */
-
     fun sendMessage(message: String) {
         if (!permissionResolver.isBluetoothPermissionsGranted()) {
             return
         }
-        _incomingMessages.tryEmit(TransferResult.WaitCommand)
         dataTransferService?.sendMessage(message)
     }
 

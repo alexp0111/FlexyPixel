@@ -1,7 +1,6 @@
 package ru.alexp0111.flexypixel.bluetooth
 
 import android.bluetooth.BluetoothSocket
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.CoroutineScope
@@ -24,46 +23,50 @@ class BluetoothDataTransferService(
 ) {
     private var inputStream: InputStream = socket.inputStream
 
-    fun listenForIncomingMessages(): Flow<TransferResult> {
-        return flow {
-            if (!socket.isConnected) {
-                return@flow
-            }
-            val buffer = ByteArray(INCOMING_MESSAGE_BYTE_BUFFER_SIZE)
-            val stringCollector = StringBuilder()
-            while (true) {
+    fun listenForIncomingMessages(): Flow<TransferResult> = flow {
+        if (!socket.isConnected) {
+            return@flow
+        }
+        val buffer = ByteArray(INCOMING_MESSAGE_BYTE_BUFFER_SIZE)
+        val stringCollector = StringBuilder()
+        while (true) {
+            try {
+                val amountOfBytesReceivedInStream = inputStream.read(buffer)
+                val stringResult = String(buffer, 0, amountOfBytesReceivedInStream).trim()
+
+                modifyCollectorWithNewData(stringCollector, stringResult)
+                val jsonResponse = tryToExtractResponse(stringCollector) ?: continue
+
                 try {
-                    val byteCount = inputStream.read(buffer)
-                    val stringResult = String(buffer, 0, byteCount)
-
-                    if (stringResult.trim().isNotEmpty()) {
-                        Log.d(TAG, stringResult) // FIXME: DEBUG
-                        stringCollector.append(stringCollector)
-                    } else {
-                        continue
-                    }
-
-                    val jsonResponse = tryToExtractResponse(stringCollector.toString()) ?: continue
-                    stringCollector.removePrefix(jsonResponse)
-
-                    // FIXME: DEBUG
-                    if (stringCollector.isEmpty()) {
-                        Log.d(TAG, "Response fully collected")
-                    }
-                    // FIXME: DEBUG
-
-                    val response = try {
-                        Gson().fromJson(jsonResponse, TransferResponse::class.java)
-                    } catch (e: JsonSyntaxException) {
-                        emit(TransferResult.Error(e.message.toString()))
-                        continue
-                    }
-                    emit(getResultMessage(response))
-                } catch (e: IOException) {
-                    break;
+                    val transferResponse = Gson().fromJson(
+                        jsonResponse,
+                        TransferResponse::class.java,
+                    )
+                    emit(getResultMessage(transferResponse))
+                } catch (e: JsonSyntaxException) {
+                    emit(TransferResult.Error(e.message.toString()))
                 }
+            } catch (e: IOException) {
+                break;
             }
-        }.flowOn(Dispatchers.IO)
+        }
+    }.flowOn(Dispatchers.IO)
+
+    private fun modifyCollectorWithNewData(stringCollector: StringBuilder, stringResult: String) {
+        stringCollector.apply {
+            append(stringResult)
+            while (isNotEmpty() && !startsWith('{')) {
+                deleteAt(0)
+            }
+        }
+    }
+
+    private fun tryToExtractResponse(stringCollector: StringBuilder): String? {
+        val result = JsonChecker.extractRightBracketSequence(stringCollector.toString())
+        result ?: return null
+
+        stringCollector.deleteRange(0, result.length)
+        return result
     }
 
     private fun getResultMessage(response: TransferResponse): TransferResult {
@@ -72,10 +75,6 @@ class BluetoothDataTransferService(
             TransferResponse.ERROR -> TransferResult.Error(TransferResponse.ERROR)
             else -> TransferResult.Error(TransferResponse.UNCONFIGURED)
         }
-    }
-
-    private fun tryToExtractResponse(collectedResult: String): String? {
-        return JsonChecker.extractRightBracketSequence(collectedResult)
     }
 
     fun sendMessage(message: String) {
