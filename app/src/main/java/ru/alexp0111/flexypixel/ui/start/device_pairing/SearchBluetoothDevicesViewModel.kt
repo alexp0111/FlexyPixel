@@ -3,6 +3,7 @@ package ru.alexp0111.flexypixel.ui.start.device_pairing
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,12 +15,14 @@ import kotlinx.coroutines.plus
 import ru.alexp0111.flexypixel.bluetooth.AndroidBluetoothController
 import ru.alexp0111.flexypixel.bluetooth.model.ConnectionResult
 import ru.alexp0111.flexypixel.bluetooth.model.FlexyPixelDevice
+import ru.alexp0111.flexypixel.navigation.Screens
 import javax.inject.Inject
 
 private const val TAG = "SearchBluetoothDevicesViewModel"
 
 class SearchBluetoothDevicesViewModel @Inject constructor(
     private val controller: AndroidBluetoothController,
+    private val router: Router,
 ) : ViewModel(), ActionConsumer, StateHolder {
 
     private val _actions: MutableSharedFlow<Action> by lazy {
@@ -53,7 +56,7 @@ class SearchBluetoothDevicesViewModel @Inject constructor(
 
             is Action.ConnectBluetoothDevice -> connectBluetoothDevice(action.device)
             is Action.ConnectionInProgress -> Unit
-            is Action.ConnectionSucceed -> Unit
+            is Action.ConnectionSucceed -> router.newRootScreen(Screens.MenuScreen())
 
             is Action.ConnectionFailed -> resetConnectedDevice()
             is Action.NotifyErrorShown -> Unit

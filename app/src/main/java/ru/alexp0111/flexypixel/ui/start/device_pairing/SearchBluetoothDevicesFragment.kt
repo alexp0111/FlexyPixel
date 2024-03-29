@@ -1,7 +1,6 @@
 package ru.alexp0111.flexypixel.ui.start.device_pairing
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +19,6 @@ import javax.inject.Inject
 private const val TAG = "SearchBluetoothDevicesFragment"
 
 class SearchBluetoothDevicesFragment : Fragment() {
-
-    @Inject
-    lateinit var router: Router
 
     @Inject
     lateinit var stateHolder: SearchBluetoothDevicesViewModel

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
@@ -52,7 +53,7 @@ class AndroidBluetoothController @Inject constructor(
     val scannedDevices: StateFlow<List<FlexyPixelDevice>>
         get() = _scannedDevices.asStateFlow()
 
-    private var _incomingMessages = MutableSharedFlow<TransferResult>()
+    private var _incomingMessages = MutableSharedFlow<TransferResult>(replay = 1)
     val incomingMessages: SharedFlow<TransferResult>
         get() = _incomingMessages.asSharedFlow()
 
@@ -67,6 +68,9 @@ class AndroidBluetoothController @Inject constructor(
         if (!isDeviceAvailable(bluetoothDevice)) {
             return@BluetoothStateReceiver
         }
+        /**
+         * TODO: We should inform user if device disconnected in a workflow
+         * */
         _isConnected.update {
             Pair(
                 FlexyPixelDevice.from(bluetoothDevice),
@@ -112,9 +116,9 @@ class AndroidBluetoothController @Inject constructor(
                     emit(ConnectionResult.ConnectionEstablished)
                     BluetoothDataTransferService(socket).apply {
                         dataTransferService = this
-                        listenForIncomingMessages().collect {
-                            _incomingMessages.tryEmit(it)
-                        }
+                        _incomingMessages.emitAll(
+                            listenForIncomingMessages()
+                        )
                     }
                 } catch (e: IOException) {
                     socket.close()
@@ -123,7 +127,7 @@ class AndroidBluetoothController @Inject constructor(
                 }
             }
         }.catch { throwable ->
-            Log.d(TAG, throwable.localizedMessage.toString())
+            Log.d(TAG, throwable.message.toString())
         }.onCompletion {
             closeConnection()
         }.flowOn(Dispatchers.IO)
@@ -139,14 +143,6 @@ class AndroidBluetoothController @Inject constructor(
             }
         )
     }
-
-    /** TODO:
-     *
-     * fun `transfer some complex data with feedback`() {
-     *      send data -> wainting for "OK" response -> send next part of data
-     * }
-     *
-     * */
 
     fun sendMessage(message: String) {
         if (!permissionResolver.isBluetoothPermissionsGranted()) {
