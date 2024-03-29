@@ -1,6 +1,5 @@
 package ru.alexp0111.flexypixel.bluetooth
 
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -9,51 +8,63 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResult
 import ru.alexp0111.flexypixel.bluetooth.utils.MessageConverter
-import ru.alexp0111.flexypixel.util.PermissionResolver
 import java.util.LinkedList
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val TAG = "MessageHandler"
-private const val CONFIGURATION_SIZE = 9
 
 @Singleton
 class MessageHandler @Inject constructor(
     private val controller: AndroidBluetoothController,
-    private val permissionResolver: PermissionResolver,
 ) {
+    @get:Synchronized
+    @set:Synchronized
+    private var isWaitingForResponse = false
 
-    private var configuration: PanelConfiguration? = null
-    private var mode: TransactionMode? = null
+    @get:Synchronized
+    @set:Synchronized
+    private var lastSentMessage: BluetoothMessage? = null
+
+    private var configuration: MessagePanelConfiguration? = null
+    private var mode: MessageTransactionMode? = null
     private val messageQueue: LinkedList<BluetoothMessage> = LinkedList()
 
     private var _errors = MutableSharedFlow<String>(replay = 1)
     val errors: SharedFlow<String>
         get() = _errors.asSharedFlow()
 
-    private val listener = CoroutineScope(Dispatchers.IO).launch {
-        controller.incomingMessages.collect {
-            when (it) {
-                is TransferResult.TransferSucceeded -> {
-                    if (messageQueue.isNotEmpty()) {
-                        popMessageQueue()
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            controller.incomingMessages.collect {
+                isWaitingForResponse = false
+                when (it) {
+                    is TransferResult.TransferSucceeded -> {
+                        lastSentMessage = null
+                        tryPopMessageQueue()
+                    }
+
+                    is TransferResult.Error -> {
+                        retryLastSentMessage()
+                        _errors.tryEmit(it.errorMessage)
                     }
                 }
-
-                is TransferResult.Error -> {
-                    _errors.tryEmit(it.errorMessage)
-                }
-
-                else -> Unit
             }
         }
     }
 
-    private fun popMessageQueue() {
-        if (messageQueue.isNotEmpty()) {
-            val message = messageQueue.pop()
+    private fun retryLastSentMessage() {
+        lastSentMessage?.let { retryMessage ->
+            messageQueue.push(retryMessage)
+            tryPopMessageQueue()
+        }
+    }
+
+    private fun tryPopMessageQueue() {
+        if (messageQueue.isNotEmpty() && !isWaitingForResponse) {
+            isWaitingForResponse = true
+            val message = messageQueue.pop().also { lastSentMessage = it }
             controller.sendMessage(message.asJson())
-            Log.d(TAG, message.asJson())
         }
     }
 
@@ -64,35 +75,32 @@ class MessageHandler @Inject constructor(
         gChannel: Int,
         bChannel: Int,
     ) {
-        if (mode == null || mode != TransactionMode.PIXEL) {
-            mode = TransactionMode.PIXEL
-            messageQueue.add(MessageType.MODE, TransactionMode.PIXEL)
-        }
+        changeModeIfNeeded(MessageTransactionMode.PIXEL)
+
         val message = MessagePixel(
             panelPosition = panelOrder,
             pixelPosition = MessageConverter.convert(pixelOrder),
             pixelColor = rChannel.toString() + gChannel.toString() + bChannel.toString()
         )
+
         messageQueue.add(MessageType.DATA, message)
-        popMessageQueue()
+        tryPopMessageQueue()
     }
 
-    fun updateConfiguration(numOf64Panels: Int) {
-        val curConfig = Array(CONFIGURATION_SIZE) { "064" }
-        for (i in numOf64Panels until CONFIGURATION_SIZE) {
-            curConfig[i] = "000"
+    private fun changeModeIfNeeded(transactionMode: MessageTransactionMode) {
+        if (mode == null || mode != transactionMode) {
+            mode = transactionMode
+            messageQueue.add(MessageType.MODE, transactionMode)
         }
-        val incomingPanelConfiguration = PanelConfiguration(curConfig)
-        updateConfiguration(incomingPanelConfiguration)
     }
 
     fun updateConfiguration(configuration: Array<String>) {
-        updateConfiguration(PanelConfiguration(configuration))
+        updateConfiguration(MessagePanelConfiguration(configuration))
     }
 
-    private fun updateConfiguration(incomingPanelConfiguration: PanelConfiguration) {
-        if (configuration == null || configuration != incomingPanelConfiguration) {
-            configuration = incomingPanelConfiguration.also {
+    private fun updateConfiguration(incomingMessagePanelConfiguration: MessagePanelConfiguration) {
+        if (configuration == null || configuration != incomingMessagePanelConfiguration) {
+            configuration = incomingMessagePanelConfiguration.also {
                 messageQueue.add(MessageType.CONFIG, it)
             }
         }
@@ -105,6 +113,4 @@ fun LinkedList<BluetoothMessage>.add(
 ) {
     this.add(type)
     this.add(message)
-
-    //Log.d(TAG, Pair(type, message).toString())
 }

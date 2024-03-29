@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
+import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.databinding.FragmentTestBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import javax.inject.Inject
@@ -27,6 +28,8 @@ class TestFragment : Fragment() {
 
     @Inject
     lateinit var messageHandler: MessageHandler
+
+    private var pixel = 0
 
     private var _binding: FragmentTestBinding? = null
     private val binding: FragmentTestBinding
@@ -43,6 +46,47 @@ class TestFragment : Fragment() {
     ): View {
         _binding = FragmentTestBinding.inflate(inflater)
         binding.apply {
+            btnRemoveLastPixel.setOnClickListener {
+                pixel--
+                pixel = maxOf(pixel, 0)
+
+                val pixOrder = pixel % 64
+                val panOrder = pixel / 64
+
+                etMovePanelNum.setText(panOrder.toString())
+                etMovePixelNum.setText(pixOrder.toString())
+
+                messageHandler.sendPixel(
+                    panelOrder = panOrder,
+                    pixelOrder = pixOrder,
+                    rChannel = 0,
+                    gChannel = 0,
+                    bChannel = 0,
+                )
+            }
+
+            btnMoveLastPixel.setOnClickListener {
+                val r = (0..9).random()
+                val g = (0..9).random()
+                val b = (0..9).random()
+
+                val pixOrder = pixel % 64
+                val panOrder = pixel / 64
+
+                etMovePanelNum.setText(panOrder.toString())
+                etMovePixelNum.setText(pixOrder.toString())
+
+                messageHandler.sendPixel(
+                    panelOrder = panOrder,
+                    pixelOrder = pixOrder,
+                    rChannel = r,
+                    gChannel = g,
+                    bChannel = b,
+                )
+
+                pixel++
+            }
+
             btnSendOnePixel.setOnClickListener {
                 val r = etTstPixelR.text.toString().toInt()
                 val g = etTstPixelG.text.toString().toInt()
@@ -61,7 +105,11 @@ class TestFragment : Fragment() {
 
             btnSaveConfig.setOnClickListener {
                 val numberOfPanels = etTstConfiguration.text.toString().toInt()
-                messageHandler.updateConfiguration(numberOfPanels)
+                val curConfig = Array(PanelConfiguration.MAX_SIZE) { "064" }
+                for (i in numberOfPanels until PanelConfiguration.MAX_SIZE) {
+                    curConfig[i] = "000"
+                }
+                messageHandler.updateConfiguration(curConfig)
             }
         }
         return binding.root
