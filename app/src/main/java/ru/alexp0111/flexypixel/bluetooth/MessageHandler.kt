@@ -1,6 +1,5 @@
 package ru.alexp0111.flexypixel.bluetooth
 
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -47,10 +46,7 @@ class MessageHandler @Inject constructor(
                     }
 
                     is TransferResult.Error -> {
-                        // TODO: Retry if config exists
-                        if (it.errorMessage != TransferResponse.UNCONFIGURED) {
-                            retryLastSentMessage()
-                        }
+                        handleError(it.errorMessage)
                         _errors.tryEmit(it.errorMessage)
                     }
                 }
@@ -58,11 +54,22 @@ class MessageHandler @Inject constructor(
         }
     }
 
-    private fun retryLastSentMessage() {
-        lastSentMessage?.let { retryMessage ->
-            messageQueue.push(retryMessage)
-            tryPopMessageQueue()
-        }
+    private fun handleError(errorMessage: String) {
+        retryLastSentMessage() ?: return
+        retryConfigIfNeeded(errorMessage)
+        tryPopMessageQueue()
+    }
+
+    private fun retryLastSentMessage(): BluetoothMessage? {
+        val message = lastSentMessage ?: return null
+        messageQueue.push(message)
+        return message
+    }
+
+    private fun retryConfigIfNeeded(errorMessage: String) {
+        if (errorMessage != TransferResponse.UNCONFIGURED) return
+        val retryConfig = configuration ?: return
+        messageQueue.push(MessageType.CONFIG, retryConfig)
     }
 
     private fun tryPopMessageQueue() {
@@ -134,4 +141,12 @@ fun LinkedList<BluetoothMessage>.add(
 ) {
     this.add(type)
     this.add(message)
+}
+
+fun LinkedList<BluetoothMessage>.push(
+    type: MessageType,
+    message: BluetoothMessage,
+) {
+    this.push(message)
+    this.push(type)
 }
