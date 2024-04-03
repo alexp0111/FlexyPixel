@@ -170,5 +170,59 @@
 
     </com.google.android.material.card.MaterialCardView>
 
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_number_of_frames"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Number of frames"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_weight="1"
+                    android:inputType="numberDecimal" />
+
+                <EditText
+                    android:id="@+id/et_interfame_delay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Delay [ms]"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_weight="1"
+                    android:inputType="numberDecimal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_send_frames"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:layout_weight="1"
+                    android:text="Send" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
 
 </LinearLayout>

@@ -2,18 +2,18 @@ package ru.alexp0111.flexypixel.bluetooth.utils
 
 object MessageConverter {
     fun convert(
-        pixelOrder: Int,
-        length: Int = 3,
+        num: Int,
+        totalAmountOfSigns: Int = 3,
     ): String {
-        val stringNumber = pixelOrder.toString()
+        val stringNumber = num.toString()
         return when {
-            stringNumber.length == length -> stringNumber
-            stringNumber.length > length -> {
+            stringNumber.length == totalAmountOfSigns -> stringNumber
+            stringNumber.length > totalAmountOfSigns -> {
                 throw IllegalStateException("Integer value is too big")
             }
 
             else -> {
-                "0".repeat(length - stringNumber.length) + stringNumber
+                "0".repeat(totalAmountOfSigns - stringNumber.length) + stringNumber
             }
         }
     }
