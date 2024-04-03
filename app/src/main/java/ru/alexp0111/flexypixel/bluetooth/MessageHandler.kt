@@ -1,11 +1,13 @@
 package ru.alexp0111.flexypixel.bluetooth
 
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import ru.alexp0111.flexypixel.bluetooth.model.TransferResponse
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResult
 import ru.alexp0111.flexypixel.bluetooth.utils.MessageConverter
 import java.util.LinkedList
@@ -45,7 +47,10 @@ class MessageHandler @Inject constructor(
                     }
 
                     is TransferResult.Error -> {
-                        retryLastSentMessage()
+                        // TODO: Retry if config exists
+                        if (it.errorMessage != TransferResponse.UNCONFIGURED) {
+                            retryLastSentMessage()
+                        }
                         _errors.tryEmit(it.errorMessage)
                     }
                 }
@@ -84,6 +89,22 @@ class MessageHandler @Inject constructor(
         )
 
         messageQueue.add(MessageType.DATA, message)
+        tryPopMessageQueue()
+    }
+
+    fun sendFrames(frames: List<MessageFrame>, interfameDelay: Int) {
+        changeModeIfNeeded(MessageTransactionMode.SEQUENCE)
+
+        val message = MessageFramesMetaData(
+            MessageConverter.convert(frames.size),
+            MessageConverter.convert(interfameDelay, MessageFramesMetaData.INTERFRAME_SIZE),
+        )
+
+        messageQueue.add(MessageType.DATA, message)
+        frames.forEach {
+            messageQueue.add(it)
+        }
+
         tryPopMessageQueue()
     }
 

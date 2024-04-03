@@ -1,6 +1,7 @@
 package ru.alexp0111.flexypixel.ui.test
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,9 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.alexp0111.flexypixel.bluetooth.MessageFrame
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
+import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.databinding.FragmentTestBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
@@ -30,6 +33,7 @@ class TestFragment : Fragment() {
     lateinit var messageHandler: MessageHandler
 
     private var pixel = 0
+    private var testNumOfPanels = 0
 
     private var _binding: FragmentTestBinding? = null
     private val binding: FragmentTestBinding
@@ -103,8 +107,18 @@ class TestFragment : Fragment() {
                 )
             }
 
+            btnSendFrames.setOnClickListener {
+                val numberOfFrames = etNumberOfFrames.text.toString().toInt()
+                val interfameDelay = etInterfameDelay.text.toString().toInt()
+                messageHandler.sendFrames(
+                    getTestFrames(numberOfFrames),
+                    interfameDelay,
+                )
+            }
+
             btnSaveConfig.setOnClickListener {
-                val numberOfPanels = etTstConfiguration.text.toString().toInt()
+                val numberOfPanels =
+                    etTstConfiguration.text.toString().toInt().also { testNumOfPanels = it }
                 val curConfig = Array(PanelConfiguration.MAX_SIZE) { "064" }
                 for (i in numberOfPanels until PanelConfiguration.MAX_SIZE) {
                     curConfig[i] = "000"
@@ -113,6 +127,24 @@ class TestFragment : Fragment() {
             }
         }
         return binding.root
+    }
+
+    private fun getTestFrames(numberOfFrames: Int): List<MessageFrame> {
+        val framesList = mutableListOf<MessageFrame>()
+        val basicFrame = Array(testNumOfPanels) { Array(Panel.TYPE_64) { "000" } }
+        for (i in 0 until numberOfFrames) {
+            for (panelIndex in basicFrame.indices) {
+                basicFrame[panelIndex][i] = "090"
+            }
+            val frame = MessageFrame(
+                basicFrame.joinToString("") {
+                    it.joinToString("")
+                }
+            )
+            framesList.add(frame)
+            Log.d(TAG, frame.asJson())
+        }
+        return framesList
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

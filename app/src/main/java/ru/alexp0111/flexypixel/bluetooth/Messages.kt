@@ -110,17 +110,23 @@ data class MessagePanelConfiguration(
 
 
 /**
- * Information obout how much frames we sending.
+ * Information obout how much frames we sending & delay between frames (milliseconds)
+ * Max(interframeDelay) = 86'400'000
  *
  * =================================
- * @Example: {"framesAmount": "030"}
+ * @Example: {"framesAmount":"030","interframeDelay":"00000042"}
  * =================================
  * */
-data class MessageFramesAmount(
+data class MessageFramesMetaData(
     private val framesAmount: String,
+    private val interfameDelay: String,
 ) : BluetoothMessage {
     override fun asJson(): String {
         return Gson().toJson(this)
+    }
+
+    companion object {
+        const val INTERFRAME_SIZE = 8
     }
 }
 
