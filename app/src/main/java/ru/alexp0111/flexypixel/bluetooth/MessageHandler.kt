@@ -116,7 +116,7 @@ class MessageHandler @Inject constructor(
     }
 
     fun updateConfiguration(configuration: Array<String>) {
-        updateConfiguration(MessagePanelConfiguration(configuration))
+        updateConfiguration(MessagePanelConfiguration(configuration.joinToString("")))
     }
 
     private fun updateConfiguration(incomingMessagePanelConfiguration: MessagePanelConfiguration) {

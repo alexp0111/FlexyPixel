@@ -74,33 +74,18 @@ data class MessagePixel(
 
 
 /**
- * Panel configuration: array with size MAX_SIZE,
+ * Panel configuration: string with size MAX_SIZE * 3,
  * representing type of panel in chain.
  *
- * TODO: Replace with single string
- *
- * ===============================================================
- * @Example: {"configuration": ["064","064","256","000",..."000"]}
- * ===============================================================
+ * ========================================
+ * @Example: {"configuration": "000...000"}
+ * ========================================
  * */
 data class MessagePanelConfiguration(
-    private val configuration: Array<String> = Array(PanelConfiguration.MAX_SIZE) { "000" },
+    private val configuration: String = "000".repeat(PanelConfiguration.MAX_SIZE),
 ) : BluetoothMessage {
     override fun asJson(): String {
         return Gson().toJson(this)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as MessagePanelConfiguration
-
-        return configuration.contentEquals(other.configuration)
-    }
-
-    override fun hashCode(): Int {
-        return configuration.contentHashCode()
     }
 
     override fun toString(): String {
