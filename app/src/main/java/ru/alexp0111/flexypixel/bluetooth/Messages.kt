@@ -104,7 +104,7 @@ data class MessagePanelConfiguration(
  * */
 data class MessageFramesMetaData(
     private val framesAmount: String,
-    private val interfameDelay: String,
+    private val interframeDelay: String,
 ) : BluetoothMessage {
     override fun asJson(): String {
         return Gson().toJson(this)
@@ -117,7 +117,7 @@ data class MessageFramesMetaData(
 
 
 /**
- * Hole frame with number of panels set in configuration.
+ * Whole frame with number of panels set in configuration.
  *
  * =========================================================
  * @Example: {"frame":"000000000000000000..000000000000000"}

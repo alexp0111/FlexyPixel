@@ -3,6 +3,7 @@ package ru.alexp0111.flexypixel.ui.util
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,10 @@ import ru.alexp0111.flexypixel.databinding.FragmentBluetoothResolverBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import ru.alexp0111.flexypixel.util.PermissionResolver
 import javax.inject.Inject
+
+/*
+* TODO: We should show info dialog before asking for turning on GPS
+* */
 
 class BluetoothResolverFragment : Fragment() {
 
@@ -28,24 +33,30 @@ class BluetoothResolverFragment : Fragment() {
     private val enableBluetoothLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult(),
     ) {
-        if (!permissionResolver.isBluetoothAvailable()) {
+        if (!permissionResolver.isBluetoothOn()) {
             requireActivity().finish()
-            return@registerForActivityResult
+        } else {
+            resolveCurrentState()
         }
-        router.exit()
+    }
+
+    private val enableGPSLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) {
+        if (!permissionResolver.isGPSOn()) {
+            requireActivity().finish()
+        } else {
+            resolveCurrentState()
+        }
     }
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
-    ) { _ ->
+    ) {
         if (!permissionResolver.isBluetoothPermissionsGranted()) {
             requireActivity().finish()
-            return@registerForActivityResult
-        }
-        if (!permissionResolver.isBluetoothAvailable()) {
-            enableBluetoothLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
         } else {
-            router.exit()
+            resolveCurrentState()
         }
     }
 
@@ -55,17 +66,21 @@ class BluetoothResolverFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectSelf()
-        if (!permissionResolver.isBluetoothPermissionsGranted()) {
-            val permissions = permissionResolver.getNecessaryPermissions()
-            permissionLauncher.launch(permissions.toTypedArray())
-        } else {
-            if (!permissionResolver.isBluetoothAvailable()) {
-                enableBluetoothLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
-            } else {
-                router.exit()
-            }
-        }
+        resolveCurrentState()
         super.onCreate(savedInstanceState)
+    }
+
+    private fun resolveCurrentState() {
+        val isBluetoothOn = permissionResolver.isBluetoothOn()
+        val isGPSOn = permissionResolver.isGPSOn()
+        val isPermissionsProvided = permissionResolver.isBluetoothPermissionsGranted()
+
+        when {
+            !isPermissionsProvided -> permissionLauncher.launch(permissionResolver.getNecessaryPermissions())
+            !isBluetoothOn -> enableBluetoothLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+            !isGPSOn -> enableGPSLauncher.launch(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            else -> router.exit()
+        }
     }
 
     override fun onCreateView(
