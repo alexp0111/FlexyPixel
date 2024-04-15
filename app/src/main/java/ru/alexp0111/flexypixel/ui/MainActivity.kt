@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val fragment = supportFragmentManager.findFragmentById(R.id.container_main)
         if (fragment != null && fragment is BluetoothResolverFragment
-            && !permissionResolver.isBluetoothAvailable()
+            && !permissionResolver.isSystemCompletelyReady()
         ) {
             finish()
         } else {

@@ -99,12 +99,15 @@ class MessageHandler @Inject constructor(
         tryPopMessageQueue()
     }
 
-    fun sendFrames(frames: List<MessageFrame>, interfameDelay: Int) {
+    fun sendFrames(frames: List<MessageFrame>, interframeDelay: Int) {
         changeModeIfNeeded(MessageTransactionMode.SEQUENCE)
+        configuration?.let {
+            messageQueue.add(MessageType.CONFIG, it)
+        }
 
         val message = MessageFramesMetaData(
             MessageConverter.convert(frames.size),
-            MessageConverter.convert(interfameDelay, MessageFramesMetaData.INTERFRAME_SIZE),
+            MessageConverter.convert(interframeDelay, MessageFramesMetaData.INTERFRAME_SIZE),
         )
 
         messageQueue.add(MessageType.DATA, message)

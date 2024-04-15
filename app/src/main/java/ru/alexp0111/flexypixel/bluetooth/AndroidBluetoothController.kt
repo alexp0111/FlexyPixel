@@ -33,6 +33,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val TAG = "AndroidBluetoothController"
+private const val DEVICE_NAME_REGEX = "Flexy Pixel.*"
 private const val SERVICE_UUID = "00001101-0000-1000-8000-00805F9B34FB"
 
 @SuppressLint("MissingPermission")
@@ -83,6 +84,19 @@ class AndroidBluetoothController @Inject constructor(
         val pairedDevices = bluetoothAdapter.bondedDevices ?: return false
         val flexyPixelDevice = FlexyPixelDevice.from(bluetoothDevice)
         return pairedDevices.contains(bluetoothDevice) && flexyPixelDevice in scannedDevices.value
+    }
+
+    fun isConnectedToFPModule(): Flow<Boolean> = flow {
+        val pairedDevice = bluetoothAdapter.bondedDevices.filter {
+            it.name.matches(DEVICE_NAME_REGEX.toRegex())
+        }
+        if (pairedDevice.isEmpty() || pairedDevice.size != 1) {
+            emit(false)
+        } else {
+            setUpConnection(FlexyPixelDevice.from(pairedDevice.first())).collect {
+                emit(it is ConnectionResult.ConnectionEstablished)
+            }
+        }
     }
 
     fun startDiscovery() {
