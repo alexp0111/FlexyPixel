@@ -68,8 +68,9 @@ class MessageHandler @Inject constructor(
 
     private fun retryConfigIfNeeded(errorMessage: String) {
         if (errorMessage != TransferResponse.UNCONFIGURED) return
-        val retryConfig = configuration ?: return
-        messageQueue.push(MessageType.CONFIG, retryConfig)
+        mode?.let {
+            messageQueue.push(MessageType.MODE, it)
+        }
     }
 
     private fun tryPopMessageQueue() {
