@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         injectSelf()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        router.replaceScreen(Screens.StartScreen())
+        router.replaceScreen(Screens.DisplayLevelScreen())
     }
 
     override fun onResume() {
