@@ -1,13 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="GridLayoutStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:columnCount">3</item>
+        <item name="android:rowCount">3</item>
+        <item name="android:useDefaultMargins">true</item>
+        <item name="android:layout_marginTop">@dimen/display_layout_top_margin</item>
+    </style>
+
+    <style name="display_holder">
+        <item name="android:layout_width">@dimen/display_holder_size</item>
+        <item name="android:layout_height">@dimen/display_holder_size</item>
+        <item name="android:layout_marginTop">@dimen/display_holder_margin</item>
+    </style>
+
+    <style name="display_holder_image">
+        <item name="android:layout_width">@dimen/display_holder_image_size</item>
+        <item name="android:layout_height">@dimen/display_holder_image_size</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:padding">@dimen/display_holder_image_padding</item>
+    </style>
+
+
     <style name="neumorph_card_pressed">
         <item name="android:layout_width">@dimen/display_container_size</item>
         <item name="android:layout_height">@dimen/display_container_size</item>
         <item name="android:layout_gravity">center</item>
+        <item name="neumorph_inset">@dimen/display_container_inset</item>
+        <item name="neumorph_shadowColorDark">@color/darker_beige</item>
+        <item name="neumorph_shadowColorLight">@color/white_shadow</item>
+        <item name="neumorph_shapeType">pressed</item>
     </style>
+
     <style name="display_container_frame_layout">
         <item name="android:layout_width">@dimen/display_container_size</item>
         <item name="android:layout_height">@dimen/display_container_size</item>
     </style>
+
+    <style name="Heading_TV" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/roboto_mono</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/Heading_TV_text_size</item>
+        <item name="android:layout_margin">@dimen/Heading_TV_margin</item>
+    </style>
+
+    <style name="Subtitle_TV" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/roboto_mono</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/subtitle_TV_text_size</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+
+
 </resources>
