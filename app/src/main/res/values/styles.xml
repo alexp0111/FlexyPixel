@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="neumorph_card_pressed">
+        <item name="android:layout_width">@dimen/display_container_size</item>
+        <item name="android:layout_height">@dimen/display_container_size</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+    <style name="display_container_frame_layout">
+        <item name="android:layout_width">@dimen/display_container_size</item>
+        <item name="android:layout_height">@dimen/display_container_size</item>
+    </style>
+</resources>
