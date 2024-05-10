@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/beige"
+    tools:context=".ui.DisplayLevelFragment">
+
+    <TextView
+        android:id="@+id/heading"
+        style="@style/Heading_TV"
+        android:text="@string/display_level_configure"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/subtitle"
+        style="@style/Subtitle_TV"
+        android:text="@string/display_level_your_display"
+        app:layout_constraintStart_toStartOf="@+id/heading"
+        app:layout_constraintTop_toBottomOf="@+id/heading"
+        />
+
+    <GridLayout
+        android:id="@+id/display_layout"
+        style="@style/GridLayoutStyle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtitle">
+
+        <FrameLayout android:id="@+id/card1"
+            style="@style/display_container_frame_layout">
+            <soup.neumorphism.NeumorphCardView style="@style/neumorph_card_pressed" />
+        </FrameLayout>
+
+        <FrameLayout android:id="@+id/card2"
+            style="@style/display_container_frame_layout">
+            <soup.neumorphism.NeumorphCardView style="@style/neumorph_card_pressed" />
+        </FrameLayout>
+
+        <FrameLayout android:id="@+id/card3"
+            style="@style/display_container_frame_layout">
+            <soup.neumorphism.NeumorphCardView style="@style/neumorph_card_pressed" />
+        </FrameLayout>
+
+        <FrameLayout android:id="@+id/card4"
+            style="@style/display_container_frame_layout">
+            <soup.neumorphism.NeumorphCardView style="@style/neumorph_card_pressed" />
+        </FrameLayout>
+
+        <FrameLayout android:id="@+id/card5"
+            style="@style/display_container_frame_layout">
+            <soup.neumorphism.NeumorphCardView style="@style/neumorph_card_pressed" />
+        </FrameLayout>
+
+        <FrameLayout android:id="@+id/card6"
+            style="@style/display_container_frame_layout">
+            <soup.neumorphism.NeumorphCardView style="@style/neumorph_card_pressed" />
+        </FrameLayout>
+
+        <FrameLayout android:id="@+id/card7"
+            style="@style/display_container_frame_layout">
+            <soup.neumorphism.NeumorphCardView style="@style/neumorph_card_pressed" />
+        </FrameLayout>
+
+        <FrameLayout android:id="@+id/card8"
+            style="@style/display_container_frame_layout">
+            <soup.neumorphism.NeumorphCardView style="@style/neumorph_card_pressed" />
+        </FrameLayout>
+
+        <FrameLayout android:id="@+id/card9"
+            style="@style/display_container_frame_layout">
+            <soup.neumorphism.NeumorphCardView style="@style/neumorph_card_pressed" />
+        </FrameLayout>
+
+    </GridLayout>
+
+    <FrameLayout
+        android:id="@+id/display_holder"
+        style="@style/display_holder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/display_layout">
+
+        <ImageView
+            android:id="@+id/display_holder_image"
+            style="@style/display_holder_image"
+            android:src="@drawable/circle_cross" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
