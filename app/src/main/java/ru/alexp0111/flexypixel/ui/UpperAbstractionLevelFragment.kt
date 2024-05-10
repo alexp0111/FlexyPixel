@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentUpperAbstractionLevelBinding
+import ru.alexp0111.flexypixel.di.components.FragmentComponent
 
 
 class UpperAbstractionLevelFragment : Fragment() {
@@ -27,6 +28,10 @@ class UpperAbstractionLevelFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun injectSelf() {
+        FragmentComponent.from(this).inject(this)
     }
 
 
