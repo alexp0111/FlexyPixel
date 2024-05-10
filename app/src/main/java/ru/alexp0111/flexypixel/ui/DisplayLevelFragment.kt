@@ -38,8 +38,6 @@ class DisplayLevelFragment : Fragment() {
 
     val displayHolder = Stack<Int>()
     val displayPosition = Array(3) { IntArray(3) }
-    //
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,11 +68,9 @@ class DisplayLevelFragment : Fragment() {
         binding.displayHolder.setOnDragListener(holderDragListener)
 
         getDisplayImages()
-        spawnDisplays(9 , requireContext())
+        spawnDisplays(9)
 
         fillUpMatrix(displayPosition)
-
-
     }
 
     private fun getDisplayImages() {
@@ -124,15 +120,15 @@ class DisplayLevelFragment : Fragment() {
 
                     view.invalidate()
 
-                    val v = dragEvent.localState as soup.neumorphism.NeumorphImageView
+                    val draggedView = dragEvent.localState as soup.neumorphism.NeumorphImageView
 
-                    val owner = v.parent as ViewGroup
+                    val owner = draggedView.parent as ViewGroup
 
 
                     val destination = view as FrameLayout
                     if (cardMode == CardMode.FLAT) {
-                        v.setShadowElevation(600f)
-                        v.setStrokeWidth(2f)
+                        draggedView.setShadowElevation(600f)
+                        draggedView.setStrokeWidth(2f)
 
                         val destination_pos = getPosition(view)
                         val owner_pos = getPosition(owner)
@@ -152,17 +148,17 @@ class DisplayLevelFragment : Fragment() {
                     }
                     //если вытаскиваем из ячейки с позицией owner_pos и передаем в нижнюю ячейку
                     else if (cardMode == CardMode.RAISED) {
-                        if (view.childCount == 1) v.setShadowElevation(9f)
+                        if (view.childCount == 1) draggedView.setShadowElevation(9f)
                         val owner_pos = getPosition(owner)
                         val display_id = displayPosition[owner_pos[0]][owner_pos[1]]
                         displayPosition[owner_pos[0]][owner_pos[1]] = 0
                         displayHolder.push(display_id)
-                        v.setStrokeWidth(0f)
+                        draggedView.setStrokeWidth(0f)
                     }
                     printMatrix(displayPosition)
-                    owner.removeView(v);
-                    destination.addView(v)
-                    v.visibility = View.VISIBLE
+                    owner.removeView(draggedView);
+                    destination.addView(draggedView)
+                    draggedView.visibility = View.VISIBLE
                     true
                 }
 
@@ -179,9 +175,9 @@ class DisplayLevelFragment : Fragment() {
     }
 
     @SuppressLint("RestrictedApi" , "UseCompatLoadingForDrawables")
-    fun spawnDisplays(num: Int , context: Context) {
+    fun spawnDisplays(num: Int) {
         for (i in 1..num) {
-            val view = soup.neumorphism.NeumorphImageView(context)
+            val view = soup.neumorphism.NeumorphImageView(requireContext())
             val layoutParams = FrameLayout.LayoutParams(
                 dpToPx(125 , view.resources) ,
                 dpToPx(125 , view.resources)
@@ -198,7 +194,7 @@ class DisplayLevelFragment : Fragment() {
             view.setShadowColorDark(Color.parseColor("#C5B9B0"))
             view.setShadowColorLight(Color.parseColor("#AEFFFFFF"))
             view.setShapeType(ShapeType.FLAT)
-            view.setImageDrawable(context.getDrawable(images[i - 1]))
+            view.setImageDrawable(requireContext().getDrawable(images[i - 1]))
             view.scaleType = ImageView.ScaleType.FIT_CENTER
 
             view.setOnLongClickListener {
