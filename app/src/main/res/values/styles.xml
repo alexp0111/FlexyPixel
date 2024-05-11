@@ -52,7 +52,6 @@
         <item name="android:layout_width">@dimen/neumorph_card_size</item>
         <item name="android:layout_height">@dimen/neumorph_card_size</item>
         <item name="neumorph_inset">@dimen/neumorph_card_inset</item>
-        <item name="android:layout_margin">0dp</item>
     </style>
 
     <style name="display_container_frame_layout">

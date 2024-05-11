@@ -23,81 +23,72 @@
         app:layout_constraintTop_toBottomOf="@+id/heading"
         />
 
-    <GridLayout
-        android:id="@+id/display_layout"
-        style="@style/GridLayoutStyle"
-        app:layout_constraintEnd_toEndOf="parent"
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card1"
+        style="@style/neumorph_card_flat"
+        android:layout_marginStart="@dimen/upper_abstraction_grid_horizontal_margin"
+        android:layout_marginTop="@dimen/upper_abstraction_grid_top_margin"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtitle"
+        />
 
-        app:layout_constraintTop_toBottomOf="@id/subtitle">
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card2"
+        style="@style/neumorph_card_flat"
 
-        
-        <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card1"
-            style="@style/neumorph_card_flat"
-            />
-        
+        app:layout_constraintEnd_toStartOf="@+id/card3"
+        app:layout_constraintStart_toEndOf="@+id/card1"
+        app:layout_constraintTop_toTopOf="@+id/card1" />
 
-        
-        <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card2"
-            style="@style/neumorph_card_flat"
-            />
-        
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card3"
+        style="@style/neumorph_card_flat"
+        android:layout_marginEnd="@dimen/upper_abstraction_grid_horizontal_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/card1" />
 
-        
-        <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card3"
-            style="@style/neumorph_card_flat"
-            />
-        
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card4"
+        style="@style/neumorph_card_flat"
+        android:layout_marginTop="@dimen/upper_abstraction_grid_inside_margin"
+        app:layout_constraintStart_toStartOf="@+id/card1"
+        app:layout_constraintTop_toBottomOf="@+id/card1" />
 
-        
-        <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card4"
-            style="@style/neumorph_card_flat"
-            />
-        
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card5"
+        style="@style/neumorph_card_flat"
+        app:layout_constraintStart_toStartOf="@+id/card2"
+        app:layout_constraintTop_toTopOf="@+id/card4" />
 
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card6"
+        style="@style/neumorph_card_flat"
+        app:layout_constraintStart_toStartOf="@+id/card3"
+        app:layout_constraintTop_toTopOf="@+id/card4" />
 
-        
-        <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card5"
-            style="@style/neumorph_card_flat"
-            />
-        
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card7"
+        style="@style/neumorph_card_flat"
+        android:layout_marginTop="@dimen/upper_abstraction_grid_inside_margin"
+        app:layout_constraintStart_toStartOf="@+id/card4"
+        app:layout_constraintTop_toBottomOf="@+id/card4" />
 
-        
-        <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card6"
-            style="@style/neumorph_card_flat"
-            />
-        
-        
-        <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card7"
-            style="@style/neumorph_card_flat"
-            />
-        
-        
-        <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card8"
-            style="@style/neumorph_card_flat"
-            />
-        
-        
-        <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card9"
-            style="@style/neumorph_card_flat"
-            />
-        
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card8"
+        style="@style/neumorph_card_flat"
+        app:layout_constraintStart_toStartOf="@+id/card5"
+        app:layout_constraintTop_toTopOf="@+id/card7" />
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card9"
+        style="@style/neumorph_card_flat"
+        app:layout_constraintStart_toStartOf="@+id/card6"
+        app:layout_constraintTop_toTopOf="@+id/card7" />
 
 
-
-    </GridLayout>
 
     <soup.neumorphism.NeumorphButton
-        android:id="@+id/display_holder"
+        android:id="@+id/save_btn"
         style="@style/save_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
