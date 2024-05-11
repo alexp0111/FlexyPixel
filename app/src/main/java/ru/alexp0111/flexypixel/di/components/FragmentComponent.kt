@@ -13,15 +13,16 @@ import ru.alexp0111.flexypixel.ui.util.BluetoothResolverFragment
 
 interface FragmentComponent {
 
-    fun inject(fragment: DisplayLevelFragment)
+
     fun inject(fragment: UpperAbstractionLevelFragment)
     fun inject(fragment: StartFragment)
 
-    fun inject(fragment: DisplayLevelFragment)
     fun inject(fragment: SearchBluetoothDevicesFragment)
     fun inject(fragment: BluetoothResolverFragment)
     fun inject(fragment: MenuFragment)
     fun inject(fragment: TestFragment)
+    fun inject(fragment: DisplayLevelFragment)
+
 
 
     companion object {

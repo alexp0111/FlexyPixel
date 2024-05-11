@@ -81,10 +81,6 @@
     </style>
 
 
-        <item name="android:textSize">@dimen/Heading_TV_text_size</item>
-        <item name="android:layout_margin">@dimen/Heading_TV_margin</item>
-    </style>
-
 
     <style name="Subtitle_TV" parent="Widget.AppCompat.TextView">
         <item name="android:layout_width">wrap_content</item>
@@ -127,9 +123,7 @@
         <item name="android:layout_marginEnd">@dimen/rv_connection_indicator_end_margin</item>
     </style>
 
-        <item name="android:textSize">@dimen/subtitle_TV_text_size</item>
-        <item name="android:textColor">@color/black</item>
-    </style>
+
 
 
 

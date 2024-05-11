@@ -14,7 +14,7 @@
     <dimen name="level2_text_size">24sp</dimen>
 
     <dimen name="Heading_TV_text_size">36sp</dimen>
-    <dimen name="Heading_TV_margin">40dp</dimen>
+
 
     <dimen name="subtitle_TV_text_size">24sp</dimen>
 
