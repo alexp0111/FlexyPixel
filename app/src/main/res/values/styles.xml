@@ -84,6 +84,35 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="rv_surface_item" parent="save_button">
+        <item name="cardCornerRadius">@dimen/rv_bluetooth_item_corner_radius</item>
+        <item name="android:layout_width">@dimen/rv_bluetooth_item_width</item>
+        <item name="android:layout_height">@dimen/rv_bluetooth_item_height</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="neumorph_backgroundColor">@color/beige</item>
+    </style>
 
+    <style name="rv_deviceName" parent="Subtitle_TV">
+        <item name="android:layout_width">@dimen/rv_device_name_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:marqueeRepeatLimit">0</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@color/beige</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:text">DEVICE #1</item>
+        <item name="android:layout_marginStart">@dimen/rv_device_name_start_margin</item>
+    </style>
+
+    <style name="connection_indicator">
+        <item name="android:layout_width">@dimen/rv_connection_indicator_size</item>
+        <item name="android:layout_height">@dimen/rv_connection_indicator_size</item>
+        <item name="neumorph_shapeType">pressed</item>
+        <item name="neumorph_strokeColor">@color/white</item>
+        <item name="android:layout_marginEnd">@dimen/rv_connection_indicator_end_margin</item>
+    </style>
 
 </resources>
