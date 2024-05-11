@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:background="@color/beige"
 
+
     tools:context=".ui.displayLevel.DisplayLevelFragment">
+
 
 
     <TextView
