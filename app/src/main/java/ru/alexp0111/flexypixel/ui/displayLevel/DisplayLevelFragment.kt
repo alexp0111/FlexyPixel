@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.ui
+package ru.alexp0111.flexypixel.ui.displayLevel
 
 import android.annotation.SuppressLint
 import android.content.ClipData
@@ -43,18 +43,19 @@ class DisplayLevelFragment : Fragment() {
         super.onCreate(savedInstanceState)
         injectSelf()
     }
+
     override fun onCreateView(
-        inflater: LayoutInflater , container: ViewGroup? ,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
         // Inflate the layout for this fragment
-        _binding = FragmentDisplayLevelBinding.inflate(inflater,container,false)
+        _binding = FragmentDisplayLevelBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
-        super.onViewCreated(view , savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.card1.setOnDragListener(dragListener)
         binding.card2.setOnDragListener(dragListener)
@@ -87,7 +88,7 @@ class DisplayLevelFragment : Fragment() {
 
 
     fun getDragListener(cardMode: CardMode): View.OnDragListener {
-        return View.OnDragListener { view , dragEvent ->
+        return View.OnDragListener { view, dragEvent ->
             when (dragEvent.action) {
                 DragEvent.ACTION_DRAG_STARTED -> {
                     view.visibility = View.VISIBLE
@@ -116,7 +117,7 @@ class DisplayLevelFragment : Fragment() {
                 DragEvent.ACTION_DROP -> {
                     val item = dragEvent.clipData.getItemAt(0)
                     val dragData = item.text
-                    Toast.makeText(requireContext() , dragData , Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), dragData, Toast.LENGTH_SHORT).show()
 
                     view.invalidate()
 
@@ -174,18 +175,18 @@ class DisplayLevelFragment : Fragment() {
         }
     }
 
-    @SuppressLint("RestrictedApi" , "UseCompatLoadingForDrawables")
+    @SuppressLint("RestrictedApi", "UseCompatLoadingForDrawables")
     fun spawnDisplays(num: Int) {
         for (i in 1..num) {
             val view = soup.neumorphism.NeumorphImageView(requireContext())
             val layoutParams = FrameLayout.LayoutParams(
-                dpToPx(125 , view.resources) ,
-                dpToPx(125 , view.resources)
+                dpToPx(125, view.resources),
+                dpToPx(125, view.resources)
             )
             layoutParams.gravity = Gravity.CENTER
             view.layoutParams = layoutParams
             view.setStrokeColor(ColorStateList.valueOf(Color.WHITE))
-            view.setPadding(dpToPx(30 , view.resources))
+            view.setPadding(dpToPx(30, view.resources))
             if (i != 1) {
                 view.setShadowElevation(600f)
             }
@@ -201,10 +202,10 @@ class DisplayLevelFragment : Fragment() {
                 val clipText = "ClipData Text $i"
                 val item = ClipData.Item(clipText)
                 val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
-                val data = ClipData(clipText , mimeTypes , item)
+                val data = ClipData(clipText, mimeTypes, item)
 
                 val dragShowBuilder = View.DragShadowBuilder(it)
-                it.startDragAndDrop(data , dragShowBuilder , it , 0)
+                it.startDragAndDrop(data, dragShowBuilder, it, 0)
 
                 it.visibility = View.INVISIBLE
                 true
@@ -214,20 +215,21 @@ class DisplayLevelFragment : Fragment() {
         }
     }
 
-    private fun getPosition(view: View) = when (resources.getResourceName(view.id).toString().last()) {
-        '1' -> arrayOf(0 , 0)
-        '2' -> arrayOf(0 , 1)
-        '3' -> arrayOf(0 , 2)
-        '4' -> arrayOf(1 , 0)
-        '5' -> arrayOf(1 , 1)
-        '6' -> arrayOf(1 , 2)
-        '7' -> arrayOf(2 , 0)
-        '8' -> arrayOf(2 , 1)
-        '9' -> arrayOf(2 , 2)
-        else -> arrayOf(3 , 0)
-    }
+    private fun getPosition(view: View) =
+        when (resources.getResourceName(view.id).toString().last()) {
+            '1' -> arrayOf(0, 0)
+            '2' -> arrayOf(0, 1)
+            '3' -> arrayOf(0, 2)
+            '4' -> arrayOf(1, 0)
+            '5' -> arrayOf(1, 1)
+            '6' -> arrayOf(1, 2)
+            '7' -> arrayOf(2, 0)
+            '8' -> arrayOf(2, 1)
+            '9' -> arrayOf(2, 2)
+            else -> arrayOf(3, 0)
+        }
 
-    fun dpToPx(dp: Int , resources: Resources): Int {
+    fun dpToPx(dp: Int, resources: Resources): Int {
         val density = resources.displayMetrics.density
         return (dp * density).toInt()
     }
@@ -252,7 +254,7 @@ class DisplayLevelFragment : Fragment() {
             }
             result += "\n"
         }
-        Log.i("ViewID" , result)
+        Log.i("ViewID", result)
     }
 
     override fun onDestroyView() {
@@ -261,7 +263,7 @@ class DisplayLevelFragment : Fragment() {
     }
 
     enum class CardMode() {
-        FLAT ,
+        FLAT,
         RAISED
     }
 

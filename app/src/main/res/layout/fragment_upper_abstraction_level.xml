@@ -1,14 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.UpperAbstractionLevelFragment">
+    android:background="@color/beige"
+    tools:context=".ui.displayLevel.DisplayLevelFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <EditText
+        android:id="@+id/heading"
+        style="@style/Heading_ET"
+        android:hint="@string/template_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+         />
+
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/subtitle"
+        style="@style/Subtitle_TV"
+        android:text="@string/tap_to_change"
+        app:layout_constraintStart_toStartOf="@+id/heading"
+        app:layout_constraintTop_toBottomOf="@+id/heading"
+        />
 
-</FrameLayout>
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card1"
+        style="@style/neumorph_card_flat"
+        android:layout_marginStart="@dimen/upper_abstraction_grid_horizontal_margin"
+        android:layout_marginTop="@dimen/upper_abstraction_grid_top_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtitle"
+        />
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card2"
+        style="@style/neumorph_card_flat"
+
+        app:layout_constraintEnd_toStartOf="@+id/card3"
+        app:layout_constraintStart_toEndOf="@+id/card1"
+        app:layout_constraintTop_toTopOf="@+id/card1" />
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card3"
+        style="@style/neumorph_card_flat"
+        android:layout_marginEnd="@dimen/upper_abstraction_grid_horizontal_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/card1" />
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card4"
+        style="@style/neumorph_card_flat"
+        android:layout_marginTop="@dimen/upper_abstraction_grid_inside_margin"
+        app:layout_constraintStart_toStartOf="@+id/card1"
+        app:layout_constraintTop_toBottomOf="@+id/card1" />
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card5"
+        style="@style/neumorph_card_flat"
+        app:layout_constraintStart_toStartOf="@+id/card2"
+        app:layout_constraintTop_toTopOf="@+id/card4" />
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card6"
+        style="@style/neumorph_card_flat"
+        app:layout_constraintStart_toStartOf="@+id/card3"
+        app:layout_constraintTop_toTopOf="@+id/card4" />
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card7"
+        style="@style/neumorph_card_flat"
+        android:layout_marginTop="@dimen/upper_abstraction_grid_inside_margin"
+        app:layout_constraintStart_toStartOf="@+id/card4"
+        app:layout_constraintTop_toBottomOf="@+id/card4" />
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card8"
+        style="@style/neumorph_card_flat"
+        app:layout_constraintStart_toStartOf="@+id/card5"
+        app:layout_constraintTop_toTopOf="@+id/card7" />
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/card9"
+        style="@style/neumorph_card_flat"
+        app:layout_constraintStart_toStartOf="@+id/card6"
+        app:layout_constraintTop_toTopOf="@+id/card7" />
+
+
+
+    <soup.neumorphism.NeumorphButton
+        android:id="@+id/save_btn"
+        style="@style/save_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/save"
+        >
+
+
+    </soup.neumorphism.NeumorphButton>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
