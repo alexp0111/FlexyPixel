@@ -64,7 +64,7 @@
         <item name="android:layout_height">@dimen/display_container_size</item>
     </style>
 
-    <style name="Heading_TV" parent="Widget.AppCompat.TextView">
+    <style name="Heading_TV" parent="Widget.Neumorph.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/roboto_mono</item>
@@ -82,7 +82,7 @@
 
 
 
-    <style name="Subtitle_TV" parent="Widget.AppCompat.TextView">
+    <style name="Subtitle_TV" parent="Widget.Neumorph.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/roboto_mono</item>
