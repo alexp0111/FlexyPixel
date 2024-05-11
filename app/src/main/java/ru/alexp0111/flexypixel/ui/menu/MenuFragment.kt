@@ -37,14 +37,14 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
         super.onViewCreated(view , savedInstanceState)
-        binding.cardNewScheme.setOnClickListener {
+        binding.card1.setOnClickListener {
             router.navigateTo(Screens.UpperAbstractionLevelScreen())
         }
-        binding.cardSavedScheme.setOnClickListener {
-            router.navigateTo(Screens.UpperAbstractionLevelScreen())
+        binding.card2.setOnClickListener {
+            router.navigateTo(Screens.DisplayLevelScreen())
         }
-        binding.cardTemplate.setOnClickListener {
-            router.navigateTo(Screens.TemplatesScreen())
+        binding.card3.setOnClickListener {
+            router.navigateTo(Screens.DrawingScreen())
         }
     }
 
