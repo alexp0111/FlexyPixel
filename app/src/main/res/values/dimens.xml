@@ -12,6 +12,7 @@
     <dimen name="Heading_TV_margin">40dp</dimen>
 
     <dimen name="level2_text_size">24sp</dimen>
+    <dimen name="level3_text_size">16sp</dimen>
 
     <dimen name="Heading_TV_text_size">36sp</dimen>
 
@@ -26,7 +27,7 @@
     <dimen name="display_holder_image_size">110dp</dimen>
     <dimen name="display_holder_image_padding">30dp</dimen>
 
-    <dimen name="save_button_width">340dp</dimen>
+    <dimen name="card_width">340dp</dimen>
     <dimen name="save_button_height">80dp</dimen>
     <dimen name="save_button_bottom_margin">40dp</dimen>
     <dimen name="rv_bluetooth_item_width">340dp</dimen>
@@ -40,6 +41,10 @@
     <dimen name="upper_abstraction_grid_horizontal_margin">20dp</dimen>
     <dimen name="upper_abstraction_grid_top_margin">60dp</dimen>
     <dimen name="upper_abstraction_grid_inside_margin">-20dp</dimen>
+    <dimen name="menu_card_height">160dp</dimen>
+    <dimen name="menu_icon_size">60dp</dimen>
+    <dimen name="menu_icon_start_margin">30dp</dimen>
+    <dimen name="menu_item_text_margin">20dp</dimen>
 
 
 </resources>

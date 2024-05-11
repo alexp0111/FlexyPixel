@@ -10,5 +10,11 @@
     <string name="save">Save</string>
     <string name="connect">CONNECT</string>
     <string name="your_device">your device</string>
+    <string name="choose">CHOOSE</string>
+    <string name="an_option">an option</string>
+    <string name="create">CREATE</string>
+    <string name="new_scheme">new scheme</string>
+    <string name="saved_scheme">saved scheme</string>
+    <string name="template">template</string>
 
 </resources>
