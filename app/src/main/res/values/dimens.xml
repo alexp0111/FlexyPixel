@@ -28,5 +28,6 @@
     <dimen name="rv_connection_indicator_size">50dp</dimen>
     <dimen name="rv_device_name_start_margin">30dp</dimen>
     <dimen name="rv_connection_indicator_end_margin">20dp</dimen>
+    <dimen name="rv_top_margin">20dp</dimen>
 
 </resources>
