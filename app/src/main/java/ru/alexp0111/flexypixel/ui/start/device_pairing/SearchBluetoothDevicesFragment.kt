@@ -29,9 +29,9 @@ class SearchBluetoothDevicesFragment : Fragment() {
                 stateHolder.consumeAction(Action.ConnectBluetoothDevice(it))
             } else {
                 Snackbar.make(
-                    requireView(),
-                    "You have been already connected!",
-                    Snackbar.LENGTH_SHORT,
+                    requireView() ,
+                    "You have been already connected!" ,
+                    Snackbar.LENGTH_SHORT ,
                 ).show()
             }
         }
@@ -47,9 +47,9 @@ class SearchBluetoothDevicesFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        inflater: LayoutInflater ,
+        container: ViewGroup? ,
+        savedInstanceState: Bundle? ,
     ): View {
         _binding = FragmentSearchBluetoothDevicesBinding.inflate(layoutInflater)
         binding.apply {
@@ -67,8 +67,8 @@ class SearchBluetoothDevicesFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
+        super.onViewCreated(view , savedInstanceState)
         subscribeUI()
     }
 
@@ -93,7 +93,7 @@ class SearchBluetoothDevicesFragment : Fragment() {
     }
 
     private fun showError() {
-        Snackbar.make(requireView(), "Connection failed", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(requireView() , "Connection failed" , Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onResume() {
