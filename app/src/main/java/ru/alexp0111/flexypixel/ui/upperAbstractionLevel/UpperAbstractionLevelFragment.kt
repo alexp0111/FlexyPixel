@@ -29,6 +29,22 @@ class UpperAbstractionLevelFragment : Fragment() {
         return (binding.root)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //for future processing of clicks
+        binding.apply {
+            card1.setOnClickListener {  }
+            card2.setOnClickListener {  }
+            card3.setOnClickListener {  }
+            card4.setOnClickListener {  }
+            card5.setOnClickListener {  }
+            card6.setOnClickListener {  }
+            card7.setOnClickListener {  }
+            card8.setOnClickListener {  }
+            card9.setOnClickListener {  }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

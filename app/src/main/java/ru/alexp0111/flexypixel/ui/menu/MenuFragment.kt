@@ -37,7 +37,15 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
         super.onViewCreated(view , savedInstanceState)
-
+        binding.card1.setOnClickListener {
+            router.navigateTo(Screens.UpperAbstractionLevelScreen())
+        }
+        binding.card2.setOnClickListener {
+            router.navigateTo(Screens.UpperAbstractionLevelScreen())
+        }
+        binding.card3.setOnClickListener {
+            router.navigateTo(Screens.TemplatesScreen())
+        }
     }
 
     override fun onDestroy() {
