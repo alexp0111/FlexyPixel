@@ -15,13 +15,17 @@ class UpperAbstractionLevelFragment : Fragment() {
     private var _binding: FragmentUpperAbstractionLevelBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        injectSelf()
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater , container: ViewGroup? ,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentUpperAbstractionLevelBinding.inflate(inflater,container,false)
+        _binding = FragmentUpperAbstractionLevelBinding.inflate(inflater, container, false)
         return (binding.root)
     }
 
