@@ -26,7 +26,7 @@
 
 
     <style name="save_button" >
-        <item name="android:layout_width">@dimen/save_button_width</item>
+        <item name="android:layout_width">@dimen/card_width</item>
         <item name="android:layout_height">@dimen/save_button_height</item>
         <item name="cardCornerRadius">@dimen/rv_bluetooth_item_corner_radius</item>
         <item name="android:layout_marginBottom">@dimen/save_button_bottom_margin</item>
@@ -124,8 +124,35 @@
     </style>
 
 
+    <style name="menu_item" >
+        <item name="neumorph_shapeType">flat</item>
+        <item name="neumorph_shadowColorDark">@color/darker_beige</item>
+        <item name="neumorph_shadowColorLight">@color/white_shadow</item>
+        <item name="android:layout_width">@dimen/card_width</item>
+        <item name="android:layout_height">@dimen/menu_card_height</item>
+    </style>
 
+    <style name="menu_item.icon">
+        <item name="android:layout_width">@dimen/menu_icon_size</item>
+        <item name="android:layout_height">@dimen/menu_icon_size</item>
+        <item name="android:layout_marginStart">@dimen/menu_icon_start_margin</item>
+    </style>
 
+    <style name="menu_item.linear_layout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
 
+    <style name="menu_item.text_upper" parent="Subtitle_TV">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="menu_item.text_under" parent="menu_item.text_upper">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/level3_text_size</item>
+
+    </style>
 
 </resources>

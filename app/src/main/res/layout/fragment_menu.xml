@@ -1,13 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/beige">
 
-    <Button
-        android:id="@+id/btn_tests"
-        android:layout_gravity="center"
-        android:text="Tests"
+    <TextView
+        android:id="@+id/heading"
+        style="@style/Heading_TV"
+        android:text="@string/choose"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/subtitle"
+        style="@style/Subtitle_TV"
+        android:text="@string/an_option"
+        app:layout_constraintStart_toStartOf="@id/heading"
+        app:layout_constraintTop_toBottomOf="@+id/heading" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/upper_abstraction_grid_top_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtitle">
 
-</FrameLayout>
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/card1"
+            style="@style/menu_item">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/icon1"
+                    style="@style/menu_item.icon"
+                    android:src="@drawable/plus_file"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    style="@style/menu_item.linear_layout"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/icon1"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        style="@style/menu_item.text_upper"
+                        android:textStyle="bold"
+                        android:text="@string/create" />
+                    <TextView
+                        style="@style/menu_item.text_under"
+                        android:text="@string/new_scheme" />
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </soup.neumorphism.NeumorphCardView>
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/card2"
+            style="@style/menu_item">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/icon2"
+                    style="@style/menu_item.icon"
+                    android:src="@drawable/user_file"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    style="@style/menu_item.linear_layout"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/icon2"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        style="@style/menu_item.text_upper"
+                        android:textStyle="bold"
+                        android:text="@string/choose" />
+                    <TextView
+                        style="@style/menu_item.text_under"
+                        android:text="@string/saved_scheme" />
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </soup.neumorphism.NeumorphCardView>
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/card3"
+            style="@style/menu_item">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/icon3"
+                    style="@style/menu_item.icon"
+                    android:src="@drawable/star_file"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    style="@style/menu_item.linear_layout"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/icon3"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        style="@style/menu_item.text_upper"
+                        android:textStyle="bold"
+                        android:text="@string/choose" />
+                    <TextView
+                        style="@style/menu_item.text_under"
+                        android:text="@string/template" />
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </soup.neumorphism.NeumorphCardView>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
