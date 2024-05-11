@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         injectSelf()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        router.replaceScreen(Screens.UpperAbstractionLevelScreen())
+        router.replaceScreen(Screens.SearchBluetoothDevicesScreen())
 
     }
 

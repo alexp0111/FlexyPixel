@@ -27,6 +27,7 @@
     <style name="save_button" >
         <item name="android:layout_width">@dimen/save_button_width</item>
         <item name="android:layout_height">@dimen/save_button_height</item>
+        <item name="cardCornerRadius">@dimen/rv_bluetooth_item_corner_radius</item>
         <item name="android:layout_marginBottom">@dimen/save_button_bottom_margin</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/black</item>
@@ -84,9 +85,9 @@
     </style>
 
     <style name="rv_surface_item" parent="save_button">
-        <item name="cardCornerRadius">@dimen/rv_bluetooth_item_corner_radius</item>
+
         <item name="android:layout_width">@dimen/rv_bluetooth_item_width</item>
-        <item name="android:layout_height">@dimen/rv_bluetooth_item_height</item>
+
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_margin">0dp</item>
         <item name="neumorph_backgroundColor">@color/beige</item>
