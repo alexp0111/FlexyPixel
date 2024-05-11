@@ -1,45 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:layout_margin="8dp"
+    android:layout_height="wrap_content"
+    android:background="@color/beige"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:clickable="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
+
+        <soup.neumorphism.NeumorphCardView
+            app:cardCornerRadius="3dp"
+            android:id="@+id/surface"
+            style="@style/save_button"
+            android:layout_width="@dimen/save_button_width"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:layout_margin="0dp"
+            android:background="@color/beige"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:neumorph_backgroundColor="@color/beige" />
 
         <TextView
-            android:id="@+id/txt_name"
-            android:layout_width="wrap_content"
+            android:id="@+id/deviceName"
+            style="@style/Subtitle_TV"
+            android:layout_width="230dp"
+            android:singleLine="true"
+            android:marqueeRepeatLimit="0"
+            android:ellipsize="marquee"
             android:layout_height="wrap_content"
-            android:gravity="center" />
+            android:layout_gravity="center"
+            android:background="@color/beige"
+            android:gravity="center_vertical"
+            android:text="DEVICE #1"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/surface"
+            android:layout_marginStart="30dp"
+            app:layout_constraintStart_toStartOf="@+id/surface"
+            app:layout_constraintTop_toTopOf="@+id/surface" />
 
-        <TextView
-            android:id="@+id/txt_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center" />
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/connection_indicator"
+            app:neumorph_strokeColor="@color/white"
+            android:layout_height="50dp"
+            android:layout_width="50dp"
+            app:neumorph_shapeType="pressed"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/surface"
+            app:layout_constraintEnd_toEndOf="@+id/surface"
+            app:layout_constraintTop_toTopOf="@+id/surface"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageView
-            android:id="@+id/iv_is_connected"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="16dp"
-            android:gravity="center"
-            android:src="@android:drawable/ic_input_add"
-            android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/iv_loading"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="16dp"
-            android:gravity="center"
-            android:src="@android:drawable/ic_lock_lock"
-            android:visibility="gone" />
-    </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</FrameLayout>
