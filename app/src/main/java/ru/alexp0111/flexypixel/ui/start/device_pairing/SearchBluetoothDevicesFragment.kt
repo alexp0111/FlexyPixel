@@ -70,6 +70,9 @@ class SearchBluetoothDevicesFragment : Fragment() {
     override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
         super.onViewCreated(view , savedInstanceState)
         subscribeUI()
+       // val testDeviceList = listOf(Pair("Device 1",BluetoothDeviceState("Device 1")),Pair("Device 2",BluetoothDeviceState("Device 2", isConnected = true)),Pair("Device 3",BluetoothDeviceState("Device 3"))).toMutableList()
+      //  availableDevicesAdapter.list = testDeviceList
+
     }
 
     private fun subscribeUI() {
