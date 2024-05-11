@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.ui
+package ru.alexp0111.flexypixel.ui.displayLevel
 
 import android.annotation.SuppressLint
 import android.content.ClipData

@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.ui
+package ru.alexp0111.flexypixel.ui.templates
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

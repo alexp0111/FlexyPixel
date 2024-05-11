@@ -1,8 +1,8 @@
 package ru.alexp0111.flexypixel.di.components
 
 import androidx.fragment.app.Fragment
-import ru.alexp0111.flexypixel.ui.DisplayLevelFragment
-import ru.alexp0111.flexypixel.ui.UpperAbstractionLevelFragment
+import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelFragment
+import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelFragment
 import ru.alexp0111.flexypixel.ui.menu.MenuFragment
 import ru.alexp0111.flexypixel.ui.start.device_pairing.SearchBluetoothDevicesFragment
 import ru.alexp0111.flexypixel.ui.start.resolve_screen.StartFragment
