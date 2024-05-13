@@ -29,7 +29,7 @@
         app:layout_constraintTop_toBottomOf="@+id/subtitle">
 
         <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card1"
+            android:id="@+id/card_new_scheme"
             style="@style/menu_item">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,7 +62,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </soup.neumorphism.NeumorphCardView>
         <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card2"
+            android:id="@+id/card_saved_scheme"
             style="@style/menu_item">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -95,7 +95,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </soup.neumorphism.NeumorphCardView>
         <soup.neumorphism.NeumorphCardView
-            android:id="@+id/card3"
+            android:id="@+id/card_template"
             style="@style/menu_item">
 
             <androidx.constraintlayout.widget.ConstraintLayout
