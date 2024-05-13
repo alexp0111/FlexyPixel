@@ -7,8 +7,6 @@
     android:background="@color/beige"
     tools:context=".ui.displayLevel.DisplayLevelFragment">
 
-
-
     <TextView
         android:id="@+id/heading"
         style="@style/Heading_TV"
@@ -85,7 +83,6 @@
         style="@style/display_holder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toBottomOf="@+id/display_layout">
 
         <ImageView

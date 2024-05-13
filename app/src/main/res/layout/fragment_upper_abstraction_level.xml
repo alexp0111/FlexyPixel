@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,16 +12,14 @@
         style="@style/Heading_ET"
         android:hint="@string/template_1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-         />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/subtitle"
         style="@style/Subtitle_TV"
         android:text="@string/tap_to_change"
         app:layout_constraintStart_toStartOf="@+id/heading"
-        app:layout_constraintTop_toBottomOf="@+id/heading"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/heading" />
 
     <soup.neumorphism.NeumorphCardView
         android:id="@+id/card1"
@@ -30,8 +27,7 @@
         android:layout_marginStart="@dimen/upper_abstraction_grid_horizontal_margin"
         android:layout_marginTop="@dimen/upper_abstraction_grid_top_margin"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subtitle"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/subtitle" />
 
     <soup.neumorphism.NeumorphCardView
         android:id="@+id/card2"
@@ -87,18 +83,12 @@
         app:layout_constraintTop_toTopOf="@+id/card7" />
 
 
-
     <soup.neumorphism.NeumorphButton
         android:id="@+id/save_btn"
         style="@style/save_button"
+        android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="@string/save"
-        >
-
-
-    </soup.neumorphism.NeumorphButton>
-
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
