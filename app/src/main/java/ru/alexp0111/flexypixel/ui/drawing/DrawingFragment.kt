@@ -39,7 +39,16 @@ class DrawingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         fillUpPaletteList()
         setUpColors()
+        setPaletteOnClick()
         fillUpDrawingPanel()
+    }
+
+    private fun setPaletteOnClick() {
+        for (paletteItem in paletteList){
+            paletteItem.setOnClickListener {
+
+            }
+        }
     }
 
     private fun fillUpPaletteList() {
@@ -98,8 +107,16 @@ class DrawingFragment : Fragment() {
     }
 
     private fun setUpColors() {
+        val colors = getPalette()
+        var i = 0
+        for (item in paletteList) {
+            item.setCardBackgroundColor(colors[i])
+            i++
+        }
+    }
 
-        val colors = listOf<Int>(
+    private fun getPalette(): List<Int> {
+        return listOf<Int>(
             Color.BLACK,
             Color.WHITE,
             Color.BLUE,
@@ -113,11 +130,6 @@ class DrawingFragment : Fragment() {
             Color.YELLOW,
             Color.BLACK,
         )
-        var i = 0
-        for (item in paletteList) {
-            item.setCardBackgroundColor(colors[i])
-            i++
-        }
     }
 
     override fun onDestroyView() {

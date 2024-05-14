@@ -99,7 +99,7 @@
         android:id="@+id/palette"
         style="@style/menu_item"
         android:layout_width="@dimen/drawing_mode_card_width"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/palette_card_height"
         android:layout_marginTop="@dimen/drawing_card_top_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
