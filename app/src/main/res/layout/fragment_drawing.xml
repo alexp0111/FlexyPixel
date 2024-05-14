@@ -7,18 +7,17 @@
     android:background="@color/beige"
     tools:context=".ui.drawing.DrawingFragment">
 
-
     <soup.neumorphism.NeumorphTextView
         android:id="@+id/heading"
         style="@style/Heading_TV"
-        android:text="DRAWING"
+        android:text="@string/drawing"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <soup.neumorphism.NeumorphTextView
         android:id="@+id/subtitle"
         style="@style/Subtitle_TV"
-        android:text="mode"
+        android:text="@string/mode"
         app:layout_constraintStart_toStartOf="@id/heading"
         app:layout_constraintTop_toBottomOf="@+id/heading" />
 
@@ -33,45 +32,66 @@
         app:layout_constraintTop_toBottomOf="@+id/palette">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:layout_gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:orientation="horizontal"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sliders_top_margin"
+                android:orientation="horizontal">
+
                 <soup.neumorphism.NeumorphTextView
-                    android:layout_gravity="center_vertical"
-                    style="@style/Subtitle_TV"
-                    android:textStyle="bold"
-                    android:text="R"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/color_title"
+                    android:text="@string/R"
+                    app:layout_constraintBottom_toBottomOf="@+id/sliderRed"
+                    app:layout_constraintEnd_toStartOf="@+id/sliderRed" />
+
                 <com.google.android.material.slider.Slider
-                    android:layout_gravity="center_vertical"
-                    android:valueFrom="0"
-                    android:valueTo="9"
-                    android:stepSize="1"
+                    android:id="@+id/sliderRed"
+                    style="@style/SliderStyle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sliders_top_margin"
+                android:orientation="horizontal">
 
-                    app:thumbColor="@color/black"
-                    app:thumbStrokeColor="@color/black"
+                <soup.neumorphism.NeumorphTextView
+                    style="@style/color_title"
+                    android:text="@string/G"
+                    app:layout_constraintBottom_toBottomOf="@+id/sliderGreen"
+                    app:layout_constraintEnd_toStartOf="@+id/sliderGreen" />
 
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderGreen"
+                    style="@style/SliderStyle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sliders_top_margin"
+                android:orientation="horizontal">
 
-                    app:trackColorActive="@color/black"
-                    app:trackColorInactive="@color/darker_beige"
+                <soup.neumorphism.NeumorphTextView
+                    style="@style/color_title"
+                    android:text="@string/B"
+                    app:layout_constraintBottom_toBottomOf="@+id/sliderBlue"
+                    app:layout_constraintEnd_toStartOf="@+id/sliderBlue" />
 
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderBlue"
+                    style="@style/SliderStyle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    app:tickVisible="false"
-                    app:haloRadius="0dp"
-                    app:haloColor="@color/tranparent"
-                    android:backgroundTint="@color/darker_beige"
-                    android:foregroundTint="@color/darker_beige"
-                    app:labelBehavior="gone"
-
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
         </LinearLayout>
     </soup.neumorphism.NeumorphCardView>
 
@@ -79,11 +99,62 @@
         android:id="@+id/palette"
         style="@style/menu_item"
         android:layout_width="@dimen/drawing_mode_card_width"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="-12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/drawingPanel">
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:rowCount="2"
+            android:columnCount="6"
+            >
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem1"
+                style="@style/paletteItem"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem2"
+                style="@style/paletteItem"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem3"
+                style="@style/paletteItem"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem4"
+                style="@style/paletteItem"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem5"
+                style="@style/paletteItem"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem6"
+                style="@style/paletteItem"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem7"
+                style="@style/paletteItem"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem8"
+                style="@style/paletteItem"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem9"
+                style="@style/paletteItem"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem10"
+                style="@style/paletteItem"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem11"
+                style="@style/paletteItem"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/paletteItem12"
+                style="@style/paletteItem"/>
+
+
+
+
+
+
+
+        </GridLayout>
 
     </soup.neumorphism.NeumorphCardView>
 
@@ -95,6 +166,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subtitle">
+
+        <GridLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="8"
+            android:rowCount="8">
+
+            <androidx.cardview.widget.CardView />
+        </GridLayout>
 
     </soup.neumorphism.NeumorphCardView>
 

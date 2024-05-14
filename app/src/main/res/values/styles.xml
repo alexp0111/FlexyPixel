@@ -25,7 +25,7 @@
     </style>
 
 
-    <style name="save_button" >
+    <style name="save_button">
         <item name="android:layout_width">@dimen/card_width</item>
         <item name="android:layout_height">@dimen/save_button_height</item>
         <item name="cardCornerRadius">@dimen/rv_bluetooth_item_corner_radius</item>
@@ -81,7 +81,6 @@
     </style>
 
 
-
     <style name="Subtitle_TV" parent="Widget.Neumorph.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -124,7 +123,7 @@
     </style>
 
 
-    <style name="menu_item" >
+    <style name="menu_item">
         <item name="neumorph_shapeType">flat</item>
         <item name="neumorph_shadowColorDark">@color/darker_beige</item>
         <item name="neumorph_shadowColorLight">@color/white_shadow</item>
@@ -152,7 +151,63 @@
     <style name="menu_item.text_under" parent="menu_item.text_upper">
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">@dimen/level3_text_size</item>
-
     </style>
+
+
+    <style name="paletteItem">
+        <item name="cardCornerRadius">@dimen/palette_item_size</item>
+        <item name="android:layout_width">@dimen/palette_item_size</item>
+        <item name="android:layout_height">@dimen/palette_item_size</item>
+        <item name="strokeColor">#D50000</item>
+        <item name="strokeWidth">0dp</item>
+
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="cardBackgroundColor">@color/black</item>
+    </style>
+    <style name="color_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">@dimen/color_title_end_margin</item>
+        <item name="fontFamily">@font/roboto_mono</item>
+        <item name="android:textSize">@dimen/level1_text_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <!-- Slider styles!-->
+    <style name="SliderStyle" parent="Widget.MaterialComponents.Slider">
+        <item name="android:layout_width">@dimen/slider_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="trackHeight">@dimen/slider_track_height</item>
+        <item name="thumbColor">@color/black</item>
+        <item name="thumbStrokeColor">@color/black</item>
+        <item name="android:backgroundTint">@color/darker_beige</item>
+        <item name="android:foregroundTint">@color/darker_beige</item>
+        <item name="android:valueFrom">0</item>
+        <item name="android:valueTo">9</item>
+        <item name="android:stepSize">1</item>
+        <item name="haloColor">@color/transparent</item>
+        <item name="haloRadius">0dp</item>
+        <item name="labelBehavior">withinBounds</item>
+        <item name="labelStyle">@style/slider.labelStyle</item>
+        <item name="tickVisible">false</item>
+        <item name="tickColor">@color/white</item>
+        <item name="trackColorActive">@color/black</item>
+        <item name="trackColorInactive">@color/darker_beige</item>
+    </style>
+
+    <style name="slider.labelStyle" parent="Widget.MaterialComponents.Tooltip">
+        <item name="android:textAppearance">@style/slider.labelStyle.textStyle</item>
+        <item name="backgroundTint">@color/black</item>
+    </style>
+
+    <style name="slider.labelStyle.textStyle" parent="TextAppearance.MaterialComponents.Tooltip">
+        <item name="android:textColor">@color/white</item>
+        <item name="fontFamily">@font/roboto_mono</item>
+        <item name="android:fontFamily">@font/roboto_mono</item>
+    </style>
+    <!-- Slider styles!-->
 
 </resources>

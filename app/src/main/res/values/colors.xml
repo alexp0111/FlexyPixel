@@ -6,5 +6,5 @@
     <color name="beige">#EEE4DC</color>
     <color name="darker_beige">#C5B9B0</color>
     <color name="white_shadow">#AEFFFFFF</color>
-    <color name="tranparent">#00FFFFFF</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>
