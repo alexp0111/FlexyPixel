@@ -48,11 +48,11 @@
     <dimen name="slider_width">300dp</dimen>
     <dimen name="color_title_end_margin">5dp</dimen>
     <dimen name="sliders_top_margin">-15dp</dimen>
-    <dimen name="palette_item_size">30dp</dimen>
+    <dimen name="palette_item_size">40dp</dimen>
     <dimen name="color_controllers_height">240dp</dimen>
     <dimen name="drawing_card_top_margin">-12dp</dimen>
 
     <dimen name="pixel_card_size">35dp</dimen>
-    <dimen name="palette_card_height">120dp</dimen>
+    <dimen name="palette_card_height">150dp</dimen>
 
 </resources>

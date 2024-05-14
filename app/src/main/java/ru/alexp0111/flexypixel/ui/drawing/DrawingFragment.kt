@@ -77,10 +77,10 @@ class DrawingFragment : Fragment() {
                 val params = GridLayout.LayoutParams()
 
                 val size = getResources().getDimension(R.dimen.pixel_card_size)
-                pixel.radius = size / 6
+                pixel.radius = size / 5
                 params.width = size.roundToInt()
                 params.height = size.roundToInt()
-                params.setMargins((size / 10).roundToInt())
+                params.setMargins((size / 12).roundToInt())
 
                 params.rowSpec = GridLayout.spec(i / 8)
                 params.columnSpec = GridLayout.spec(i % 8)
