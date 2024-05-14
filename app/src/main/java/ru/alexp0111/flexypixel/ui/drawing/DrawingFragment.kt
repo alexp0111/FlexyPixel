@@ -1,16 +1,23 @@
 package ru.alexp0111.flexypixel.ui.drawing
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridLayout
+import android.widget.Toast
 import androidx.core.graphics.toColor
+import androidx.core.view.setMargins
 import com.google.android.material.card.MaterialCardView
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentDrawingBinding
+import kotlin.math.roundToInt
 
 
 class DrawingFragment : Fragment() {
@@ -32,6 +39,7 @@ class DrawingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         fillUpPaletteList()
         setUpColors()
+        fillUpDrawingPanel()
     }
 
     private fun fillUpPaletteList() {
@@ -53,6 +61,42 @@ class DrawingFragment : Fragment() {
         }
     }
 
+    private fun fillUpDrawingPanel() {
+        binding.drawingGrid.apply {
+            for (i in 0..63) {
+                val pixel = MaterialCardView(requireContext())
+                val params = GridLayout.LayoutParams()
+
+                val size = getResources().getDimension(R.dimen.pixel_card_size)
+                pixel.radius = size / 6
+                params.width = size.roundToInt()
+                params.height = size.roundToInt()
+                params.setMargins((size / 10).roundToInt())
+
+                params.rowSpec = GridLayout.spec(i / 8)
+                params.columnSpec = GridLayout.spec(i % 8)
+
+                pixel.setCardBackgroundColor(getPixelColor())
+                pixel.strokeWidth = 0
+                pixel.layoutParams = params
+                pixel.setOnClickListener {
+                    Toast.makeText(requireContext(), i.toString(), Toast.LENGTH_SHORT).show()
+                    pixelOnClick(i)
+                }
+                this.addView(pixel)
+            }
+        }
+    }
+
+    private fun pixelOnClick(position: Int) {
+        //Loginc
+    }
+
+
+    private fun getPixelColor(): Int {
+        return Color.RED
+    }
+
     private fun setUpColors() {
 
         val colors = listOf<Int>(
@@ -67,7 +111,7 @@ class DrawingFragment : Fragment() {
             Color.YELLOW,
             Color.DKGRAY,
             Color.YELLOW,
-                    Color.BLACK,
+            Color.BLACK,
         )
         var i = 0
         for (item in paletteList) {
