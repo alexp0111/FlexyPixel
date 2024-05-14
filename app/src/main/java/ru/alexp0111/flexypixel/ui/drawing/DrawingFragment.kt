@@ -30,7 +30,6 @@ class DrawingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         _binding = FragmentDrawingBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -44,7 +43,7 @@ class DrawingFragment : Fragment() {
     }
 
     private fun setPaletteOnClick() {
-        for (paletteItem in paletteList){
+        for (paletteItem in paletteList) {
             paletteItem.setOnClickListener {
 
             }
@@ -85,7 +84,7 @@ class DrawingFragment : Fragment() {
                 params.rowSpec = GridLayout.spec(i / 8)
                 params.columnSpec = GridLayout.spec(i % 8)
 
-                pixel.setCardBackgroundColor(getPixelColor())
+                pixel.setCardBackgroundColor(getPixelColor(i))
                 pixel.strokeWidth = 0
                 pixel.layoutParams = params
                 pixel.setOnClickListener {
@@ -97,12 +96,12 @@ class DrawingFragment : Fragment() {
         }
     }
 
-    private fun pixelOnClick(position: Int) {
-        //Loginc
+    private fun pixelOnClick(pixelPosition: Int) {
+        //Logic
     }
 
 
-    private fun getPixelColor(): Int {
+    private fun getPixelColor(pixelPosition: Int): Int {
         return Color.RED
     }
 
