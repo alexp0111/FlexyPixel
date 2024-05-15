@@ -16,5 +16,10 @@
     <string name="new_scheme">new scheme</string>
     <string name="saved_scheme">saved scheme</string>
     <string name="template">template</string>
+    <string name="drawing">DRAWING</string>
+    <string name="mode">mode</string>
+    <string name="R">R</string>
+    <string name="G">G</string>
+    <string name="B">B</string>
 
 </resources>

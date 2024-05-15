@@ -3,6 +3,7 @@ package ru.alexp0111.flexypixel.navigation
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelFragment
+import ru.alexp0111.flexypixel.ui.drawing.DrawingFragment
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelFragment
 
 
@@ -44,5 +45,9 @@ object Screens {
 
     fun TestScreen() = FragmentScreen {
         TestFragment()
+    }
+
+    fun DrawingScreen() = FragmentScreen{
+        DrawingFragment()
     }
 }
