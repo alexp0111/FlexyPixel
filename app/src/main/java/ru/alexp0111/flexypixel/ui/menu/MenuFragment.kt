@@ -41,10 +41,10 @@ class MenuFragment : Fragment() {
             router.navigateTo(Screens.UpperAbstractionLevelScreen())
         }
         binding.cardSavedScheme.setOnClickListener {
-            router.navigateTo(Screens.UpperAbstractionLevelScreen())
+            router.navigateTo(Screens.DisplayLevelScreen())
         }
         binding.cardTemplate.setOnClickListener {
-            router.navigateTo(Screens.TemplatesScreen())
+            router.navigateTo(Screens.DrawingScreen())
         }
     }
 

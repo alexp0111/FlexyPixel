@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <dimen name="display_container_size">110dp</dimen>
     <dimen name="display_container_inset">5dp</dimen>
-
 
     <dimen name="neumorph_card_size">130dp</dimen>
     <dimen name="neumorph_card_inset">15dp</dimen>
 
     <dimen name="level1_text_size">36sp</dimen>
     <dimen name="Heading_TV_margin">40dp</dimen>
-
     <dimen name="level2_text_size">24sp</dimen>
     <dimen name="level3_text_size">16sp</dimen>
 
@@ -45,6 +43,17 @@
     <dimen name="menu_icon_size">60dp</dimen>
     <dimen name="menu_icon_start_margin">30dp</dimen>
     <dimen name="menu_item_text_margin">20dp</dimen>
+    <dimen name="drawing_mode_card_width">375dp</dimen>
+    <dimen name="slider_track_height">20dp</dimen>
+    <dimen name="slider_width">300dp</dimen>
+    <dimen name="color_title_end_margin">5dp</dimen>
+    <dimen name="sliders_top_margin">-15dp</dimen>
+    <dimen name="palette_item_size">40dp</dimen>
+    <dimen name="color_controllers_height">240dp</dimen>
+    <dimen name="drawing_card_top_margin">-12dp</dimen>
 
+    <dimen name="pixel_card_size">35dp</dimen>
+    <dimen name="palette_card_height">150dp</dimen>
+    <dimen name="palette_card_stroke_width">4dp</dimen>
 
 </resources>
