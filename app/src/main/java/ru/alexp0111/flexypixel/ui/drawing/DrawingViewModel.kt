@@ -19,8 +19,6 @@ class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsume
     override val state: StateFlow<DrawingUIState>
         get() = _uiState.asStateFlow()
 
-    var isIgnoringSlidersOnChangeListeners = false
-
     init {
         viewModelScope.launch {
             _actions.collect { action ->
@@ -50,7 +48,7 @@ class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsume
     }
 
     private fun dispatchAction(state: DrawingUIState, action: DrawingAction) {
-        when (action){
+        when (action) {
             is DrawingAction.RequestDisplayConfiguration -> requestDisplayConfiguration(action.displayPosition)
             is DrawingAction.LoadDisplayConfiguration -> Unit
             is DrawingAction.ChangePaletteItemColor -> Unit
@@ -70,13 +68,24 @@ class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsume
             is DrawingAction.PickPaletteItem -> state.copy(
                 chosenPaletteItem = action.paletteItemPosition
             )
+
             is DrawingAction.ChangePaletteItemColor -> {
                 val newPalette = state.palette.toMutableList()
-                newPalette[state.chosenPaletteItem] = action.drawingColor
+                newPalette[state.chosenPaletteItem] = when (action.colorChannel) {
+                    ColorChannel.RED ->
+                        newPalette[state.chosenPaletteItem].copy(r = action.colorChannelValue)
+
+                    ColorChannel.GREEN ->
+                        newPalette[state.chosenPaletteItem].copy(g = action.colorChannelValue)
+
+                    ColorChannel.BLUE ->
+                        newPalette[state.chosenPaletteItem].copy(b = action.colorChannelValue)
+                }
                 state.copy(
                     palette = newPalette
                 )
             }
+
             is DrawingAction.RequestPixelColorUpdate -> state
             is DrawingAction.PixelColorUpdatedSuccessfully -> {
                 val newPixelPanel = state.pixelPanel.toMutableList()

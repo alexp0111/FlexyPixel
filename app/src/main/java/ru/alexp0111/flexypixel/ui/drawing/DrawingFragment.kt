@@ -19,6 +19,8 @@ import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+private const val RADIUS_RATIO = 5
+private const val MARGINS_RATIO = 12
 
 class DrawingFragment @Inject constructor() : Fragment() {
 
@@ -31,11 +33,18 @@ class DrawingFragment @Inject constructor() : Fragment() {
     private var paletteList = emptyList<MaterialCardView>()
 
     private val pixels = mutableListOf<MaterialCardView>()
+
+
+    private val PIXEL_CARD_SIZE: Int by lazy {
+        resources.getDimension(R.dimen.pixel_card_size).toInt()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentDrawingBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -46,6 +55,7 @@ class DrawingFragment @Inject constructor() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         fillUpPaletteList()
         setPaletteOnClick()
         fillUpDrawingPanel()
@@ -56,39 +66,18 @@ class DrawingFragment @Inject constructor() : Fragment() {
     private fun setUpSlidersOnChanged() {
         binding.apply {
             sliderRed.addOnChangeListener { slider, value, fromUser ->
-                if (stateHolder.isIgnoringSlidersOnChangeListeners) return@addOnChangeListener
                 stateHolder.consumeAction(
-                    DrawingAction.ChangePaletteItemColor(
-                        DrawingColor(
-                            r = value.toInt(),
-                            g = sliderGreen.value.toInt(),
-                            b = sliderBlue.value.toInt()
-                        )
-                    )
+                    DrawingAction.ChangePaletteItemColor(ColorChannel.RED, value.toInt())
                 )
             }
             sliderGreen.addOnChangeListener { slider, value, fromUser ->
-                if (stateHolder.isIgnoringSlidersOnChangeListeners) return@addOnChangeListener
                 stateHolder.consumeAction(
-                    DrawingAction.ChangePaletteItemColor(
-                        DrawingColor(
-                            r = sliderRed.value.toInt(),
-                            g = value.toInt(),
-                            b = sliderBlue.value.toInt()
-                        )
-                    )
+                    DrawingAction.ChangePaletteItemColor(ColorChannel.GREEN, value.toInt())
                 )
             }
             sliderBlue.addOnChangeListener { slider, value, fromUser ->
-                if (stateHolder.isIgnoringSlidersOnChangeListeners) return@addOnChangeListener
                 stateHolder.consumeAction(
-                    DrawingAction.ChangePaletteItemColor(
-                        DrawingColor(
-                            r = sliderRed.value.toInt(),
-                            g = sliderGreen.value.toInt(),
-                            b = value.toInt()
-                        )
-                    )
+                    DrawingAction.ChangePaletteItemColor(ColorChannel.BLUE, value.toInt())
                 )
             }
         }
@@ -126,12 +115,11 @@ class DrawingFragment @Inject constructor() : Fragment() {
             for (i in 0..63) {
                 val pixel = MaterialCardView(requireContext())
                 val params = GridLayout.LayoutParams()
-                val size = getResources().getDimension(R.dimen.pixel_card_size)
 
-                pixel.radius = size / 5
-                params.width = size.roundToInt()
-                params.height = size.roundToInt()
-                params.setMargins((size / 12).roundToInt())
+                pixel.radius = (PIXEL_CARD_SIZE / RADIUS_RATIO).toFloat()
+                params.width = PIXEL_CARD_SIZE
+                params.height = PIXEL_CARD_SIZE
+                params.setMargins(PIXEL_CARD_SIZE / MARGINS_RATIO)
 
                 params.rowSpec = GridLayout.spec(i / 8)
                 params.columnSpec = GridLayout.spec(i % 8)
@@ -174,13 +162,10 @@ class DrawingFragment @Inject constructor() : Fragment() {
 
                         binding.apply {
                             val color = state.palette[state.chosenPaletteItem]
-                            stateHolder.isIgnoringSlidersOnChangeListeners = true
                             sliderRed.value = color.r.toFloat()
                             sliderGreen.value = color.g.toFloat()
                             sliderBlue.value = color.b.toFloat()
-                            stateHolder.isIgnoringSlidersOnChangeListeners = false
                         }
-
                     }
                 }
             }
