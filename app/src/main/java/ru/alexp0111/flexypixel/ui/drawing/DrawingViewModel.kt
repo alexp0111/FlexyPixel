@@ -6,16 +6,20 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import ru.alexp0111.flexypixel.ui.start.device_pairing.Action
-import ru.alexp0111.flexypixel.ui.start.device_pairing.UiState
+import javax.inject.Inject
 
-class DrawingViewModel : ViewModel(), DrawingActionConsumer, StateHolder {
+class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsumer, StateHolder {
 
     private val _actions: MutableSharedFlow<DrawingAction> by lazy {
         MutableSharedFlow(extraBufferCapacity = 1)
     }
+
+    private val _uiState = MutableStateFlow(DrawingUIState())
+    override val state: StateFlow<DrawingUIState>
+        get() = _uiState.asStateFlow()
+
+    var shouldIgnore = false
 
     init {
         viewModelScope.launch {
@@ -31,27 +35,29 @@ class DrawingViewModel : ViewModel(), DrawingActionConsumer, StateHolder {
 
     private fun dispatchAction(state: DrawingUIState, action: DrawingAction) {
         when (action){
-            is DrawingAction.ChangePaletteItemColor -> changePaletteItemColor()
-            is DrawingAction.PickPaletteItem -> pickPaletteItem()
-            is DrawingAction.ChangePixelColor -> changePixelColor()
+            is DrawingAction.RequestDisplayConfiguration -> requestDisplayConfiguration(action.displayPosition)
+            is DrawingAction.LoadDisplayConfiguration -> Unit
+            is DrawingAction.ChangePaletteItemColor -> Unit
+            is DrawingAction.PickPaletteItem -> Unit
+            is DrawingAction.RequestPixelColorUpdate -> requestPixelColorUpdate(action.pixelPosition)
+            is DrawingAction.PixelColorUpdatedSuccessfully -> Unit
         }
     }
-    //Incomplete
-    private fun changePixelColor() {
 
-    }
-    //Incomplete
-    private fun pickPaletteItem() {
-
-    }
-    //Incomplete
-    private fun changePaletteItemColor() {
-
+    private fun requestDisplayConfiguration(displayPosition: Int) {
+        /*
+        request uiState from GlobalStateHandler
+        consumeAction(DrawingAction.LoadDisplayConfiguration(uiState))
+         */
     }
 
-    private val _uiState = MutableStateFlow(DrawingUIState())
-    override val state: StateFlow<DrawingUIState>
-        get() = _uiState.asStateFlow()
+    private fun requestPixelColorUpdate(pixelPosition: Int) {
+        //collect Flow from GlobalStateHandler
+        consumeAction(DrawingAction.PixelColorUpdatedSuccessfully(pixelPosition))
+    }
+
+
+
 
     override fun consumeAction(action: DrawingAction) {
         _actions.tryEmit(action)
@@ -63,9 +69,26 @@ class DrawingViewModel : ViewModel(), DrawingActionConsumer, StateHolder {
         action: DrawingAction,
     ): DrawingUIState {
         return when (action) {
-            is DrawingAction.ChangePixelColor -> state
-            is DrawingAction.PickPaletteItem -> state
-            is DrawingAction.ChangePaletteItemColor -> state
+            is DrawingAction.RequestDisplayConfiguration -> state
+            is DrawingAction.LoadDisplayConfiguration -> action.drawingUIState
+            is DrawingAction.PickPaletteItem -> state.copy(
+                chosenPaletteItem = action.paletteItemPosition
+            )
+            is DrawingAction.ChangePaletteItemColor -> {
+                val newPalette = state.palette.toMutableList()
+                newPalette[state.chosenPaletteItem] = action.drawingColor
+                state.copy(
+                    palette = newPalette
+                )
+            }
+            is DrawingAction.RequestPixelColorUpdate -> state
+            is DrawingAction.PixelColorUpdatedSuccessfully -> {
+                val newPixelPanel = state.pixelPanel.toMutableList()
+                newPixelPanel[action.pixelPosition] = state.palette[state.chosenPaletteItem]
+                state.copy(
+                    pixelPanel = newPixelPanel
+                )
+            }
         }
     }
 }

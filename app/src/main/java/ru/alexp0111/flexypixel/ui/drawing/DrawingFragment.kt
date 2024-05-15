@@ -14,18 +14,32 @@ import android.widget.GridLayout
 import android.widget.Toast
 import androidx.core.graphics.toColor
 import androidx.core.view.setMargins
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.slider.Slider
+import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentDrawingBinding
+import ru.alexp0111.flexypixel.di.components.FragmentComponent
+import ru.alexp0111.flexypixel.ui.start.device_pairing.Action
+import ru.alexp0111.flexypixel.ui.start.device_pairing.UiState
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 
-class DrawingFragment : Fragment() {
+class DrawingFragment @Inject constructor() : Fragment() {
+
+    @Inject
+    lateinit var stateHolder: DrawingViewModel
 
     private var _binding: FragmentDrawingBinding? = null
     private val binding get() = _binding!!
 
     private var paletteList = emptyList<MaterialCardView>()
+
+    private val pixels = mutableListOf<MaterialCardView>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,18 +48,67 @@ class DrawingFragment : Fragment() {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        injectSelf()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fillUpPaletteList()
-        setUpColors()
         setPaletteOnClick()
         fillUpDrawingPanel()
+        setUpSlidersOnChanged()
+        subscribeUI()
+    }
+
+    private fun setUpSlidersOnChanged() {
+        binding.apply {
+            sliderRed.addOnChangeListener { slider, value, fromUser ->
+                if (stateHolder.shouldIgnore)return@addOnChangeListener
+                stateHolder.consumeAction(
+                    DrawingAction.ChangePaletteItemColor(
+                        DrawingColor(
+                            r = value.toInt(),
+                            g = sliderGreen.value.toInt(),
+                            b = sliderBlue.value.toInt()
+                        )
+                    )
+                )
+            }
+            sliderGreen.addOnChangeListener { slider, value, fromUser ->
+                if (stateHolder.shouldIgnore)return@addOnChangeListener
+                stateHolder.consumeAction(
+                    DrawingAction.ChangePaletteItemColor(
+                        DrawingColor(
+                            r = sliderRed.value.toInt(),
+                            g = value.toInt(),
+                            b = sliderBlue.value.toInt()
+                        )
+                    )
+                )
+            }
+            sliderBlue.addOnChangeListener { slider, value, fromUser ->
+                if (stateHolder.shouldIgnore)return@addOnChangeListener
+                stateHolder.consumeAction(
+                    DrawingAction.ChangePaletteItemColor(
+                        DrawingColor(
+                            r = sliderRed.value.toInt(),
+                            g = sliderGreen.value.toInt(),
+                            b = value.toInt()
+                        )
+                    )
+                )
+            }
+
+
+        }
     }
 
     private fun setPaletteOnClick() {
-        for (paletteItem in paletteList) {
+        for ((index, paletteItem) in paletteList.withIndex()) {
             paletteItem.setOnClickListener {
-
+                stateHolder.consumeAction(DrawingAction.PickPaletteItem(index))
             }
         }
     }
@@ -84,56 +147,66 @@ class DrawingFragment : Fragment() {
                 params.rowSpec = GridLayout.spec(i / 8)
                 params.columnSpec = GridLayout.spec(i % 8)
 
-                pixel.setCardBackgroundColor(getPixelColor(i))
+                pixel.setCardBackgroundColor(Color.BLACK)
                 pixel.strokeWidth = 0
                 pixel.layoutParams = params
                 pixel.setOnClickListener {
-                    Toast.makeText(requireContext(), i.toString(), Toast.LENGTH_SHORT).show()
-                    pixelOnClick(i)
+                    stateHolder.consumeAction(DrawingAction.RequestPixelColorUpdate(pixelPosition = i))
+                    //Toast.makeText(requireContext(), i.toString(), Toast.LENGTH_SHORT).show()
                 }
+                pixels.add(pixel)
                 this.addView(pixel)
             }
         }
     }
 
-    private fun pixelOnClick(pixelPosition: Int) {
-        //Logic
-    }
 
+    private fun subscribeUI() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    stateHolder.state.collect { state: DrawingUIState ->
+                        for ((index, pixel) in pixels.withIndex()) {
+                            pixel.setCardBackgroundColor(state.pixelPanel[index].toColor())
+                        }
+                        for ((index, paletteItem) in paletteList.withIndex()) {
+                            if (index == state.chosenPaletteItem) {
+                                paletteItem.strokeWidth = 10
+                                paletteItem.strokeColor =
+                                    getPaletteItemStrokeColor()
 
-    private fun getPixelColor(pixelPosition: Int): Int {
-        return Color.RED
-    }
+                            } else {
+                                paletteItem.strokeWidth = 0
+                            }
+                            paletteItem.setCardBackgroundColor(state.palette[index].toColor())
+                        }
 
-    private fun setUpColors() {
-        val colors = getPalette()
-        var i = 0
-        for (item in paletteList) {
-            item.setCardBackgroundColor(colors[i])
-            i++
+                        binding.apply {
+                            val color = state.palette[state.chosenPaletteItem]
+                            stateHolder.shouldIgnore = true
+                            sliderRed.value = color.r.toFloat()
+                            sliderGreen.value = color.g.toFloat()
+                            sliderBlue.value = color.b.toFloat()
+                            stateHolder.shouldIgnore = false
+                        }
+
+                    }
+                }
+            }
         }
     }
 
-    private fun getPalette(): List<Int> {
-        return listOf<Int>(
-            Color.BLACK,
-            Color.WHITE,
-            Color.BLUE,
-            Color.CYAN,
-            Color.LTGRAY,
-            Color.MAGENTA,
-            Color.GREEN,
-            Color.RED,
-            Color.YELLOW,
-            Color.DKGRAY,
-            Color.YELLOW,
-            Color.BLACK,
-        )
+    private fun getPaletteItemStrokeColor(): Int {
+        return Color.WHITE
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
+    private fun injectSelf() {
+        FragmentComponent.from(this).inject(this)
+    }
 }

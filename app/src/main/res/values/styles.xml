@@ -158,7 +158,6 @@
         <item name="cardCornerRadius">@dimen/palette_item_size</item>
         <item name="android:layout_width">@dimen/palette_item_size</item>
         <item name="android:layout_height">@dimen/palette_item_size</item>
-        <item name="strokeColor">#D50000</item>
         <item name="strokeWidth">0dp</item>
 
         <item name="android:layout_margin">8dp</item>

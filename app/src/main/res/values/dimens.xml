@@ -54,5 +54,6 @@
 
     <dimen name="pixel_card_size">35dp</dimen>
     <dimen name="palette_card_height">150dp</dimen>
+    <dimen name="palette_card_stroke_width">4dp</dimen>
 
 </resources>

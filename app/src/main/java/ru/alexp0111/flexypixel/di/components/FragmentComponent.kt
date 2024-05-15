@@ -3,6 +3,7 @@ package ru.alexp0111.flexypixel.di.components
 import androidx.fragment.app.Fragment
 
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelFragment
+import ru.alexp0111.flexypixel.ui.drawing.DrawingFragment
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelFragment
 
 import ru.alexp0111.flexypixel.ui.menu.MenuFragment
@@ -22,6 +23,8 @@ interface FragmentComponent {
     fun inject(fragment: MenuFragment)
     fun inject(fragment: TestFragment)
     fun inject(fragment: DisplayLevelFragment)
+    fun inject(drawingFragment: DrawingFragment)
+
 
 
 
