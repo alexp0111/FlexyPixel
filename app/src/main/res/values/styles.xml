@@ -123,6 +123,32 @@
     </style>
 
 
+    <style name="drawingModeSliderConstraintLayout">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">@dimen/sliders_top_margin</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+    <style name="drawingModeCard">
+        <item name="neumorph_shapeType">flat</item>
+        <item name="neumorph_shadowColorDark">@color/darker_beige</item>
+        <item name="neumorph_shadowColorLight">@color/white_shadow</item>
+        <item name="android:layout_width">@dimen/drawing_mode_card_width</item>
+        <item name="android:layout_marginTop">@dimen/drawing_card_top_margin</item>
+    </style>
+
+    <style name="drawingModeCard.drawingPanel">
+        <item name="android:layout_height">@dimen/drawing_mode_card_width</item>
+    </style>
+
+    <style name="drawingModeCard.palette">
+        <item name="android:layout_height">@dimen/palette_card_height</item>
+    </style>
+
+    <style name="drawingModeCard.colorController">
+        <item name="android:layout_height">@dimen/color_controllers_height</item>
+    </style>
+
     <style name="menu_item">
         <item name="neumorph_shapeType">flat</item>
         <item name="neumorph_shadowColorDark">@color/darker_beige</item>
@@ -163,6 +189,7 @@
         <item name="android:layout_margin">8dp</item>
         <item name="cardBackgroundColor">@color/black</item>
     </style>
+
     <style name="color_title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

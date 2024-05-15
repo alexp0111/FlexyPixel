@@ -1,30 +1,21 @@
 package ru.alexp0111.flexypixel.ui.drawing
 
-import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
-import android.widget.Toast
-import androidx.core.graphics.toColor
 import androidx.core.view.setMargins
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.slider.Slider
 import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentDrawingBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
-import ru.alexp0111.flexypixel.ui.start.device_pairing.Action
-import ru.alexp0111.flexypixel.ui.start.device_pairing.UiState
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -65,7 +56,7 @@ class DrawingFragment @Inject constructor() : Fragment() {
     private fun setUpSlidersOnChanged() {
         binding.apply {
             sliderRed.addOnChangeListener { slider, value, fromUser ->
-                if (stateHolder.shouldIgnore)return@addOnChangeListener
+                if (stateHolder.isIgnoringSlidersOnChangeListeners) return@addOnChangeListener
                 stateHolder.consumeAction(
                     DrawingAction.ChangePaletteItemColor(
                         DrawingColor(
@@ -77,7 +68,7 @@ class DrawingFragment @Inject constructor() : Fragment() {
                 )
             }
             sliderGreen.addOnChangeListener { slider, value, fromUser ->
-                if (stateHolder.shouldIgnore)return@addOnChangeListener
+                if (stateHolder.isIgnoringSlidersOnChangeListeners) return@addOnChangeListener
                 stateHolder.consumeAction(
                     DrawingAction.ChangePaletteItemColor(
                         DrawingColor(
@@ -89,7 +80,7 @@ class DrawingFragment @Inject constructor() : Fragment() {
                 )
             }
             sliderBlue.addOnChangeListener { slider, value, fromUser ->
-                if (stateHolder.shouldIgnore)return@addOnChangeListener
+                if (stateHolder.isIgnoringSlidersOnChangeListeners) return@addOnChangeListener
                 stateHolder.consumeAction(
                     DrawingAction.ChangePaletteItemColor(
                         DrawingColor(
@@ -100,8 +91,6 @@ class DrawingFragment @Inject constructor() : Fragment() {
                     )
                 )
             }
-
-
         }
     }
 
@@ -137,8 +126,8 @@ class DrawingFragment @Inject constructor() : Fragment() {
             for (i in 0..63) {
                 val pixel = MaterialCardView(requireContext())
                 val params = GridLayout.LayoutParams()
-
                 val size = getResources().getDimension(R.dimen.pixel_card_size)
+
                 pixel.radius = size / 5
                 params.width = size.roundToInt()
                 params.height = size.roundToInt()
@@ -150,10 +139,11 @@ class DrawingFragment @Inject constructor() : Fragment() {
                 pixel.setCardBackgroundColor(Color.BLACK)
                 pixel.strokeWidth = 0
                 pixel.layoutParams = params
+
                 pixel.setOnClickListener {
                     stateHolder.consumeAction(DrawingAction.RequestPixelColorUpdate(pixelPosition = i))
-                    //Toast.makeText(requireContext(), i.toString(), Toast.LENGTH_SHORT).show()
                 }
+
                 pixels.add(pixel)
                 this.addView(pixel)
             }
@@ -166,15 +156,16 @@ class DrawingFragment @Inject constructor() : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     stateHolder.state.collect { state: DrawingUIState ->
+
                         for ((index, pixel) in pixels.withIndex()) {
                             pixel.setCardBackgroundColor(state.pixelPanel[index].toColor())
                         }
+
                         for ((index, paletteItem) in paletteList.withIndex()) {
                             if (index == state.chosenPaletteItem) {
                                 paletteItem.strokeWidth = 10
                                 paletteItem.strokeColor =
                                     getPaletteItemStrokeColor()
-
                             } else {
                                 paletteItem.strokeWidth = 0
                             }
@@ -183,11 +174,11 @@ class DrawingFragment @Inject constructor() : Fragment() {
 
                         binding.apply {
                             val color = state.palette[state.chosenPaletteItem]
-                            stateHolder.shouldIgnore = true
+                            stateHolder.isIgnoringSlidersOnChangeListeners = true
                             sliderRed.value = color.r.toFloat()
                             sliderGreen.value = color.g.toFloat()
                             sliderBlue.value = color.b.toFloat()
-                            stateHolder.shouldIgnore = false
+                            stateHolder.isIgnoringSlidersOnChangeListeners = false
                         }
 
                     }

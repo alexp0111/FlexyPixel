@@ -19,7 +19,7 @@ class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsume
     override val state: StateFlow<DrawingUIState>
         get() = _uiState.asStateFlow()
 
-    var shouldIgnore = false
+    var isIgnoringSlidersOnChangeListeners = false
 
     init {
         viewModelScope.launch {
@@ -30,17 +30,6 @@ class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsume
                     dispatchAction(state = currentState, action = action)
                 }
             }
-        }
-    }
-
-    private fun dispatchAction(state: DrawingUIState, action: DrawingAction) {
-        when (action){
-            is DrawingAction.RequestDisplayConfiguration -> requestDisplayConfiguration(action.displayPosition)
-            is DrawingAction.LoadDisplayConfiguration -> Unit
-            is DrawingAction.ChangePaletteItemColor -> Unit
-            is DrawingAction.PickPaletteItem -> Unit
-            is DrawingAction.RequestPixelColorUpdate -> requestPixelColorUpdate(action.pixelPosition)
-            is DrawingAction.PixelColorUpdatedSuccessfully -> Unit
         }
     }
 
@@ -56,14 +45,21 @@ class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsume
         consumeAction(DrawingAction.PixelColorUpdatedSuccessfully(pixelPosition))
     }
 
-
-
-
     override fun consumeAction(action: DrawingAction) {
         _actions.tryEmit(action)
     }
 
-    //Incomplete
+    private fun dispatchAction(state: DrawingUIState, action: DrawingAction) {
+        when (action){
+            is DrawingAction.RequestDisplayConfiguration -> requestDisplayConfiguration(action.displayPosition)
+            is DrawingAction.LoadDisplayConfiguration -> Unit
+            is DrawingAction.ChangePaletteItemColor -> Unit
+            is DrawingAction.PickPaletteItem -> Unit
+            is DrawingAction.RequestPixelColorUpdate -> requestPixelColorUpdate(action.pixelPosition)
+            is DrawingAction.PixelColorUpdatedSuccessfully -> Unit
+        }
+    }
+
     private fun reduce(
         state: DrawingUIState,
         action: DrawingAction,
@@ -84,7 +80,7 @@ class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsume
             is DrawingAction.RequestPixelColorUpdate -> state
             is DrawingAction.PixelColorUpdatedSuccessfully -> {
                 val newPixelPanel = state.pixelPanel.toMutableList()
-                newPixelPanel[action.pixelPosition] = state.palette[state.chosenPaletteItem]
+                newPixelPanel[action.pixelPosition] = state.getCurrentDrawingColor()
                 state.copy(
                     pixelPanel = newPixelPanel
                 )
