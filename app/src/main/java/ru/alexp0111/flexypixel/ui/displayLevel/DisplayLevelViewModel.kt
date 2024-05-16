@@ -6,7 +6,7 @@ import java.util.Stack
 
 import javax.inject.Inject
 
-const val DESTINATION_IS_HOLDER = -1
+
 
 class DisplayLevelViewModel @Inject constructor() : ViewModel() {
     val displayLocationInMatrix: MutableList<Int> =
@@ -17,11 +17,13 @@ class DisplayLevelViewModel @Inject constructor() : ViewModel() {
     companion object {
         const val HOLDER_POSITION = -1
         const val EMPTY_CELL = 0
+        const val DESTINATION_IS_HOLDER = -1
     }
 
     init {
         getDisplayMatrix()
         getDisplayHolder()
+        getDisplayImages()
     }
 
     fun fromHolderToMatrix(destinationPosition: Int) {
@@ -41,7 +43,7 @@ class DisplayLevelViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun getDisplayImages() {
-        //test
+
     }
 
     private fun getDisplayMatrix() {
@@ -62,9 +64,10 @@ class DisplayLevelViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    //test logic
     override fun toString(): String {
         var s = displayLocationInMatrix.toString()
-        s += displayLocationInHolder.toString().reversed()
+        s += displayLocationInHolder.reversed().toString()
         return s
     }
 

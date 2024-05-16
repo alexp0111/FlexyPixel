@@ -9,7 +9,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.DragEvent
 import android.view.Gravity
 import androidx.fragment.app.Fragment
@@ -35,12 +34,11 @@ class DisplayLevelFragment : Fragment() {
     private var _binding: FragmentDisplayLevelBinding? = null
     private val binding get() = _binding!!
 
-    val panelViewsList = mutableListOf<NeumorphImageView>()
-    val containerList = mutableListOf<FrameLayout>()
+    private val panelViewsList = mutableListOf<NeumorphImageView>()
+    private val containerList = mutableListOf<FrameLayout>()
 
-    val dragListener = getDragListener(CardMode.FLAT)
-    val holderDragListener = getDragListener(CardMode.RAISED)
-
+    private val matrixCellsDragListener = getDragListener(CardMode.FLAT)
+    private val holderDragListener = getDragListener(CardMode.RAISED)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +48,7 @@ class DisplayLevelFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
-        // Inflate the layout for this fragment
+    ): View {
         _binding = FragmentDisplayLevelBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -63,9 +59,12 @@ class DisplayLevelFragment : Fragment() {
         setUpDragListeners()
         TEST_putDisplayImages()
         spawnDisplays()
+
+        //test logic
         binding.heading.setOnClickListener {
-            Toast.makeText(requireContext(),stateHolder.toString(),Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), stateHolder.toString(), Toast.LENGTH_LONG).show()
         }
+
     }
 
     private fun setUpContainerList() {
@@ -99,13 +98,13 @@ class DisplayLevelFragment : Fragment() {
 
     private fun setUpDragListeners() {
         for (container in containerList) {
-            container.setOnDragListener(getDragListener(CardMode.FLAT))
+            container.setOnDragListener(matrixCellsDragListener)
         }
         binding.displayHolder.setOnDragListener(holderDragListener)
     }
 
 
-    fun getDragListener(cardMode: CardMode): View.OnDragListener {
+    private fun getDragListener(cardMode: CardMode): View.OnDragListener {
         return View.OnDragListener { view, dragEvent ->
             when (dragEvent.action) {
                 DragEvent.ACTION_DRAG_STARTED -> {
@@ -130,40 +129,37 @@ class DisplayLevelFragment : Fragment() {
                 DragEvent.ACTION_DROP -> {
                     val item = dragEvent.clipData.getItemAt(0)
                     val dragData = item.text
-
                     view.invalidate()
 
                     val draggedView = dragEvent.localState as NeumorphImageView
 
                     val owner = draggedView.parent as FrameLayout
                     val destination = view as FrameLayout
-                    if (destination.childCount>1 && getPosition(destination)!=-1){
-                        return@OnDragListener false
-                    }
-                    val destination_pos = getPosition(view)
-                    val owner_pos = getPosition(owner)
+
+                    val destinationPosition = getPosition(view)
+                    val ownerPosition = getPosition(owner)
 
                     if (cardMode == CardMode.FLAT) {
+
                         draggedView.setShadowElevation(600f)
                         draggedView.setStrokeWidth(2f)
 
 
-
                         //если вытаскиваем из нижней ячейки
-                        if (owner_pos == DisplayLevelViewModel.HOLDER_POSITION) {
-                            stateHolder.fromHolderToMatrix(destination_pos)
+                        if (ownerPosition == DisplayLevelViewModel.HOLDER_POSITION) {
+                            stateHolder.fromHolderToMatrix(destinationPosition)
                         }
-                        //если вытаскиваем из ячейки с позицией owner_pos
+                        //если вытаскиваем из ячейки с позицией ownerPosition
                         else {
-                            stateHolder.fromMatrixToMatrix(owner_pos,destination_pos)
+                            stateHolder.fromMatrixToMatrix(ownerPosition, destinationPosition)
                         }
                     }
-                    //если вытаскиваем из ячейки с позицией owner_pos и передаем в нижнюю ячейку
+                    //если вытаскиваем из ячейки с позицией ownerPosition и передаем в нижнюю ячейку
                     else if (cardMode == CardMode.RAISED) {
                         if (view.childCount == 1) draggedView.setShadowElevation(9f)
                         draggedView.setStrokeWidth(0f)
 
-                        stateHolder.fromMatrixToHolder(owner_pos)
+                        stateHolder.fromMatrixToHolder(ownerPosition)
                     }
 
 
@@ -189,115 +185,87 @@ class DisplayLevelFragment : Fragment() {
 
     @SuppressLint("RestrictedApi", "UseCompatLoadingForDrawables")
     fun spawnDisplays() {
-        for ((index, i) in stateHolder.displayLocationInHolder.withIndex()) {
+        for ((position, panelNumber) in stateHolder.displayLocationInHolder.withIndex()) {
 
-            val view = NeumorphImageView(requireContext())
+            val panelView = getPanelView(position, panelNumber, SpawnMode.HOLDER)
 
-            val layoutParams = FrameLayout.LayoutParams(
-                dpToPx(125, view.resources),
-                dpToPx(125, view.resources)
-            )
+            panelViewsList.add(panelView)
 
-            layoutParams.gravity = Gravity.CENTER
-            view.layoutParams = layoutParams
-            view.setStrokeColor(ColorStateList.valueOf(Color.WHITE))
-            view.setPadding(dpToPx(30, view.resources))
-
-
-
-            if (index != 0) {
-                view.setShadowElevation(600f)
-            }
-
-            view.setBackgroundColor(ColorStateList.valueOf(Color.parseColor("#EEE4DC")))
-            view.setShadowColorDark(Color.parseColor("#C5B9B0"))
-            view.setShadowColorLight(Color.parseColor("#AEFFFFFF"))
-            view.setShapeType(ShapeType.FLAT)
-
-
-            val bitmap: Bitmap? = stateHolder.bitmapMap.getOrElse(i) {
-                null
-            }
-            if (bitmap != null) {
-                view.setImageBitmap(bitmap)
-            } else {
-                view.setBackgroundColor(Color.BLACK)
-            }
-
-            view.scaleType = ImageView.ScaleType.FIT_CENTER
-
-            view.setOnLongClickListener {
-                val clipText = "ClipData Text $i"
-                val item = ClipData.Item(clipText)
-                val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
-                val data = ClipData(clipText, mimeTypes, item)
-
-                val dragShowBuilder = View.DragShadowBuilder(it)
-                it.startDragAndDrop(data, dragShowBuilder, it, 0)
-
-                it.visibility = View.INVISIBLE
-                true
-            }
-            panelViewsList.add(view)
-
-            binding.displayHolder.addView(view)
+            binding.displayHolder.addView(panelView)
         }
 
-        for ((position, i) in stateHolder.displayLocationInMatrix.withIndex()) {
+        for ((position, panelNumber) in stateHolder.displayLocationInMatrix.withIndex()) {
 
-            if (i == DisplayLevelViewModel.EMPTY_CELL) continue
+            if (panelNumber == DisplayLevelViewModel.EMPTY_CELL) continue
 
-            val view = NeumorphImageView(requireContext())
+            val panelView = getPanelView(position, panelNumber, SpawnMode.MATRIX)
 
-            val layoutParams = FrameLayout.LayoutParams(
-                dpToPx(125, view.resources),
-                dpToPx(125, view.resources)
-            )
+            panelViewsList.add(panelView)
 
-            layoutParams.gravity = Gravity.CENTER
-            view.layoutParams = layoutParams
-            view.setStrokeColor(ColorStateList.valueOf(Color.WHITE))
-            view.setStrokeWidth(2f)
-            view.setPadding(dpToPx(30, view.resources))
-
-
-            view.setShadowElevation(600f)
-
-
-            view.setBackgroundColor(ColorStateList.valueOf(Color.parseColor("#EEE4DC")))
-            view.setShadowColorDark(Color.parseColor("#C5B9B0"))
-            view.setShadowColorLight(Color.parseColor("#AEFFFFFF"))
-            view.setShapeType(ShapeType.FLAT)
-
-
-            val bitmap: Bitmap? = stateHolder.bitmapMap.getOrElse(i) {
-                null
-            }
-            if (bitmap != null) {
-                view.setImageBitmap(bitmap)
-            } else {
-                view.setBackgroundColor(Color.BLACK)
-            }
-
-            view.scaleType = ImageView.ScaleType.FIT_CENTER
-
-            view.setOnLongClickListener {
-                val clipText = "ClipData Text $i"
-                val item = ClipData.Item(clipText)
-                val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
-                val data = ClipData(clipText, mimeTypes, item)
-
-                val dragShowBuilder = View.DragShadowBuilder(it)
-                it.startDragAndDrop(data, dragShowBuilder, it, 0)
-
-                it.visibility = View.INVISIBLE
-                true
-            }
-            panelViewsList.add(view)
-
-            containerList[position].addView(view)
+            containerList[position].addView(panelView)
         }
 
+    }
+
+    enum class SpawnMode {
+        MATRIX,
+        HOLDER
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun getPanelView(
+        position: Int,
+        panelNumber: Int,
+        spawnMode: SpawnMode
+    ): NeumorphImageView {
+        val panelView = NeumorphImageView(requireContext())
+
+        val layoutParams = FrameLayout.LayoutParams(
+            dpToPx(125, panelView.resources),
+            dpToPx(125, panelView.resources)
+        )
+
+        layoutParams.gravity = Gravity.CENTER
+        panelView.layoutParams = layoutParams
+        panelView.setStrokeColor(ColorStateList.valueOf(Color.WHITE))
+        panelView.setPadding(dpToPx(30, panelView.resources))
+
+        if (position != 0 || spawnMode == SpawnMode.MATRIX) {
+            panelView.setShadowElevation(600f)
+        }
+
+        if (spawnMode == SpawnMode.MATRIX){
+            panelView.setStrokeWidth(2f)
+        }
+
+        panelView.setBackgroundColor(resources.getColor(R.color.beige))
+        panelView.setShadowColorDark(resources.getColor(R.color.darker_beige))
+        panelView.setShadowColorLight(resources.getColor(R.color.white_shadow))
+        panelView.setShapeType(ShapeType.FLAT)
+
+        val bitmap: Bitmap? = stateHolder.bitmapMap.getOrElse(panelNumber) { null }
+
+        if (bitmap != null) {
+            panelView.setImageBitmap(bitmap)
+        } else {
+            panelView.setBackgroundColor(Color.BLACK)
+        }
+
+        panelView.scaleType = ImageView.ScaleType.FIT_CENTER
+
+        panelView.setOnLongClickListener {
+            val clipText = "ClipData Text $panelNumber"
+            val item = ClipData.Item(clipText)
+            val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
+            val data = ClipData(clipText, mimeTypes, item)
+
+            val dragShowBuilder = View.DragShadowBuilder(it)
+            it.startDragAndDrop(data, dragShowBuilder, it, 0)
+
+            it.visibility = View.INVISIBLE
+            true
+        }
+        return panelView
     }
 
 
@@ -326,7 +294,7 @@ class DisplayLevelFragment : Fragment() {
         _binding = null
     }
 
-    enum class CardMode() {
+    enum class CardMode {
         FLAT,
         RAISED
     }
