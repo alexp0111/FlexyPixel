@@ -3,9 +3,10 @@ package ru.alexp0111.flexypixel.ui.displayLevel
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipDescription
-import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -19,18 +20,11 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.view.setPadding
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentDisplayLevelBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
-import ru.alexp0111.flexypixel.ui.drawing.DrawingUIState
-import soup.neumorphism.NeumorphCardView
 import soup.neumorphism.NeumorphImageView
 import soup.neumorphism.ShapeType
-import java.util.Stack
 import javax.inject.Inject
 
 
@@ -42,16 +36,11 @@ class DisplayLevelFragment : Fragment() {
     private val binding get() = _binding!!
 
     val panelViewsList = mutableListOf<NeumorphImageView>()
-    val containerList = mutableListOf<FrameLayout>(
-    )
+    val containerList = mutableListOf<FrameLayout>()
 
     val dragListener = getDragListener(CardMode.FLAT)
     val holderDragListener = getDragListener(CardMode.RAISED)
 
-    val images = mutableListOf<Int>()
-
-    val displayHolder = Stack<Int>()
-    val displayPosition = Array(3) { IntArray(3) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,18 +59,16 @@ class DisplayLevelFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        for (container in containerList){
-            container.setOnDragListener(dragListener)
+        setUpContainerList()
+        setUpDragListeners()
+        TEST_putDisplayImages()
+        spawnDisplays()
+        binding.heading.setOnClickListener {
+            Toast.makeText(requireContext(),stateHolder.toString(),Toast.LENGTH_LONG).show()
         }
-        binding.displayHolder.setOnDragListener(holderDragListener)
-
-        getDisplayImages()
-        spawnDisplays(9)
-
-        fillUpMatrix(displayPosition)
     }
-    private fun setUpContainerList(){
+
+    private fun setUpContainerList() {
         binding.apply {
             containerList.add(card1)
             containerList.add(card2)
@@ -95,16 +82,26 @@ class DisplayLevelFragment : Fragment() {
         }
     }
 
-    private fun getDisplayImages() {
-        images.add(R.drawable.c1)
-        images.add(R.drawable.c2)
-        images.add(R.drawable.c3)
-        images.add(R.drawable.c4)
-        images.add(R.drawable.c5)
-        images.add(R.drawable.c6)
-        images.add(R.drawable.c7)
-        images.add(R.drawable.c8)
-        images.add(R.drawable.c9)
+    //test function
+    private fun TEST_putDisplayImages() {
+        stateHolder.apply {
+            bitmapMap[1] = BitmapFactory.decodeResource(resources, R.drawable.c1)
+            bitmapMap[2] = BitmapFactory.decodeResource(resources, R.drawable.c2)
+            bitmapMap[3] = BitmapFactory.decodeResource(resources, R.drawable.c3)
+            bitmapMap[4] = BitmapFactory.decodeResource(resources, R.drawable.c4)
+            //    bitmapMap[5] = BitmapFactory.decodeResource(resources, R.drawable.c5)
+            bitmapMap[6] = BitmapFactory.decodeResource(resources, R.drawable.c6)
+            bitmapMap[7] = BitmapFactory.decodeResource(resources, R.drawable.c7)
+            bitmapMap[8] = BitmapFactory.decodeResource(resources, R.drawable.c8)
+            bitmapMap[9] = BitmapFactory.decodeResource(resources, R.drawable.c9)
+        }
+    }
+
+    private fun setUpDragListeners() {
+        for (container in containerList) {
+            container.setOnDragListener(getDragListener(CardMode.FLAT))
+        }
+        binding.displayHolder.setOnDragListener(holderDragListener)
     }
 
 
@@ -113,12 +110,7 @@ class DisplayLevelFragment : Fragment() {
             when (dragEvent.action) {
                 DragEvent.ACTION_DRAG_STARTED -> {
                     view.visibility = View.VISIBLE
-                    //Если в пазу уже есть карточки
-                    if (cardMode == CardMode.FLAT && (view as FrameLayout).childCount > 1) {
-                        return@OnDragListener false
-                    }
                     dragEvent.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)
-
                 }
 
                 DragEvent.ACTION_DRAG_ENTERED -> {
@@ -138,48 +130,46 @@ class DisplayLevelFragment : Fragment() {
                 DragEvent.ACTION_DROP -> {
                     val item = dragEvent.clipData.getItemAt(0)
                     val dragData = item.text
-                    Toast.makeText(requireContext(), dragData, Toast.LENGTH_SHORT).show()
 
                     view.invalidate()
 
                     val draggedView = dragEvent.localState as NeumorphImageView
 
-                    val owner = draggedView.parent as ViewGroup
-
-
+                    val owner = draggedView.parent as FrameLayout
                     val destination = view as FrameLayout
+                    if (destination.childCount>1 && getPosition(destination)!=-1){
+                        return@OnDragListener false
+                    }
+                    val destination_pos = getPosition(view)
+                    val owner_pos = getPosition(owner)
+
                     if (cardMode == CardMode.FLAT) {
                         draggedView.setShadowElevation(600f)
                         draggedView.setStrokeWidth(2f)
 
-                        val destination_pos = getPosition(view)
-                        val owner_pos = getPosition(owner)
+
 
                         //если вытаскиваем из нижней ячейки
-                        if (owner_pos[0] == 3) {
-                            val display_id = displayHolder.pop();
-                            displayPosition[destination_pos[0]][destination_pos[1]] =
-                                display_id
+                        if (owner_pos == DisplayLevelViewModel.HOLDER_POSITION) {
+                            stateHolder.fromHolderToMatrix(destination_pos)
                         }
                         //если вытаскиваем из ячейки с позицией owner_pos
                         else {
-                            displayPosition[destination_pos[0]][destination_pos[1]] =
-                                displayPosition[owner_pos[0]][owner_pos[1]]
-                            displayPosition[owner_pos[0]][owner_pos[1]] = 0
+                            stateHolder.fromMatrixToMatrix(owner_pos,destination_pos)
                         }
                     }
                     //если вытаскиваем из ячейки с позицией owner_pos и передаем в нижнюю ячейку
                     else if (cardMode == CardMode.RAISED) {
                         if (view.childCount == 1) draggedView.setShadowElevation(9f)
-                        val owner_pos = getPosition(owner)
-                        val display_id = displayPosition[owner_pos[0]][owner_pos[1]]
-                        displayPosition[owner_pos[0]][owner_pos[1]] = 0
-                        displayHolder.push(display_id)
                         draggedView.setStrokeWidth(0f)
+
+                        stateHolder.fromMatrixToHolder(owner_pos)
                     }
-                    printMatrix(displayPosition)
-                    owner.removeView(draggedView);
+
+
+                    owner.removeView(draggedView)
                     destination.addView(draggedView)
+
                     draggedView.visibility = View.VISIBLE
                     true
                 }
@@ -196,45 +186,44 @@ class DisplayLevelFragment : Fragment() {
         }
     }
 
-    private fun subscribeUI() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    stateHolder.state.collect { state: DisplayLevelUISTate ->
-                        if (!state.canBeRepainted)return@collect
-                        for ((index,container) in containerList.withIndex()){
-                            if (state.displayLocationInMatrix[index]>0){
-                                panelViewsList
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
+    @SuppressLint("RestrictedApi", "UseCompatLoadingForDrawables")
+    fun spawnDisplays() {
+        for ((index, i) in stateHolder.displayLocationInHolder.withIndex()) {
 
-        @SuppressLint("RestrictedApi", "UseCompatLoadingForDrawables")
-    fun spawnDisplays(num: Int) {
-        for (i in 1..num) {
             val view = NeumorphImageView(requireContext())
+
             val layoutParams = FrameLayout.LayoutParams(
                 dpToPx(125, view.resources),
                 dpToPx(125, view.resources)
             )
+
             layoutParams.gravity = Gravity.CENTER
             view.layoutParams = layoutParams
             view.setStrokeColor(ColorStateList.valueOf(Color.WHITE))
             view.setPadding(dpToPx(30, view.resources))
-            if (i != 1) {
+
+
+
+            if (index != 0) {
                 view.setShadowElevation(600f)
             }
-            displayHolder.push(i)
+
             view.setBackgroundColor(ColorStateList.valueOf(Color.parseColor("#EEE4DC")))
             view.setShadowColorDark(Color.parseColor("#C5B9B0"))
             view.setShadowColorLight(Color.parseColor("#AEFFFFFF"))
             view.setShapeType(ShapeType.FLAT)
-            view.setImageDrawable(requireContext().getDrawable(images[i - 1]))
+
+
+            val bitmap: Bitmap? = stateHolder.bitmapMap.getOrElse(i) {
+                null
+            }
+            if (bitmap != null) {
+                view.setImageBitmap(bitmap)
+            } else {
+                view.setBackgroundColor(Color.BLACK)
+            }
+
             view.scaleType = ImageView.ScaleType.FIT_CENTER
 
             view.setOnLongClickListener {
@@ -250,23 +239,80 @@ class DisplayLevelFragment : Fragment() {
                 true
             }
             panelViewsList.add(view)
-            binding.displayHolder.addView(view)
 
+            binding.displayHolder.addView(view)
         }
+
+        for ((position, i) in stateHolder.displayLocationInMatrix.withIndex()) {
+
+            if (i == DisplayLevelViewModel.EMPTY_CELL) continue
+
+            val view = NeumorphImageView(requireContext())
+
+            val layoutParams = FrameLayout.LayoutParams(
+                dpToPx(125, view.resources),
+                dpToPx(125, view.resources)
+            )
+
+            layoutParams.gravity = Gravity.CENTER
+            view.layoutParams = layoutParams
+            view.setStrokeColor(ColorStateList.valueOf(Color.WHITE))
+            view.setStrokeWidth(2f)
+            view.setPadding(dpToPx(30, view.resources))
+
+
+            view.setShadowElevation(600f)
+
+
+            view.setBackgroundColor(ColorStateList.valueOf(Color.parseColor("#EEE4DC")))
+            view.setShadowColorDark(Color.parseColor("#C5B9B0"))
+            view.setShadowColorLight(Color.parseColor("#AEFFFFFF"))
+            view.setShapeType(ShapeType.FLAT)
+
+
+            val bitmap: Bitmap? = stateHolder.bitmapMap.getOrElse(i) {
+                null
+            }
+            if (bitmap != null) {
+                view.setImageBitmap(bitmap)
+            } else {
+                view.setBackgroundColor(Color.BLACK)
+            }
+
+            view.scaleType = ImageView.ScaleType.FIT_CENTER
+
+            view.setOnLongClickListener {
+                val clipText = "ClipData Text $i"
+                val item = ClipData.Item(clipText)
+                val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
+                val data = ClipData(clipText, mimeTypes, item)
+
+                val dragShowBuilder = View.DragShadowBuilder(it)
+                it.startDragAndDrop(data, dragShowBuilder, it, 0)
+
+                it.visibility = View.INVISIBLE
+                true
+            }
+            panelViewsList.add(view)
+
+            containerList[position].addView(view)
+        }
+
     }
+
 
     private fun getPosition(view: View) =
         when (resources.getResourceName(view.id).toString().last()) {
-            '1' -> arrayOf(0, 0)
-            '2' -> arrayOf(0, 1)
-            '3' -> arrayOf(0, 2)
-            '4' -> arrayOf(1, 0)
-            '5' -> arrayOf(1, 1)
-            '6' -> arrayOf(1, 2)
-            '7' -> arrayOf(2, 0)
-            '8' -> arrayOf(2, 1)
-            '9' -> arrayOf(2, 2)
-            else -> arrayOf(3, 0)
+            '1' -> 0
+            '2' -> 1
+            '3' -> 2
+            '4' -> 3
+            '5' -> 4
+            '6' -> 5
+            '7' -> 6
+            '8' -> 7
+            '9' -> 8
+            else -> -1
         }
 
     fun dpToPx(dp: Int, resources: Resources): Int {
@@ -274,28 +320,6 @@ class DisplayLevelFragment : Fragment() {
         return (dp * density).toInt()
     }
 
-    //Debug function
-    fun fillUpMatrix(matrix: Array<IntArray>) {
-        // Заполняем матрицу
-        for (i in 0 until matrix.size) {
-            for (j in 0 until matrix[i].size) {
-                // Пример заполнения матрицы случайными числами от 1 до 9
-                matrix[i][j] = 0
-            }
-        }
-    }
-
-    //Debug function
-    private fun printMatrix(matrix: Array<IntArray>) {
-        var result = ""
-        for (i in 0 until matrix.size) {
-            for (j in 0 until matrix[i].size) {
-                result += matrix[i][j].toString() + " "
-            }
-            result += "\n"
-        }
-        Log.i("ViewID", result)
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
