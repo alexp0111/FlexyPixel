@@ -32,14 +32,13 @@ class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsume
     }
 
     private fun requestDisplayConfiguration(displayPosition: Int) {
-        /*
-        request uiState from GlobalStateHandler
+        /*TODO request uiState from GlobalStateHandler
         consumeAction(DrawingAction.LoadDisplayConfiguration(uiState))
          */
     }
 
     private fun requestPixelColorUpdate(pixelPosition: Int) {
-        //collect Flow from GlobalStateHandler
+        //TODO collect Flow from GlobalStateHandler
         consumeAction(DrawingAction.PixelColorUpdatedSuccessfully(pixelPosition))
     }
 

@@ -19,22 +19,34 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.view.setPadding
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentDisplayLevelBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
+import ru.alexp0111.flexypixel.ui.drawing.DrawingUIState
+import soup.neumorphism.NeumorphCardView
+import soup.neumorphism.NeumorphImageView
 import soup.neumorphism.ShapeType
 import java.util.Stack
+import javax.inject.Inject
 
 
 class DisplayLevelFragment : Fragment() {
+    @Inject
+    lateinit var stateHolder: DisplayLevelViewModel
 
     private var _binding: FragmentDisplayLevelBinding? = null
     private val binding get() = _binding!!
 
+    val panelViewsList = mutableListOf<NeumorphImageView>()
+    val containerList = mutableListOf<FrameLayout>(
+    )
+
     val dragListener = getDragListener(CardMode.FLAT)
     val holderDragListener = getDragListener(CardMode.RAISED)
-
-
 
     val images = mutableListOf<Int>()
 
@@ -59,24 +71,28 @@ class DisplayLevelFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.apply {
-
+        for (container in containerList){
+            container.setOnDragListener(dragListener)
         }
-        binding.card1.setOnDragListener(dragListener)
-        binding.card2.setOnDragListener(dragListener)
-        binding.card3.setOnDragListener(dragListener)
-        binding.card4.setOnDragListener(dragListener)
-        binding.card5.setOnDragListener(dragListener)
-        binding.card6.setOnDragListener(dragListener)
-        binding.card7.setOnDragListener(dragListener)
-        binding.card8.setOnDragListener(dragListener)
-        binding.card9.setOnDragListener(dragListener)
         binding.displayHolder.setOnDragListener(holderDragListener)
 
         getDisplayImages()
         spawnDisplays(9)
 
         fillUpMatrix(displayPosition)
+    }
+    private fun setUpContainerList(){
+        binding.apply {
+            containerList.add(card1)
+            containerList.add(card2)
+            containerList.add(card3)
+            containerList.add(card4)
+            containerList.add(card5)
+            containerList.add(card6)
+            containerList.add(card7)
+            containerList.add(card8)
+            containerList.add(card9)
+        }
     }
 
     private fun getDisplayImages() {
@@ -126,7 +142,7 @@ class DisplayLevelFragment : Fragment() {
 
                     view.invalidate()
 
-                    val draggedView = dragEvent.localState as soup.neumorphism.NeumorphImageView
+                    val draggedView = dragEvent.localState as NeumorphImageView
 
                     val owner = draggedView.parent as ViewGroup
 
@@ -180,10 +196,28 @@ class DisplayLevelFragment : Fragment() {
         }
     }
 
-    @SuppressLint("RestrictedApi", "UseCompatLoadingForDrawables")
+    private fun subscribeUI() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    stateHolder.state.collect { state: DisplayLevelUISTate ->
+                        if (!state.canBeRepainted)return@collect
+                        for ((index,container) in containerList.withIndex()){
+                            if (state.displayLocationInMatrix[index]>0){
+                                panelViewsList
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+        @SuppressLint("RestrictedApi", "UseCompatLoadingForDrawables")
     fun spawnDisplays(num: Int) {
         for (i in 1..num) {
-            val view = soup.neumorphism.NeumorphImageView(requireContext())
+            val view = NeumorphImageView(requireContext())
             val layoutParams = FrameLayout.LayoutParams(
                 dpToPx(125, view.resources),
                 dpToPx(125, view.resources)
@@ -215,6 +249,7 @@ class DisplayLevelFragment : Fragment() {
                 it.visibility = View.INVISIBLE
                 true
             }
+            panelViewsList.add(view)
             binding.displayHolder.addView(view)
 
         }
