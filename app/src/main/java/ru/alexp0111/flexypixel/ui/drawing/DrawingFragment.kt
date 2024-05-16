@@ -17,7 +17,6 @@ import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentDrawingBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 private const val RADIUS_RATIO = 5
 private const val MARGINS_RATIO = 12

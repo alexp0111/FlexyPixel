@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        router.replaceScreen(Screens.MenuScreen())
+        router.replaceScreen(Screens.DisplayLevelScreen())
 
     }
 

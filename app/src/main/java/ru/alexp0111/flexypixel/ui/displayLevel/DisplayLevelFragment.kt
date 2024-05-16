@@ -34,6 +34,8 @@ class DisplayLevelFragment : Fragment() {
     val dragListener = getDragListener(CardMode.FLAT)
     val holderDragListener = getDragListener(CardMode.RAISED)
 
+
+
     val images = mutableListOf<Int>()
 
     val displayHolder = Stack<Int>()
@@ -57,6 +59,9 @@ class DisplayLevelFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.apply {
+
+        }
         binding.card1.setOnDragListener(dragListener)
         binding.card2.setOnDragListener(dragListener)
         binding.card3.setOnDragListener(dragListener)
