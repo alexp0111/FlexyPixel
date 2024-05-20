@@ -1,9 +1,8 @@
 package ru.alexp0111.flexypixel.ui.drawing
 
-import android.graphics.Color
 import kotlinx.coroutines.flow.StateFlow
 import ru.alexp0111.flexypixel.data.model.Panel
-
+import ru.alexp0111.flexypixel.ui.DrawingColor
 
 data class DrawingUIState(
     val pixelPanel: MutableList<DrawingColor> = MutableList(Panel.TYPE_64) { DrawingColor(9, 9, 9) },
@@ -15,13 +14,6 @@ data class DrawingUIState(
     companion object {
         const val PALETTE_SIZE = 12
     }
-}
-
-data class DrawingColor(var r: Int = 0, var g: Int = 0, var b: Int = 0) {
-
-    private val ratio = 28
-    fun toColor() = Color.rgb(r * ratio, g * ratio, b * ratio)
-
 }
 
 interface StateHolder {
