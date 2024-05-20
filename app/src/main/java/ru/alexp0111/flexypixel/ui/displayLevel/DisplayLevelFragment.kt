@@ -19,11 +19,15 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.view.setPadding
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentDisplayLevelBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import soup.neumorphism.NeumorphImageView
 import soup.neumorphism.ShapeType
+import java.util.Stack
 import javax.inject.Inject
 
 
@@ -43,6 +47,12 @@ class DisplayLevelFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injectSelf()
+        stateHolder.getPanelsConfiguration()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stateHolder.sendPanelsConfiguration()
     }
 
     override fun onCreateView(
@@ -58,7 +68,22 @@ class DisplayLevelFragment : Fragment() {
         setUpContainerList()
         setUpDragListeners()
         TEST_putDisplayImages()
-        spawnDisplays()
+
+        lifecycleScope.launch {
+            stateHolder.apply {
+                val uiState = combine(
+                    displayLocationInHolder,
+                    displayLocationInMatrix,
+                    bitmapMap
+                ) { v1, v2, v3 ->
+                    Triple(v1, v2, v3)
+                }
+                uiState.collect {
+                    spawnDisplaysInHolder(it.first)
+                    spawnDisplaysInMatrix(it.second)
+                }
+            }
+        }
 
         //test logic
         binding.heading.setOnClickListener {
@@ -84,15 +109,18 @@ class DisplayLevelFragment : Fragment() {
     //test function
     private fun TEST_putDisplayImages() {
         stateHolder.apply {
-            bitmapMap[1] = BitmapFactory.decodeResource(resources, R.drawable.c1)
-            bitmapMap[2] = BitmapFactory.decodeResource(resources, R.drawable.c2)
-            bitmapMap[3] = BitmapFactory.decodeResource(resources, R.drawable.c3)
-            bitmapMap[4] = BitmapFactory.decodeResource(resources, R.drawable.c4)
-            //    bitmapMap[5] = BitmapFactory.decodeResource(resources, R.drawable.c5)
-            bitmapMap[6] = BitmapFactory.decodeResource(resources, R.drawable.c6)
-            bitmapMap[7] = BitmapFactory.decodeResource(resources, R.drawable.c7)
-            bitmapMap[8] = BitmapFactory.decodeResource(resources, R.drawable.c8)
-            bitmapMap[9] = BitmapFactory.decodeResource(resources, R.drawable.c9)
+            bitmapMap.value.apply {
+                this[1] = BitmapFactory.decodeResource(resources, R.drawable.c1)
+                this[2] = BitmapFactory.decodeResource(resources, R.drawable.c2)
+                this[3] = BitmapFactory.decodeResource(resources, R.drawable.c3)
+                this[4] = BitmapFactory.decodeResource(resources, R.drawable.c4)
+                //mapMap[5] = BitmapFactory.decodeResource(resources, R.drawable.c5)
+                this[6] = BitmapFactory.decodeResource(resources, R.drawable.c6)
+                this[7] = BitmapFactory.decodeResource(resources, R.drawable.c7)
+                this[8] = BitmapFactory.decodeResource(resources, R.drawable.c8)
+                this[9] = BitmapFactory.decodeResource(resources, R.drawable.c9)
+            }
+
         }
     }
 
@@ -158,10 +186,8 @@ class DisplayLevelFragment : Fragment() {
                     else if (cardMode == CardMode.RAISED) {
                         if (view.childCount == 1) draggedView.setShadowElevation(9f)
                         draggedView.setStrokeWidth(0f)
-
                         stateHolder.fromMatrixToHolder(ownerPosition)
                     }
-
 
                     owner.removeView(draggedView)
                     destination.addView(draggedView)
@@ -184,17 +210,8 @@ class DisplayLevelFragment : Fragment() {
 
 
     @SuppressLint("RestrictedApi", "UseCompatLoadingForDrawables")
-    fun spawnDisplays() {
-        for ((position, panelNumber) in stateHolder.displayLocationInHolder.withIndex()) {
-
-            val panelView = getPanelView(position, panelNumber, SpawnMode.HOLDER)
-
-            panelViewsList.add(panelView)
-
-            binding.displayHolder.addView(panelView)
-        }
-
-        for ((position, panelNumber) in stateHolder.displayLocationInMatrix.withIndex()) {
+    private fun spawnDisplaysInMatrix(displayLocationInMatrix: MutableList<Int>) {
+        for ((position, panelNumber) in displayLocationInMatrix.withIndex()) {
 
             if (panelNumber == DisplayLevelViewModel.EMPTY_CELL) continue
 
@@ -205,6 +222,17 @@ class DisplayLevelFragment : Fragment() {
             containerList[position].addView(panelView)
         }
 
+    }
+
+    private fun spawnDisplaysInHolder(displayLocationInHolder: Stack<Int>) {
+        for ((position, panelNumber) in displayLocationInHolder.withIndex()) {
+
+            val panelView = getPanelView(position, panelNumber, SpawnMode.HOLDER)
+
+            panelViewsList.add(panelView)
+
+            binding.displayHolder.addView(panelView)
+        }
     }
 
     enum class SpawnMode {
@@ -234,7 +262,7 @@ class DisplayLevelFragment : Fragment() {
             panelView.setShadowElevation(600f)
         }
 
-        if (spawnMode == SpawnMode.MATRIX){
+        if (spawnMode == SpawnMode.MATRIX) {
             panelView.setStrokeWidth(2f)
         }
 
@@ -243,7 +271,7 @@ class DisplayLevelFragment : Fragment() {
         panelView.setShadowColorLight(resources.getColor(R.color.white_shadow))
         panelView.setShapeType(ShapeType.FLAT)
 
-        val bitmap: Bitmap? = stateHolder.bitmapMap.getOrElse(panelNumber) { null }
+        val bitmap: Bitmap? = stateHolder.bitmapMap.value.getOrElse(panelNumber) { null }
 
         if (bitmap != null) {
             panelView.setImageBitmap(bitmap)
