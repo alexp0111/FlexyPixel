@@ -50,9 +50,9 @@ class DisplayLevelFragment : Fragment() {
         stateHolder.getPanelsConfiguration()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
         stateHolder.sendPanelsConfiguration()
+        super.onStop()
     }
 
     override fun onCreateView(
@@ -68,7 +68,6 @@ class DisplayLevelFragment : Fragment() {
         setUpContainerList()
         setUpDragListeners()
         TEST_putDisplayImages()
-
         lifecycleScope.launch {
             stateHolder.apply {
                 val uiState = combine(
