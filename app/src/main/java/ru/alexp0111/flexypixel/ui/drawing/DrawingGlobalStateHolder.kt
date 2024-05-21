@@ -1,11 +1,13 @@
 package ru.alexp0111.flexypixel.ui.drawing
 
+import ru.alexp0111.flexypixel.data.DrawingColor
+
 interface DrawingGlobalStateHolder {
-    fun getPanelPixelsConfiguration()
+    fun getPanelPixelsConfiguration(panelPosition: Int): MutableList<DrawingColor>
 
-    fun getPanelPalette()
+    fun getPanelPalette(panelPosition: Int): MutableList<DrawingColor>
 
-    fun setPanelPixelsConfiguration()
+    fun updatePixelColorOnPosition(panelPosition: Int, color: DrawingColor, pixelPosition: Int)
 
-    fun setPanelPalette()
+    fun setPanelPalette(panelPosition: Int, updatedPalette: MutableList<DrawingColor>)
 }
