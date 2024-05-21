@@ -2,14 +2,31 @@ package ru.alexp0111.flexypixel.ui.drawing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import ru.alexp0111.flexypixel.ui.GlobalStateHandler
+import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
 
-class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsumer, StateHolder {
+@AssistedFactory
+interface DrawingViewModelFactory {
+    fun create(schemeId: Int?): DrawingViewModel
+}
+
+class DrawingViewModel @AssistedInject constructor(
+    @Assisted private val schemeId: Int?,
+    globalStateHandlerFactory: GlobalStateHandlerFactory,
+) : ViewModel(), DrawingActionConsumer, StateHolder {
+
+    private val globalStateHandler =
+        GlobalStateHandler.getInstance(globalStateHandlerFactory, schemeId)
 
     private val _actions: MutableSharedFlow<DrawingAction> by lazy {
         MutableSharedFlow(extraBufferCapacity = 1)
@@ -31,15 +48,52 @@ class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsume
         }
     }
 
-    private fun requestDisplayConfiguration(displayPosition: Int) {
-        /*TODO request uiState from GlobalStateHandler
-        consumeAction(DrawingAction.LoadDisplayConfiguration(uiState))
-         */
+    fun setPanelPosition(panelPosition: Int) {
+        _uiState.update {
+            it.copy(
+                panelPosition = panelPosition,
+            )
+        }
+    }
+
+    private fun requestDisplayConfiguration() {
+        val panelPosition = state.value.panelPosition
+        viewModelScope.launch(Dispatchers.IO) {
+            val pixelsUiState = DrawingUIState(
+                globalStateHandler.getPanelPixelsConfiguration(panelPosition),
+                globalStateHandler.getPanelPalette(panelPosition),
+            )
+            consumeAction(DrawingAction.LoadDisplayConfiguration(pixelsUiState))
+        }
+    }
+
+    private fun requestPaletteItemUpdate(colorChannel: ColorChannel, colorChannelValue: Int) {
+        val panelPosition = state.value.panelPosition
+        val newPalette = state.value.palette.toMutableList()
+        val chosenPaletteItem = state.value.chosenPaletteItem
+        newPalette[chosenPaletteItem] = when (colorChannel) {
+            ColorChannel.RED ->
+                newPalette[chosenPaletteItem].copy(r = colorChannelValue)
+
+            ColorChannel.GREEN ->
+                newPalette[chosenPaletteItem].copy(g = colorChannelValue)
+
+            ColorChannel.BLUE ->
+                newPalette[chosenPaletteItem].copy(b = colorChannelValue)
+        }
+        globalStateHandler.setPanelPalette(panelPosition, newPalette)
+        consumeAction(DrawingAction.PaletteItemColorUpdatedSuccessfully(newPalette))
     }
 
     private fun requestPixelColorUpdate(pixelPosition: Int) {
-        //TODO collect Flow from GlobalStateHandler
-        consumeAction(DrawingAction.PixelColorUpdatedSuccessfully(pixelPosition))
+        val panelPosition = state.value.panelPosition
+        val newColor = state.value.getCurrentDrawingColor()
+        globalStateHandler.updatePixelColorOnPosition(
+            panelPosition,
+            newColor,
+            pixelPosition,
+        )
+        consumeAction(DrawingAction.PixelColorUpdatedSuccessfully(newColor, pixelPosition))
     }
 
     override fun consumeAction(action: DrawingAction) {
@@ -48,10 +102,15 @@ class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsume
 
     private fun dispatchAction(state: DrawingUIState, action: DrawingAction) {
         when (action) {
-            is DrawingAction.RequestDisplayConfiguration -> requestDisplayConfiguration(action.displayPosition)
+            is DrawingAction.RequestDisplayConfiguration -> requestDisplayConfiguration()
             is DrawingAction.LoadDisplayConfiguration -> Unit
-            is DrawingAction.ChangePaletteItemColor -> Unit
             is DrawingAction.PickPaletteItem -> Unit
+            is DrawingAction.RequestChangePaletteItemColor -> requestPaletteItemUpdate(
+                action.colorChannel,
+                action.colorChannelValue
+            )
+
+            is DrawingAction.PaletteItemColorUpdatedSuccessfully -> Unit
             is DrawingAction.RequestPixelColorUpdate -> requestPixelColorUpdate(action.pixelPosition)
             is DrawingAction.PixelColorUpdatedSuccessfully -> Unit
         }
@@ -68,27 +127,18 @@ class DrawingViewModel @Inject constructor() : ViewModel(), DrawingActionConsume
                 chosenPaletteItem = action.paletteItemPosition
             )
 
-            is DrawingAction.ChangePaletteItemColor -> {
-                val newPalette = state.palette.toMutableList()
-                newPalette[state.chosenPaletteItem] = when (action.colorChannel) {
-                    ColorChannel.RED ->
-                        newPalette[state.chosenPaletteItem].copy(r = action.colorChannelValue)
+            is DrawingAction.RequestChangePaletteItemColor -> state
 
-                    ColorChannel.GREEN ->
-                        newPalette[state.chosenPaletteItem].copy(g = action.colorChannelValue)
-
-                    ColorChannel.BLUE ->
-                        newPalette[state.chosenPaletteItem].copy(b = action.colorChannelValue)
-                }
+            is DrawingAction.PaletteItemColorUpdatedSuccessfully -> {
                 state.copy(
-                    palette = newPalette
+                    palette = action.newPalette
                 )
             }
 
             is DrawingAction.RequestPixelColorUpdate -> state
             is DrawingAction.PixelColorUpdatedSuccessfully -> {
                 val newPixelPanel = state.pixelPanel.toMutableList()
-                newPixelPanel[action.pixelPosition] = state.getCurrentDrawingColor()
+                newPixelPanel[action.pixelPosition] = action.color
                 state.copy(
                     pixelPanel = newPixelPanel
                 )

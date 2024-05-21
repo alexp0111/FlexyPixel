@@ -3,14 +3,14 @@ package ru.alexp0111.flexypixel.ui.upperAbstractionLevel
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.databinding.FragmentUpperAbstractionLevelBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
@@ -21,7 +21,9 @@ import javax.inject.Inject
 class UpperAbstractionLevelFragment : Fragment() {
 
     @Inject
-    lateinit var stateHolder: UpperAbstractionLevelViewModel
+    lateinit var stateHolderFactory: UpperAbstractionLevelViewModelFactory
+
+    private var stateHolder: UpperAbstractionLevelViewModel? = null
 
     private var _binding: FragmentUpperAbstractionLevelBinding? = null
     private val binding get() = _binding!!
@@ -30,7 +32,8 @@ class UpperAbstractionLevelFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectSelf()
-        stateHolder.segmentImagesBitmapList
+        val schemeId = null // TODO: Get from arguments
+        stateHolder = stateHolderFactory.create(schemeId)
         super.onCreate(savedInstanceState)
     }
 
@@ -38,8 +41,8 @@ class UpperAbstractionLevelFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
+        stateHolder?.getSegmentsImages()
         _binding = FragmentUpperAbstractionLevelBinding.inflate(inflater, container, false)
         return (binding.root)
     }
@@ -50,7 +53,7 @@ class UpperAbstractionLevelFragment : Fragment() {
         setOnClickListenersToGridElements()
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                stateHolder.segmentImagesBitmapList.collect {
+                stateHolder?.segmentImagesBitmapList?.collect {
                     setSegmentsImages(it)
                 }
             }
@@ -78,7 +81,7 @@ class UpperAbstractionLevelFragment : Fragment() {
         binding.apply {
             for (view in segmentsList) {
                 view.setOnClickListener {
-                    //There must be navigation logic
+                    Toast.makeText(requireContext(), "Tapped", Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.alexp0111.flexypixel.bluetooth.MessageFrame
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
+import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
 import ru.alexp0111.flexypixel.databinding.FragmentTestBinding
@@ -158,6 +159,7 @@ class TestFragment : Fragment() {
                     absoluteX = 0,
                     absoluteY = 0,
                     rotation = 0,
+                    palette = MutableList(PanelMetaData.PALETTE_SIZE) { DrawingColor(0, 0, 0) }
                 )
             )
             mediaFilesProcessor.handleIncomingMedia(it, metadataList)
