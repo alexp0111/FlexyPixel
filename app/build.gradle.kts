@@ -75,4 +75,7 @@ dependencies {
     androidTestImplementation(uiTestDeps.espresso)
     androidTestImplementation(uiTestDeps.rules)
     androidTestImplementation(uiTestDeps.runner)
+
+    /** Documentation */
+    implementation(docs.kotlinDoc)
 }
