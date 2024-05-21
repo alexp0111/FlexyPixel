@@ -113,7 +113,7 @@ class DisplayLevelFragment : Fragment() {
                 this[2] = BitmapFactory.decodeResource(resources, R.drawable.c2)
                 this[3] = BitmapFactory.decodeResource(resources, R.drawable.c3)
                 this[4] = BitmapFactory.decodeResource(resources, R.drawable.c4)
-                //mapMap[5] = BitmapFactory.decodeResource(resources, R.drawable.c5)
+                this[5] = BitmapFactory.decodeResource(resources, R.drawable.c5)
                 this[6] = BitmapFactory.decodeResource(resources, R.drawable.c6)
                 this[7] = BitmapFactory.decodeResource(resources, R.drawable.c7)
                 this[8] = BitmapFactory.decodeResource(resources, R.drawable.c8)
