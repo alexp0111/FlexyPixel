@@ -7,6 +7,7 @@ data class FrameCycle(
     var frames: MutableList<Frame>
 ) {
     companion object {
+
         private const val DEFAULT_FRAMES_AMOUNT = 1
         private const val DEFAULT_INTERFRAME_DELAY = 1000
 
