@@ -17,7 +17,7 @@ import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
 
 @AssistedFactory
 interface DrawingViewModelFactory {
-    fun create(schemeId: Int?): DrawingViewModel
+    fun create(schemeId: Int? = null): DrawingViewModel
 }
 
 class DrawingViewModel @AssistedInject constructor(
