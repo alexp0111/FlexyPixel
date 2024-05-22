@@ -99,7 +99,10 @@ class GlobalStateHandler @AssistedInject constructor(
     /*
     * TODO: Test case with reordering panels. Should we allow it?
     * */
-    override fun setPanelsConfiguration(orderToXAndY: MutableMap<Int, Pair<Int, Int>>) {
+    override fun setPanelsConfiguration(
+        segmentNumber: Int,
+        orderToXAndY: MutableMap<Int, Pair<Int, Int>>,
+    ) {
         orderToXAndY.toSortedMap().forEach {
             val order = it.key
             val absoluteX = it.value.first
@@ -129,13 +132,13 @@ class GlobalStateHandler @AssistedInject constructor(
                 }
             }
         }
-        handleRemovedPanels(orderToXAndY)
+        handleRemovedPanels(segmentNumber, orderToXAndY)
         handleRotation()
     }
 
-    private fun handleRemovedPanels(orderToXAndY: MutableMap<Int, Pair<Int, Int>>) {
+    private fun handleRemovedPanels(segmentNumber: Int, orderToXAndY: MutableMap<Int, Pair<Int, Int>>) {
         for (panel in frameCycle.configuration.listOfMetaData) {
-            if (panel.order !in orderToXAndY.keys) {
+            if (panel.order !in orderToXAndY.keys && panel.segment == segmentNumber) {
                 removePanelsWithOrderAndHigher(panel.order)
                 break
             }
@@ -212,7 +215,7 @@ class GlobalStateHandler @AssistedInject constructor(
         pixelPosition: Int
     ) {
         if (!isPanelPositionCorrect(panelPosition)) return
-        frameCycle.frames.forEachIndexed { index, frame ->
+        frameCycle.frames.onEachIndexed { index, frame ->
             frame.panels[panelPosition].pixels[pixelPosition] = color.asString()
         }
         // TODO: Send info to DB

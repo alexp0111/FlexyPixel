@@ -6,7 +6,6 @@ import android.content.ClipDescription
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.view.DragEvent
@@ -31,6 +30,7 @@ import soup.neumorphism.ShapeType
 import java.util.Stack
 import javax.inject.Inject
 
+private const val SEGMENT_NUMBER_KEY = "SEGMENT_NUMBER_KEY"
 
 class DisplayLevelFragment : Fragment() {
 
@@ -52,12 +52,6 @@ class DisplayLevelFragment : Fragment() {
         super.onCreate(savedInstanceState)
         injectSelf()
         stateHolder = stateHolderFactory.create()
-        stateHolder?.getPanelsConfiguration()
-    }
-
-    override fun onStop() {
-        stateHolder?.sendPanelsConfiguration()
-        super.onStop()
     }
 
     override fun onCreateView(
@@ -65,6 +59,8 @@ class DisplayLevelFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDisplayLevelBinding.inflate(inflater, container, false)
+        val segmentNumber = arguments?.getInt(SEGMENT_NUMBER_KEY) ?: 0
+        stateHolder?.getPanelsConfiguration(segmentNumber)
         return binding.root
     }
 
@@ -278,6 +274,9 @@ class DisplayLevelFragment : Fragment() {
             it.visibility = View.INVISIBLE
             true
         }
+        panelView.setOnClickListener {
+            stateHolder?.goToDrawingFragment(panelNumber)
+        }
         return panelView
     }
 
@@ -307,13 +306,30 @@ class DisplayLevelFragment : Fragment() {
         _binding = null
     }
 
+    override fun onStop() {
+        val segmentNumber = arguments?.getInt(SEGMENT_NUMBER_KEY) ?: 0
+        stateHolder?.sendPanelsConfiguration(segmentNumber)
+        panelViewsList.clear()
+        containerList.clear()
+        super.onStop()
+    }
+
     enum class CardMode {
         FLAT,
         RAISED
     }
 
+    companion object {
+        fun newInstance(segmentNumber: Int): DisplayLevelFragment {
+            return DisplayLevelFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(SEGMENT_NUMBER_KEY, segmentNumber)
+                }
+            }
+        }
+    }
+
     private fun injectSelf() {
         FragmentComponent.from(this).inject(this)
     }
-
 }

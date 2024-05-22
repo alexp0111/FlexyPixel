@@ -3,6 +3,7 @@ package ru.alexp0111.flexypixel.ui.displayLevel
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.terrakok.cicerone.Router
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.ui.EMPTY_CELL
 import ru.alexp0111.flexypixel.ui.GlobalStateHandler
 import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
@@ -25,6 +27,7 @@ interface DisplayLevelViewModelFactory {
 class DisplayLevelViewModel @AssistedInject constructor(
     @Assisted private val schemeId: Int?,
     globalStateHandlerFactory: GlobalStateHandlerFactory,
+    private val router: Router,
 ) : ViewModel() {
 
     private val globalStateHandler =
@@ -35,16 +38,11 @@ class DisplayLevelViewModel @AssistedInject constructor(
     var displayLocationInHolder = MutableStateFlow(Stack<Int>())
     var bitmapMap: MutableStateFlow<MutableMap<Int, Bitmap>> = MutableStateFlow(mutableMapOf())
 
-    companion object {
-        const val HOLDER_POSITION = -1
-        const val DESTINATION_IS_HOLDER = -1
-    }
-
-    fun getPanelsConfiguration() {
+    fun getPanelsConfiguration(segmentNumber: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            getDisplayMatrix()
+            getDisplayMatrix(segmentNumber)
             getDisplayHolder()
-            getDisplayImages()
+            getDisplayImages(segmentNumber)
         }
     }
 
@@ -71,13 +69,13 @@ class DisplayLevelViewModel @AssistedInject constructor(
         displayLocationInHolder.value.push(panelNumber)
     }
 
-    private fun getDisplayImages(segmentNum: Int = 0) {
+    private fun getDisplayImages(segmentNum: Int) {
         bitmapMap.update {
             globalStateHandler.getPanelsImages(segmentNum)
         }
     }
 
-    private fun getDisplayMatrix(segmentNum: Int = 0) {
+    private fun getDisplayMatrix(segmentNum: Int) {
         displayLocationInMatrix.update {
             globalStateHandler.getPanelsConfiguration(segmentNum)
         }
@@ -94,10 +92,10 @@ class DisplayLevelViewModel @AssistedInject constructor(
         }
     }
 
-    fun sendPanelsConfiguration(segmentNum: Int = 0) {
+    fun sendPanelsConfiguration(segmentNum: Int) {
         val configuration = getPanelsAbsoluteConfiguration(segmentNum)
         viewModelScope.launch(Dispatchers.IO) {
-            globalStateHandler.setPanelsConfiguration(configuration)
+            globalStateHandler.setPanelsConfiguration(segmentNum, configuration)
         }
     }
 
@@ -110,12 +108,20 @@ class DisplayLevelViewModel @AssistedInject constructor(
         }
     }
 
+    fun goToDrawingFragment(panelNumber: Int) {
+        router.navigateTo(Screens.DrawingScreen(panelNumber))
+    }
 
     //test function
     override fun toString(): String {
         var s = displayLocationInMatrix.value.toString()
         s += displayLocationInHolder.value.reversed().toString()
         return s
+    }
+
+    companion object {
+        const val HOLDER_POSITION = -1
+        const val DESTINATION_IS_HOLDER = -1
     }
 
 }
