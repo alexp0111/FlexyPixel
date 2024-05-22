@@ -129,6 +129,7 @@
         <item name="android:layout_marginTop">@dimen/sliders_top_margin</item>
         <item name="android:orientation">horizontal</item>
     </style>
+
     <style name="drawingModeCard">
         <item name="neumorph_shapeType">flat</item>
         <item name="neumorph_shadowColorDark">@color/darker_beige</item>
@@ -232,5 +233,36 @@
         <item name="android:fontFamily">@font/roboto_mono</item>
     </style>
     <!-- Slider styles!-->
+
+    <style name="RegularText">
+        <item name="fontFamily">@font/roboto_mono</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="RegularText.Level3">
+        <item name="android:textSize">@dimen/level3_text_size</item>
+    </style>
+
+
+    <style name="RecyclerView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginTop">@dimen/rv_top_margin</item>
+    </style>
+
+    <style name="SavedSchemesItem_Card">
+        <item name="android:layout_width">@dimen/card_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="neumorph_shadowColorLight">@color/white_shadow</item>
+        <item name="neumorph_shadowColorDark">@color/darker_beige</item>
+    </style>
+
+    <style name="SavedSchemesItem_Text" parent="RegularText.Level3">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginHorizontal">@dimen/rv_text_margin_horizontal</item>
+        <item name="android:layout_marginVertical">@dimen/rv_text_margin_vertical</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
 </resources>

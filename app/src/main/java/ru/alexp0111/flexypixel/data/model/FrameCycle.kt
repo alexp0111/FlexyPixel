@@ -4,7 +4,7 @@ data class FrameCycle(
     var configuration: PanelConfiguration,
     var framesAmount: Int,
     var interframeDelay: Int,
-    var frames: MutableList<Frame>,
+    var frames: MutableList<Frame>
 ) {
     companion object {
 
@@ -16,7 +16,7 @@ data class FrameCycle(
                 configuration = PanelConfiguration(mutableListOf()),
                 framesAmount = DEFAULT_FRAMES_AMOUNT,
                 interframeDelay = DEFAULT_INTERFRAME_DELAY,
-                frames = mutableListOf(Frame(mutableListOf())),
+                frames = mutableListOf(Frame(mutableListOf()))
             )
         }
     }
