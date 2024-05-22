@@ -42,8 +42,7 @@ class DrawingFragment @Inject constructor() : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectSelf()
-        val schemeId = null // TODO: get from args
-        stateHolder = stateHolderFactory.create(schemeId)
+        stateHolder = stateHolderFactory.create()
         val panelPosition = 0 // TODO: get from args
         stateHolder?.setPanelPosition(panelPosition)
         super.onCreate(savedInstanceState)

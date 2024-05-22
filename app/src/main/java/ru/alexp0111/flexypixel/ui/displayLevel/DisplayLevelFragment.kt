@@ -11,7 +11,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.DragEvent
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +18,14 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.view.setPadding
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentDisplayLevelBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
+import ru.alexp0111.flexypixel.ui.EMPTY_CELL
 import soup.neumorphism.NeumorphImageView
 import soup.neumorphism.ShapeType
 import java.util.Stack
@@ -32,8 +33,11 @@ import javax.inject.Inject
 
 
 class DisplayLevelFragment : Fragment() {
+
     @Inject
-    lateinit var stateHolder: DisplayLevelViewModel
+    lateinit var stateHolderFactory: DisplayLevelViewModelFactory
+
+    private var stateHolder: DisplayLevelViewModel? = null
 
     private var _binding: FragmentDisplayLevelBinding? = null
     private val binding get() = _binding!!
@@ -47,11 +51,12 @@ class DisplayLevelFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injectSelf()
-        stateHolder.getPanelsConfiguration()
+        stateHolder = stateHolderFactory.create()
+        stateHolder?.getPanelsConfiguration()
     }
 
     override fun onStop() {
-        stateHolder.sendPanelsConfiguration()
+        stateHolder?.sendPanelsConfiguration()
         super.onStop()
     }
 
@@ -67,9 +72,8 @@ class DisplayLevelFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpContainerList()
         setUpDragListeners()
-        TEST_putDisplayImages()
         lifecycleScope.launch {
-            stateHolder.apply {
+            stateHolder?.apply {
                 val uiState = combine(
                     displayLocationInHolder,
                     displayLocationInMatrix,
@@ -102,24 +106,6 @@ class DisplayLevelFragment : Fragment() {
             containerList.add(card7)
             containerList.add(card8)
             containerList.add(card9)
-        }
-    }
-
-    //test function
-    private fun TEST_putDisplayImages() {
-        stateHolder.apply {
-            bitmapMap.value.apply {
-                this[1] = BitmapFactory.decodeResource(resources, R.drawable.c1)
-                this[2] = BitmapFactory.decodeResource(resources, R.drawable.c2)
-                this[3] = BitmapFactory.decodeResource(resources, R.drawable.c3)
-                this[4] = BitmapFactory.decodeResource(resources, R.drawable.c4)
-                this[5] = BitmapFactory.decodeResource(resources, R.drawable.c5)
-                this[6] = BitmapFactory.decodeResource(resources, R.drawable.c6)
-                this[7] = BitmapFactory.decodeResource(resources, R.drawable.c7)
-                this[8] = BitmapFactory.decodeResource(resources, R.drawable.c8)
-                this[9] = BitmapFactory.decodeResource(resources, R.drawable.c9)
-            }
-
         }
     }
 
@@ -174,18 +160,18 @@ class DisplayLevelFragment : Fragment() {
 
                         //если вытаскиваем из нижней ячейки
                         if (ownerPosition == DisplayLevelViewModel.HOLDER_POSITION) {
-                            stateHolder.fromHolderToMatrix(destinationPosition)
+                            stateHolder?.fromHolderToMatrix(destinationPosition)
                         }
                         //если вытаскиваем из ячейки с позицией ownerPosition
                         else {
-                            stateHolder.fromMatrixToMatrix(ownerPosition, destinationPosition)
+                            stateHolder?.fromMatrixToMatrix(ownerPosition, destinationPosition)
                         }
                     }
                     //если вытаскиваем из ячейки с позицией ownerPosition и передаем в нижнюю ячейку
                     else if (cardMode == CardMode.RAISED) {
                         if (view.childCount == 1) draggedView.setShadowElevation(9f)
                         draggedView.setStrokeWidth(0f)
-                        stateHolder.fromMatrixToHolder(ownerPosition)
+                        stateHolder?.fromMatrixToHolder(ownerPosition)
                     }
 
                     owner.removeView(draggedView)
@@ -212,7 +198,7 @@ class DisplayLevelFragment : Fragment() {
     private fun spawnDisplaysInMatrix(displayLocationInMatrix: MutableList<Int>) {
         for ((position, panelNumber) in displayLocationInMatrix.withIndex()) {
 
-            if (panelNumber == DisplayLevelViewModel.EMPTY_CELL) continue
+            if (panelNumber == EMPTY_CELL) continue
 
             val panelView = getPanelView(position, panelNumber, SpawnMode.MATRIX)
 
@@ -270,7 +256,7 @@ class DisplayLevelFragment : Fragment() {
         panelView.setShadowColorLight(resources.getColor(R.color.white_shadow))
         panelView.setShapeType(ShapeType.FLAT)
 
-        val bitmap: Bitmap? = stateHolder.bitmapMap.value.getOrElse(panelNumber) { null }
+        val bitmap: Bitmap? = stateHolder?.bitmapMap?.value?.getOrElse(panelNumber) { null }
 
         if (bitmap != null) {
             panelView.setImageBitmap(bitmap)
