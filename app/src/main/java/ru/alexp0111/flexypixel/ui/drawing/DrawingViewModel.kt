@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.ui.GlobalStateHandler
 import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
@@ -49,19 +48,15 @@ class DrawingViewModel @AssistedInject constructor(
     }
 
     fun setPanelPosition(panelPosition: Int) {
-        _uiState.update {
-            it.copy(
-                panelPosition = panelPosition,
-            )
-        }
+        _uiState.value = state.value.copy(panelPosition = panelPosition)
     }
 
     private fun requestDisplayConfiguration() {
         val panelPosition = state.value.panelPosition
         viewModelScope.launch(Dispatchers.IO) {
-            val pixelsUiState = DrawingUIState(
-                globalStateHandler.getPanelPixelsConfiguration(panelPosition),
-                globalStateHandler.getPanelPalette(panelPosition),
+            val pixelsUiState = state.value.copy(
+                pixelPanel = globalStateHandler.getPanelPixelsConfiguration(panelPosition),
+                palette = globalStateHandler.getPanelPalette(panelPosition),
             )
             consumeAction(DrawingAction.LoadDisplayConfiguration(pixelsUiState))
         }

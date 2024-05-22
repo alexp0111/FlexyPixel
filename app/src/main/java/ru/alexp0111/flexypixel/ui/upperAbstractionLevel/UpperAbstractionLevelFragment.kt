@@ -1,14 +1,11 @@
 package ru.alexp0111.flexypixel.ui.upperAbstractionLevel
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -62,12 +59,18 @@ class UpperAbstractionLevelFragment : Fragment() {
                 }
             }
         }
+        binding.apply {
+            saveBtn.setOnClickListener {
+                // TODO: Save globalState to DB
+            }
+        }
     }
 
     private fun fillUpSegmentsAndImagesList() {
         binding.apply {
             segmentsList = listOf(card1, card2, card3, card4, card5, card6, card7, card8, card9)
-            imageViewsList = listOf(image1,image2,image3,image4,image5,image6,image7,image8,image9)
+            imageViewsList =
+                listOf(image1, image2, image3, image4, image5, image6, image7, image8, image9)
         }
     }
 
@@ -83,9 +86,9 @@ class UpperAbstractionLevelFragment : Fragment() {
 
     private fun setOnClickListenersToGridElements() {
         binding.apply {
-            for (view in segmentsList) {
+            segmentsList.forEachIndexed { segmentNumber, view ->
                 view.setOnClickListener {
-                    Toast.makeText(requireContext(), "Tapped", Toast.LENGTH_SHORT).show()
+                    stateHolder?.goToDisplayLevel(segmentNumber)
                 }
             }
         }

@@ -9,6 +9,7 @@ import com.github.terrakok.cicerone.Router
 import ru.alexp0111.flexypixel.databinding.FragmentMenuBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import ru.alexp0111.flexypixel.navigation.Screens
+import ru.alexp0111.flexypixel.ui.GlobalStateHandler
 import javax.inject.Inject
 
 private const val TAG = "MenuFragment"
@@ -35,17 +36,22 @@ class MenuFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
-        super.onViewCreated(view , savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.cardNewScheme.setOnClickListener {
             router.navigateTo(Screens.UpperAbstractionLevelScreen())
         }
         binding.cardSavedScheme.setOnClickListener {
-            router.navigateTo(Screens.DisplayLevelScreen())
+            router.navigateTo(Screens.SavedSchemesScreen())
         }
         binding.cardTemplate.setOnClickListener {
-            router.navigateTo(Screens.DrawingScreen())
+            // router.navigateTo(Screens.DrawingScreen())
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        GlobalStateHandler.reset()
     }
 
     override fun onDestroy() {

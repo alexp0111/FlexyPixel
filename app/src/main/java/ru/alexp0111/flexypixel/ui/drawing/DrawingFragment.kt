@@ -20,6 +20,7 @@ import javax.inject.Inject
 
 private const val RADIUS_RATIO = 5
 private const val MARGINS_RATIO = 12
+private const val PANEL_NUMBER_KEY = "PANEL_NUMBER_KEY"
 
 class DrawingFragment @Inject constructor() : Fragment() {
 
@@ -43,7 +44,7 @@ class DrawingFragment @Inject constructor() : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         injectSelf()
         stateHolder = stateHolderFactory.create()
-        val panelPosition = 0 // TODO: get from args
+        val panelPosition = arguments?.getInt(PANEL_NUMBER_KEY) ?: 0
         stateHolder?.setPanelPosition(panelPosition)
         super.onCreate(savedInstanceState)
     }
@@ -188,5 +189,15 @@ class DrawingFragment @Inject constructor() : Fragment() {
 
     private fun injectSelf() {
         FragmentComponent.from(this).inject(this)
+    }
+
+    companion object {
+        fun newInstance(panelNumber: Int): DrawingFragment {
+            return DrawingFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(PANEL_NUMBER_KEY, panelNumber)
+                }
+            }
+        }
     }
 }
