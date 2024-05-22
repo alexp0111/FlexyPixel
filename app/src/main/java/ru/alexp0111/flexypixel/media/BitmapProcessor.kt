@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import androidx.core.graphics.set
+import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
@@ -79,5 +81,13 @@ object BitmapProcessor {
                 }
             }
         }.toTypedArray()
+    }
+
+    fun convertPixelStringMatrixToBitmap(pixels: Array<String>): Bitmap {
+        return Bitmap.createBitmap(8, 8, Bitmap.Config.ARGB_8888) .apply {
+            pixels.forEachIndexed { index, str ->
+                set(index % 8, index / 8, DrawingColor.getFromString(str).toColor())
+            }
+        }
     }
 }
