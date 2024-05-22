@@ -79,5 +79,4 @@ class SavedSchemesFragment : Fragment() {
         FragmentComponent.from(this).inject(this)
     }
 
-
 }
