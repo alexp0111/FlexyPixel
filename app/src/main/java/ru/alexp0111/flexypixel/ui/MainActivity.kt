@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // TODO: REMOVE AFTER TEST
-        router.replaceScreen(Screens.MenuScreen())
+        router.replaceScreen(Screens.SavedSchemesScreen())
     }
 
     override fun onResume() {

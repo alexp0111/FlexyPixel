@@ -8,6 +8,7 @@ import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelFra
 
 
 import ru.alexp0111.flexypixel.ui.menu.MenuFragment
+import ru.alexp0111.flexypixel.ui.savedScheme.SavedSchemesFragment
 import ru.alexp0111.flexypixel.ui.start.resolve_screen.StartFragment
 import ru.alexp0111.flexypixel.ui.start.device_pairing.SearchBluetoothDevicesFragment
 import ru.alexp0111.flexypixel.ui.templates.TemplatesFragment
@@ -49,5 +50,9 @@ object Screens {
 
     fun DrawingScreen() = FragmentScreen{
         DrawingFragment()
+    }
+
+    fun SavedSchemesScreen() = FragmentScreen{
+        SavedSchemesFragment()
     }
 }

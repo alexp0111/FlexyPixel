@@ -96,5 +96,4 @@ class UpperAbstractionLevelFragment : Fragment() {
         FragmentComponent.from(this).inject(this)
     }
 
-
 }

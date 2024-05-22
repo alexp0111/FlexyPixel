@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/beige">
+
+    <soup.neumorphism.NeumorphCardView
+        android:id="@+id/item_card"
+        style="@style/SavedSchemesItem_Card">
+
+        <soup.neumorphism.NeumorphTextView
+            android:id="@+id/scheme_name"
+            style="@style/SavedSchemesItem_Text" />
+    </soup.neumorphism.NeumorphCardView>
+
+</FrameLayout>
