@@ -1,14 +1,17 @@
 package ru.alexp0111.flexypixel.ui.test
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
 import com.github.terrakok.cicerone.Router
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -16,11 +19,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.alexp0111.flexypixel.bluetooth.MessageFrame
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
-import ru.alexp0111.flexypixel.data.model.Panel
+import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
+import ru.alexp0111.flexypixel.data.model.PanelMetaData
 import ru.alexp0111.flexypixel.databinding.FragmentTestBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
+import ru.alexp0111.flexypixel.media.BitmapProcessor
+import ru.alexp0111.flexypixel.media.MediaFilesProcessor
 import javax.inject.Inject
+
 
 private const val TAG = "TestFragment"
 
@@ -31,6 +38,9 @@ class TestFragment : Fragment() {
 
     @Inject
     lateinit var messageHandler: MessageHandler
+
+    @Inject
+    lateinit var mediaFilesProcessor: MediaFilesProcessor
 
     private var pixel = 0
     private var testNumOfPanels = 0
@@ -125,13 +135,54 @@ class TestFragment : Fragment() {
                 }
                 messageHandler.updateConfiguration(curConfig)
             }
+
+            btnLoadMedia.setOnClickListener {
+                requestDataFromSystemProvider()
+            }
         }
         return binding.root
     }
 
+    private val pickMediaFromDevicesLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        val uri = result.data?.data
+        uri?.let {
+            Log.d(TAG, it.toString())
+            Glide.with(requireContext()).load(it).into(
+                binding.ivLoadedData
+            )
+            val metadataList = listOf(
+                PanelMetaData(
+                    order = 0,
+                    type = PanelMetaData.TYPE_64,
+                    absoluteX = 0,
+                    absoluteY = 0,
+                    rotation = 0,
+                    palette = MutableList(PanelMetaData.PALETTE_SIZE) { DrawingColor(0, 0, 0) }
+                )
+            )
+            mediaFilesProcessor.handleIncomingMedia(it, metadataList)
+        }
+    }
+
+    private fun requestDataFromSystemProvider() {
+        try {
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "*/*"
+                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "gif/*"))
+            }
+            pickMediaFromDevicesLauncher.launch(intent)
+        } catch (e: Exception) {
+            Log.d(TAG, e.toString())
+        }
+    }
+
+
     private fun getTestFrames(numberOfFrames: Int): List<MessageFrame> {
         val framesList = mutableListOf<MessageFrame>()
-        val basicFrame = Array(testNumOfPanels) { Array(Panel.TYPE_64) { "000" } }
+        val basicFrame = Array(testNumOfPanels) { Array(PanelMetaData.TYPE_64) { "000" } }
         for (i in 0 until numberOfFrames) {
             for (panelIndex in basicFrame.indices) {
                 basicFrame[panelIndex][i] = "090"
@@ -163,6 +214,16 @@ class TestFragment : Fragment() {
                                 it,
                                 Snackbar.LENGTH_SHORT,
                             ).show()
+                        }
+                    }
+                }
+
+                launch {
+                    mediaFilesProcessor.bitmaps.collect { bitmapList ->
+                        bitmapList.forEachIndexed { index, bitmap ->
+                            val bitmapAsString = BitmapProcessor.convertBitmapToPixelStringMatrix(bitmap)
+                            // BitmapProcessor.applyBitmapToFrame()
+                            // messageHandler.sendFrames(listOf(MessageFrame(bitmapAsString)), 1000)
                         }
                     }
                 }

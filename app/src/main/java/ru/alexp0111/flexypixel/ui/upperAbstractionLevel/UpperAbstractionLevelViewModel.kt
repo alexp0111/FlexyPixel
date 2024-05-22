@@ -2,21 +2,39 @@ package ru.alexp0111.flexypixel.ui.upperAbstractionLevel
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import javax.inject.Inject
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import ru.alexp0111.flexypixel.data.model.PanelConfiguration
+import ru.alexp0111.flexypixel.ui.GlobalStateHandler
+import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
 
-class UpperAbstractionLevelViewModel @Inject constructor() :
-    ViewModel() {
+@AssistedFactory
+interface UpperAbstractionLevelViewModelFactory {
+    fun create(schemeId: Int?): UpperAbstractionLevelViewModel
+}
+
+class UpperAbstractionLevelViewModel @AssistedInject constructor(
+    @Assisted private val schemeId: Int?,
+    globalStateHandlerFactory: GlobalStateHandlerFactory,
+) : ViewModel() {
+
+    private val globalStateHandler =
+        GlobalStateHandler.getInstance(globalStateHandlerFactory, schemeId)
+
     val segmentImagesBitmapList: MutableStateFlow<List<Bitmap?>> =
-        MutableStateFlow(MutableList(SEGMENTS_NUMBER) { null })
+        MutableStateFlow(MutableList(PanelConfiguration.MAX_SIZE) { null })
 
-
-
-    companion object {
-        const val SEGMENTS_NUMBER = 9
-    }
-
-    fun getSegmentsImages(){
-        //TODO collect images
+    fun getSegmentsImages() {
+        viewModelScope.launch(Dispatchers.IO) {
+            segmentImagesBitmapList.update {
+                globalStateHandler.getSegmentsBitmapImages()
+            }
+        }
     }
 }

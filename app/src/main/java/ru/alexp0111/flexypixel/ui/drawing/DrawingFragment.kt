@@ -2,12 +2,12 @@ package ru.alexp0111.flexypixel.ui.drawing
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import androidx.core.view.setMargins
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -24,7 +24,9 @@ private const val MARGINS_RATIO = 12
 class DrawingFragment @Inject constructor() : Fragment() {
 
     @Inject
-    lateinit var stateHolder: DrawingViewModel
+    lateinit var stateHolderFactory: DrawingViewModelFactory
+
+    private var stateHolder: DrawingViewModel? = null
 
     private var _binding: FragmentDrawingBinding? = null
     private val binding get() = _binding!!
@@ -38,18 +40,21 @@ class DrawingFragment @Inject constructor() : Fragment() {
         resources.getDimension(R.dimen.pixel_card_size).toInt()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        injectSelf()
+        val schemeId = null // TODO: get from args
+        stateHolder = stateHolderFactory.create(schemeId)
+        val panelPosition = 0 // TODO: get from args
+        stateHolder?.setPanelPosition(panelPosition)
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentDrawingBinding.inflate(inflater, container, false)
-
         return binding.root
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        injectSelf()
-        super.onCreate(savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,24 +64,25 @@ class DrawingFragment @Inject constructor() : Fragment() {
         setPaletteOnClick()
         fillUpDrawingPanel()
         setUpSlidersOnChanged()
+        stateHolder?.consumeAction(DrawingAction.RequestDisplayConfiguration)
         subscribeUI()
     }
 
     private fun setUpSlidersOnChanged() {
         binding.apply {
-            sliderRed.addOnChangeListener { slider, value, fromUser ->
-                stateHolder.consumeAction(
-                    DrawingAction.ChangePaletteItemColor(ColorChannel.RED, value.toInt())
+            sliderRed.addOnChangeListener { _, value, _ ->
+                stateHolder?.consumeAction(
+                    DrawingAction.RequestChangePaletteItemColor(ColorChannel.RED, value.toInt())
                 )
             }
-            sliderGreen.addOnChangeListener { slider, value, fromUser ->
-                stateHolder.consumeAction(
-                    DrawingAction.ChangePaletteItemColor(ColorChannel.GREEN, value.toInt())
+            sliderGreen.addOnChangeListener { _, value, _ ->
+                stateHolder?.consumeAction(
+                    DrawingAction.RequestChangePaletteItemColor(ColorChannel.GREEN, value.toInt())
                 )
             }
-            sliderBlue.addOnChangeListener { slider, value, fromUser ->
-                stateHolder.consumeAction(
-                    DrawingAction.ChangePaletteItemColor(ColorChannel.BLUE, value.toInt())
+            sliderBlue.addOnChangeListener { _, value, _ ->
+                stateHolder?.consumeAction(
+                    DrawingAction.RequestChangePaletteItemColor(ColorChannel.BLUE, value.toInt())
                 )
             }
         }
@@ -85,7 +91,7 @@ class DrawingFragment @Inject constructor() : Fragment() {
     private fun setPaletteOnClick() {
         for ((index, paletteItem) in paletteList.withIndex()) {
             paletteItem.setOnClickListener {
-                stateHolder.consumeAction(DrawingAction.PickPaletteItem(index))
+                stateHolder?.consumeAction(DrawingAction.PickPaletteItem(index))
             }
         }
     }
@@ -128,7 +134,7 @@ class DrawingFragment @Inject constructor() : Fragment() {
                 pixel.layoutParams = params
 
                 pixel.setOnClickListener {
-                    stateHolder.consumeAction(DrawingAction.RequestPixelColorUpdate(pixelPosition = i))
+                    stateHolder?.consumeAction(DrawingAction.RequestPixelColorUpdate(pixelPosition = i))
                 }
 
                 pixels.add(pixel)
@@ -142,7 +148,7 @@ class DrawingFragment @Inject constructor() : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    stateHolder.state.collect { state: DrawingUIState ->
+                    stateHolder?.state?.collect { state: DrawingUIState ->
 
                         for ((index, pixel) in pixels.withIndex()) {
                             pixel.setCardBackgroundColor(state.pixelPanel[index].toColor())

@@ -1,23 +1,25 @@
 package ru.alexp0111.flexypixel.data.model
 
+import ru.alexp0111.flexypixel.bluetooth.MessagePanelConfiguration
+import ru.alexp0111.flexypixel.bluetooth.utils.MessageConverter
+
 data class PanelConfiguration(
-    private val configuration: Array<String> = Array(MAX_SIZE) { "000" },
+    var listOfMetaData: MutableList<PanelMetaData>,
 ) {
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as PanelConfiguration
-
-        return configuration.contentEquals(other.configuration)
+    fun getPanelMetaDataByCoordinates(x: Int, y: Int): PanelMetaData? {
+        return listOfMetaData.find { it.absoluteX == x && it.absoluteY == y }
     }
 
-    override fun hashCode(): Int {
-        return configuration.contentHashCode()
+    fun asMessage(): MessagePanelConfiguration {
+        val arrayOfTypes = Array(MAX_SIZE) { "000" }
+        listOfMetaData.forEachIndexed { index, panelMetaData ->
+            arrayOfTypes[index] = MessageConverter.convert(panelMetaData.type)
+        }
+        return MessagePanelConfiguration(arrayOfTypes.joinToString(""))
     }
 
-    companion object{
+    companion object {
         const val MAX_SIZE = 9
     }
 }
