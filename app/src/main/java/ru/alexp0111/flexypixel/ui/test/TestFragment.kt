@@ -120,7 +120,7 @@ class TestFragment : Fragment() {
             btnSendFrames.setOnClickListener {
                 val numberOfFrames = etNumberOfFrames.text.toString().toInt()
                 val interframeDelay = etInterfameDelay.text.toString().toInt()
-                messageHandler.sendFrames(
+                messageHandler.sendMessageFrames(
                     getTestFrames(numberOfFrames),
                     interframeDelay,
                 )

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,9 +15,11 @@ import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentUpperAbstractionLevelBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
+import ru.alexp0111.flexypixel.ui.menu.NEW_SCHEME_CODE
 import soup.neumorphism.NeumorphCardView
 import javax.inject.Inject
 
+private const val SCHEME_ID_KEY = "SCHEME_ID_KEY"
 
 class UpperAbstractionLevelFragment : Fragment() {
 
@@ -33,7 +36,8 @@ class UpperAbstractionLevelFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectSelf()
-        val schemeId = null // TODO: Get from arguments
+        var schemeId = arguments?.getInt(SCHEME_ID_KEY, NEW_SCHEME_CODE)
+        if (schemeId == NEW_SCHEME_CODE) schemeId = null
         stateHolder = stateHolderFactory.create(schemeId)
         super.onCreate(savedInstanceState)
     }
@@ -44,6 +48,7 @@ class UpperAbstractionLevelFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         stateHolder?.getSegmentsImages()
+        stateHolder?.getTitle()
         _binding = FragmentUpperAbstractionLevelBinding.inflate(inflater, container, false)
         return (binding.root)
     }
@@ -54,14 +59,29 @@ class UpperAbstractionLevelFragment : Fragment() {
         setOnClickListenersToGridElements()
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                stateHolder?.segmentImagesBitmapList?.collect {
-                    setSegmentsImages(it)
+                launch {
+                    stateHolder?.segmentImagesBitmapList?.collect {
+                        setSegmentsImages(it)
+                    }
+                }
+                launch {
+                    stateHolder?.title?.collect {
+                        if (it != null) {
+                            binding.heading.setText(it)
+                        }
+                    }
                 }
             }
         }
         binding.apply {
             saveBtn.setOnClickListener {
-                // TODO: Save globalState to DB
+                if (heading.text.toString().isEmpty()) {
+                    Toast.makeText(requireContext(), "Please, set title", Toast.LENGTH_SHORT).show()
+                } else {
+                    var schemeId = arguments?.getInt(SCHEME_ID_KEY, NEW_SCHEME_CODE)
+                    if (schemeId == NEW_SCHEME_CODE) schemeId = null
+                    stateHolder?.save(heading.text.toString())
+                }
             }
         }
     }
@@ -101,6 +121,16 @@ class UpperAbstractionLevelFragment : Fragment() {
 
     private fun injectSelf() {
         FragmentComponent.from(this).inject(this)
+    }
+
+    companion object {
+        fun newInstance(schemeId: Int): UpperAbstractionLevelFragment {
+            return UpperAbstractionLevelFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(SCHEME_ID_KEY, schemeId)
+                }
+            }
+        }
     }
 
 }

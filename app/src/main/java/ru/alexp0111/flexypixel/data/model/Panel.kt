@@ -16,4 +16,8 @@ data class Panel(
         return pixels.contentHashCode()
     }
 
+    fun asMessage(): String {
+        return pixels.joinToString("")
+    }
+
 }
