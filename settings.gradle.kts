@@ -32,6 +32,9 @@ dependencyResolutionManagement {
             library("gson", "com.google.code.gson:gson:2.10.1")
             library("cicerone", "com.github.terrakok:cicerone:7.1")
             library("neumorphism", "com.github.fornewid:neumorphism:0.3.2")
+
+            library("room", "androidx.room:room-ktx:2.6.1")
+            library("roomCompiler", "androidx.room:room-compiler:2.6.1")
         }
         create("unitTestDeps") {
             library("jUnit", "junit:junit:4.13.2")

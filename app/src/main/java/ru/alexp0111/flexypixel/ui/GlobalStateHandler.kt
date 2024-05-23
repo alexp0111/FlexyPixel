@@ -7,12 +7,17 @@ import android.util.Log
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
+import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.media.BitmapProcessor
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.drawing.DrawingGlobalStateHolder
@@ -27,21 +32,26 @@ private const val TAG = "GlobalStateHandler"
 const val EMPTY_CELL = -1
 
 class GlobalStateHandler @AssistedInject constructor(
+    private val databaseRepository: SavedSchemeRepository,
     private val messageHandler: MessageHandler,
     @Assisted private val schemeId: Int?,
 ) : UpperAbstractionLevelGlobalStateHolder,
     DrawingGlobalStateHolder,
     DisplayLevelGlobalStateHolder {
 
-    private var frameCycle: FrameCycle
+    private lateinit var frameCycle: FrameCycle
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     init {
         Log.d(TAG, "in init block")
-        frameCycle = if (schemeId == null) {
-            FrameCycle.getNewInstance()
-        } else {
-            // TODO: get from bd
-            FrameCycle.getNewInstance()
+        scope.launch {
+            frameCycle = if (schemeId == null) {
+                FrameCycle.getNewInstance()
+            } else {
+                val cycle = databaseRepository.getSchemeById(schemeId).frameCycle
+                tryToSendConfigurationToMC(cycle)
+                cycle
+            }
         }
     }
 
@@ -55,7 +65,7 @@ class GlobalStateHandler @AssistedInject constructor(
             // TODO: goto BD
             MutableList(PanelConfiguration.MAX_SIZE) {
                 Bitmap.createBitmap(8, 8, Bitmap.Config.ARGB_8888).also {
-                    Canvas(it).drawColor(Color.BLUE)
+                    Canvas(it).drawColor(Color.WHITE)
                 }
             }
         }
@@ -136,7 +146,10 @@ class GlobalStateHandler @AssistedInject constructor(
         handleRotation()
     }
 
-    private fun handleRemovedPanels(segmentNumber: Int, orderToXAndY: MutableMap<Int, Pair<Int, Int>>) {
+    private fun handleRemovedPanels(
+        segmentNumber: Int,
+        orderToXAndY: MutableMap<Int, Pair<Int, Int>>,
+    ) {
         for (panel in frameCycle.configuration.listOfMetaData) {
             if (panel.order !in orderToXAndY.keys && panel.segment == segmentNumber) {
                 removePanelsWithOrderAndHigher(panel.order)
@@ -218,20 +231,60 @@ class GlobalStateHandler @AssistedInject constructor(
         frameCycle.frames.onEachIndexed { index, frame ->
             frame.panels[panelPosition].pixels[pixelPosition] = color.asString()
         }
-        // TODO: Send info to DB
-        // TODO: Send message to MessageHandler
+        messageHandler.updateConfiguration(frameCycle.configuration.listOfMetaData)
+        messageHandler.sendPixel(
+            panelOrder = panelPosition,
+            pixelOrder = pixelPosition,
+            rChannel = color.r,
+            gChannel = color.g,
+            bChannel = color.b,
+        )
     }
 
     override fun setPanelPalette(panelPosition: Int, updatedPalette: MutableList<DrawingColor>) {
         if (!isPanelPositionCorrect(panelPosition)) return
         frameCycle.configuration.listOfMetaData[panelPosition].palette = updatedPalette
-        // TODO: Send info to DB
+    }
+
+    fun saveStateToDatabase(title: String) {
+        scope.launch {
+            if (schemeId == null) {
+                save(title)
+            } else {
+                update(schemeId, title)
+            }
+        }
+    }
+
+    private suspend fun save(title: String) {
+        databaseRepository.insertNewScheme(
+            UserSavedScheme(
+                title = title,
+                frameCycle = frameCycle,
+            )
+        )
+    }
+
+    private suspend fun update(schemeId: Int, title: String) {
+        databaseRepository.updateExistingScheme(
+            UserSavedScheme(
+                id = schemeId,
+                title = title,
+                frameCycle = frameCycle,
+            )
+        )
     }
 
     private fun isPanelPositionCorrect(panelPosition: Int): Boolean {
         frameCycle.configuration.listOfMetaData.apply {
             return isNotEmpty() && panelPosition <= lastIndex
         }
+    }
+
+    private fun tryToSendConfigurationToMC(cycle: FrameCycle) {
+        schemeId ?: return
+        messageHandler.updateConfiguration(cycle.configuration.listOfMetaData)
+        messageHandler.sendFrames(cycle.frames, cycle.interframeDelay)
     }
 
 

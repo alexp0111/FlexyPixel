@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
+import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
 import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.ui.GlobalStateHandler
 import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
@@ -25,6 +26,7 @@ class UpperAbstractionLevelViewModel @AssistedInject constructor(
     @Assisted private val schemeId: Int?,
     globalStateHandlerFactory: GlobalStateHandlerFactory,
     private val router: Router,
+    private val databaseRepository: SavedSchemeRepository,
 ) : ViewModel() {
 
     private val globalStateHandler =
@@ -32,6 +34,17 @@ class UpperAbstractionLevelViewModel @AssistedInject constructor(
 
     val segmentImagesBitmapList: MutableStateFlow<List<Bitmap?>> =
         MutableStateFlow(MutableList(PanelConfiguration.MAX_SIZE) { null })
+
+    val title: MutableStateFlow<String?> = MutableStateFlow(null)
+
+    fun getTitle() {
+        schemeId ?: return
+        viewModelScope.launch(Dispatchers.IO) {
+            title.update {
+                databaseRepository.getSchemeById(schemeId).title
+            }
+        }
+    }
 
     fun getSegmentsImages() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -43,5 +56,9 @@ class UpperAbstractionLevelViewModel @AssistedInject constructor(
 
     fun goToDisplayLevel(segmentNumber: Int) {
         router.navigateTo(Screens.DisplayLevelScreen(segmentNumber))
+    }
+
+    fun save(title: String) {
+        globalStateHandler.saveStateToDatabase(title)
     }
 }

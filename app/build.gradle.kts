@@ -65,6 +65,10 @@ dependencies {
     /** Gson */
     implementation(localDeps.gson)
 
+    /** Room */
+    implementation(localDeps.room)
+    kapt(localDeps.roomCompiler)
+
     /** Unit testing */
     testImplementation(unitTestDeps.jUnit)
     testImplementation(unitTestDeps.robolectric)

@@ -13,6 +13,7 @@ import ru.alexp0111.flexypixel.ui.GlobalStateHandler
 import javax.inject.Inject
 
 private const val TAG = "MenuFragment"
+const val NEW_SCHEME_CODE = -1
 
 class MenuFragment : Fragment() {
 
@@ -39,7 +40,7 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.cardNewScheme.setOnClickListener {
-            router.navigateTo(Screens.UpperAbstractionLevelScreen())
+            router.navigateTo(Screens.UpperAbstractionLevelScreen(NEW_SCHEME_CODE))
         }
         binding.cardSavedScheme.setOnClickListener {
             router.navigateTo(Screens.SavedSchemesScreen())

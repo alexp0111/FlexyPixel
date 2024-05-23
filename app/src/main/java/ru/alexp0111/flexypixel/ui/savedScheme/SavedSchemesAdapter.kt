@@ -3,18 +3,19 @@ package ru.alexp0111.flexypixel.ui.savedScheme
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.databinding.ItemSavedSchemeBinding
 
 class SavedSchemesAdapter(
-    private val onItemClicked: (SavedSchemeItem) -> Unit
+    private val onItemClicked: (UserSavedScheme) -> Unit
 ) : RecyclerView.Adapter<SavedSchemesAdapter.SavedSchemesViewHolder>() {
 
-    private var savedSchemesList: List<SavedSchemeItem> = emptyList()
+    private var savedSchemesList: List<UserSavedScheme> = emptyList()
 
     inner class SavedSchemesViewHolder(private val binding: ItemSavedSchemeBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: SavedSchemeItem) {
-            binding.schemeName.text = item.name
+        fun bind(item: UserSavedScheme) {
+            binding.schemeName.text = item.title
             binding.itemCard.setOnClickListener {
                 onItemClicked.invoke(item)
             }
@@ -33,7 +34,7 @@ class SavedSchemesAdapter(
         holder.bind(item)
     }
 
-    fun updateSavedSchemesList(newList: List<SavedSchemeItem>) {
+    fun updateSavedSchemesList(newList: List<UserSavedScheme>) {
         savedSchemesList = newList
         notifyDataSetChanged()
     }

@@ -9,6 +9,10 @@ import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResponse
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResult
 import ru.alexp0111.flexypixel.bluetooth.utils.MessageConverter
+import ru.alexp0111.flexypixel.data.model.Frame
+import ru.alexp0111.flexypixel.data.model.PanelConfiguration
+import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import java.lang.StringBuilder
 import java.util.LinkedList
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -100,7 +104,14 @@ class MessageHandler @Inject constructor(
         tryPopMessageQueue()
     }
 
-    fun sendFrames(frames: List<MessageFrame>, interframeDelay: Int) {
+    fun sendFrames(frames: MutableList<Frame>, interframeDelay: Int) {
+        val messageFrames = frames.map {
+            it.toMessageFrame()
+        }.toList()
+        sendMessageFrames(messageFrames, interframeDelay)
+    }
+
+    fun sendMessageFrames(frames: List<MessageFrame>, interframeDelay: Int) {
         changeModeIfNeeded(MessageTransactionMode.SEQUENCE)
         configuration?.let {
             messageQueue.add(MessageType.CONFIG, it)
@@ -124,6 +135,18 @@ class MessageHandler @Inject constructor(
             mode = transactionMode
             messageQueue.add(MessageType.MODE, transactionMode)
         }
+    }
+
+    fun updateConfiguration(configuration: List<PanelMetaData>) {
+        val stringBuilder = StringBuilder().apply {
+            configuration.forEach {
+                append(MessageConverter.convert(it.type, 3))
+            }
+            while (this.length != PanelConfiguration.MAX_SIZE*3) {
+                append("000")
+            }
+        }
+        updateConfiguration(MessagePanelConfiguration(stringBuilder.toString()))
     }
 
     fun updateConfiguration(configuration: Array<String>) {

@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentSavedSchemesBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
+import ru.alexp0111.flexypixel.ui.GlobalStateHandler
 import javax.inject.Inject
 
 class SavedSchemesFragment : Fragment() {
@@ -27,14 +28,14 @@ class SavedSchemesFragment : Fragment() {
 
     private val savedSchemesAdapter by lazy {
         SavedSchemesAdapter{
-            //TODO navigation logic
-            Toast.makeText(requireContext(),it.name,Toast.LENGTH_SHORT).show()
+            stateHolder.goToUpperLevelScreen(it.id)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injectSelf()
+        stateHolder.fillUpSavedSchemesList()
     }
 
     override fun onCreateView(
@@ -47,10 +48,6 @@ class SavedSchemesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //TEST FUNCTION
-        stateHolder.fillUpSavedSchemesList()
-
         binding.savedSchemesRv.apply {
             layoutManager = LinearLayoutManager(requireContext()).apply{
                 orientation = LinearLayoutManager.VERTICAL
@@ -67,7 +64,11 @@ class SavedSchemesFragment : Fragment() {
                 }
             }
         }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        GlobalStateHandler.reset()
     }
 
     override fun onDestroy() {
