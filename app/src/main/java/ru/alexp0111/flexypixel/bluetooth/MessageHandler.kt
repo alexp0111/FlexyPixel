@@ -31,6 +31,10 @@ class MessageHandler @Inject constructor(
     @set:Synchronized
     private var lastSentMessage: BluetoothMessage? = null
 
+    @get:Synchronized
+    @set:Synchronized
+    private var lastSentMessageType: MessageType? = null
+
     private var configuration: MessagePanelConfiguration? = null
     private var mode: MessageTransactionMode? = null
     private val messageQueue: LinkedList<BluetoothMessage> = LinkedList()
@@ -59,14 +63,15 @@ class MessageHandler @Inject constructor(
     }
 
     private fun handleError(errorMessage: String) {
-        retryLastSentMessage() ?: return
         retryConfigIfNeeded(errorMessage)
+        retryLastSentMessage() ?: return
         tryPopMessageQueue()
     }
 
     private fun retryLastSentMessage(): BluetoothMessage? {
         val message = lastSentMessage ?: return null
-        messageQueue.push(message)
+        val type = lastSentMessageType ?: return null
+        messageQueue.push(type, message)
         return message
     }
 
@@ -80,8 +85,16 @@ class MessageHandler @Inject constructor(
     private fun tryPopMessageQueue() {
         if (messageQueue.isNotEmpty() && !isWaitingForResponse) {
             isWaitingForResponse = true
-            val message = messageQueue.pop().also { lastSentMessage = it }
+            val message = messageQueue.pop()
+            saveAsLastSentMessage(message)
             controller.sendMessage(message.asJson())
+        }
+    }
+
+    private fun saveAsLastSentMessage(message: BluetoothMessage) {
+        when (message) {
+            is MessageType -> lastSentMessageType = message
+            else -> lastSentMessage = message
         }
     }
 
