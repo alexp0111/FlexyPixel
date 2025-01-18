@@ -35,6 +35,11 @@ dependencyResolutionManagement {
 
             library("room", "androidx.room:room-ktx:2.6.1")
             library("roomCompiler", "androidx.room:room-compiler:2.6.1")
+
+            library("composeRuntime", "androidx.compose.runtime:runtime:1.7.0")
+            library("composeMaterial", "androidx.compose.material3:material3-android:1.3.1")
+            library("composeUiToolingPreview", "androidx.compose.ui:ui-tooling-preview-android:1.7.6")
+            library("composeUiTooling", "androidx.compose.ui:ui-tooling:1.7.6")
         }
         create("unitTestDeps") {
             library("jUnit", "junit:junit:4.13.2")
