@@ -36,6 +36,8 @@ dependencyResolutionManagement {
             library("room", "androidx.room:room-ktx:2.6.1")
             library("roomCompiler", "androidx.room:room-compiler:2.6.1")
 
+            library("composeNeomorphism", "me.nikhilchaudhari:composeNeumorphism:1.0.0-alpha02")
+
             library("composeRuntime", "androidx.compose.runtime:runtime:1.7.0")
             library("composeMaterial", "androidx.compose.material3:material3-android:1.3.1")
             library("composeUiToolingPreview", "androidx.compose.ui:ui-tooling-preview-android:1.7.6")
