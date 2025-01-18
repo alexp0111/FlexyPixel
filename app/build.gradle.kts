@@ -58,6 +58,7 @@ dependencies {
     implementation(localDeps.composeMaterial)
     implementation(localDeps.composeUiToolingPreview)
     implementation(localDeps.composeUiTooling)
+    implementation(localDeps.composeNeomorphism)
 
     /** Dagger2 */
     implementation(localDeps.dagger)
