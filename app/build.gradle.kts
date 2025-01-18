@@ -31,11 +31,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    buildFeatures {
+        viewBinding = true
+        compose = true
+    }
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildFeatures {
-        viewBinding = true
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
 }
 
@@ -48,6 +52,12 @@ dependencies {
     implementation(localDeps.materialDesign)
     implementation(localDeps.constraintLayout)
     implementation(localDeps.swipeRefreshLayout)
+
+    /** Jetpack Compose */
+    implementation(localDeps.composeRuntime)
+    implementation(localDeps.composeMaterial)
+    implementation(localDeps.composeUiToolingPreview)
+    implementation(localDeps.composeUiTooling)
 
     /** Dagger2 */
     implementation(localDeps.dagger)
