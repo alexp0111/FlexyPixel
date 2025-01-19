@@ -10,21 +10,32 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ru.alexp0111.flexypixel.R
 import ru.alexp0111.core_ui.common.LargeTextField
 import ru.alexp0111.core_ui.common.MediumTextField
 import ru.alexp0111.core_ui.common.NeoCard
 import ru.alexp0111.core_ui.common.SmallTextField
 import ru.alexp0111.core_ui.theme.AppTheme
+import ru.alexp0111.flexypixel.R
+import ru.alexp0111.flexypixel.ui.menu.model.MenuIntent
+import ru.alexp0111.flexypixel.ui.menu.model.MenuItem
+import ru.alexp0111.flexypixel.ui.menu.model.MenuItemType
+import ru.alexp0111.flexypixel.ui.menu.model.MenuUiState
 
 @Composable
-fun MenuScreen() {
+fun MenuScreen(viewModel: MenuViewModel) {
+    val uiState = viewModel.uiState.collectAsState()
+    val intentHandler by rememberUpdatedState(viewModel::sendIntent)
+
     Scaffold { padding ->
         Column(
             modifier = Modifier
@@ -35,33 +46,29 @@ fun MenuScreen() {
                 LargeTextField("CHOOSE")
                 MediumTextField("an option")
             }
-            OptionsList()
+            OptionsList(uiState, intentHandler)
         }
     }
 }
 
 @Composable
-private fun OptionsList() {
+private fun OptionsList(
+    uiState: State<MenuUiState>,
+    intentHandler: (MenuIntent) -> Unit = {},
+) {
     Column(
         modifier = Modifier.padding(top = 18.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
-        MenuCard(
-            iconId = R.drawable.plus_file,
-            title = "CREATE",
-            subtitle = "new scheme"
-        )
-        MenuCard(
-            iconId = R.drawable.user_file,
-            title = "CHOOSE",
-            subtitle = "saved scheme"
-        )
-        MenuCard(
-            iconId = R.drawable.star_file,
-            title = "CHOOSE",
-            subtitle = "template"
-        )
+        uiState.value.menuItems.forEach { menuItem ->
+            MenuCard(
+                iconId = menuItem.iconId,
+                title = menuItem.title,
+                subtitle = menuItem.subtitle,
+                onClick = { intentHandler(MenuIntent.MenuItemClicked(menuItem.menuItemType)) }
+            )
+        }
     }
 }
 
@@ -107,6 +114,31 @@ private fun MenuCard(
 @Composable
 fun MenuScreenPreview() {
     AppTheme {
-        MenuScreen()
+        OptionsList(
+            rememberUpdatedState(
+                MenuUiState(
+                    listOf(
+                        MenuItem(
+                            menuItemType = MenuItemType.NEW_SCHEME,
+                            iconId = R.drawable.plus_file,
+                            title = "CREATE",
+                            subtitle = "new scheme"
+                        ),
+                        MenuItem(
+                            menuItemType = MenuItemType.SAVED_SCHEME,
+                            iconId = R.drawable.user_file,
+                            title = "CHOOSE",
+                            subtitle = "saved scheme"
+                        ),
+                        MenuItem(
+                            menuItemType = MenuItemType.TEMPLATE,
+                            iconId = R.drawable.star_file,
+                            title = "CHOOSE",
+                            subtitle = "template"
+                        )
+                    )
+                )
+            )
+        )
     }
 }
