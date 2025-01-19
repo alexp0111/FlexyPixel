@@ -1,21 +1,17 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
 }
 
 android {
-    namespace = "ru.alexp0111.flexypixel"
+    namespace = "ru.alexp0111.core_ui"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "ru.alexp0111.flexypixel"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -32,7 +28,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
-        viewBinding = true
         compose = true
     }
     kotlinOptions {
@@ -44,9 +39,6 @@ android {
 }
 
 dependencies {
-    /** Modules */
-    implementation(project(":core-ui"))
-
     /** Base core libraries */
     implementation(localDeps.kotlin)
     implementation(localDeps.lifecycleRuntime)
@@ -62,38 +54,4 @@ dependencies {
     implementation(localDeps.composeUiToolingPreview)
     implementation(localDeps.composeUiTooling)
     implementation(localDeps.composeNeomorphism)
-
-    /** Dagger2 */
-    implementation(localDeps.dagger)
-    kapt(localDeps.compiler)
-
-    /** Glide */
-    implementation(localDeps.glide)
-
-    /** Cicerone */
-    implementation(localDeps.cicerone)
-
-    /** Neumorphism */
-    implementation(localDeps.neumorphism)
-
-    /** Gson */
-    implementation(localDeps.gson)
-
-    /** Room */
-    implementation(localDeps.room)
-    kapt(localDeps.roomCompiler)
-
-    /** Unit testing */
-    testImplementation(unitTestDeps.jUnit)
-    testImplementation(unitTestDeps.robolectric)
-    testImplementation(unitTestDeps.mockito)
-
-    /** Instrumented testing */
-    androidTestImplementation(uiTestDeps.extJUnit)
-    androidTestImplementation(uiTestDeps.espresso)
-    androidTestImplementation(uiTestDeps.rules)
-    androidTestImplementation(uiTestDeps.runner)
-
-    /** Documentation */
-    implementation(docs.kotlinDoc)
 }

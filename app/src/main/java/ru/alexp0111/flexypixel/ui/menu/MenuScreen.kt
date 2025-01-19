@@ -17,11 +17,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.alexp0111.flexypixel.R
-import ru.alexp0111.flexypixel.ui.core.LargeTextField
-import ru.alexp0111.flexypixel.ui.core.MediumTextField
-import ru.alexp0111.flexypixel.ui.core.NeoCard
-import ru.alexp0111.flexypixel.ui.core.SmallTextField
-import ru.alexp0111.flexypixel.ui.theme.AppTheme
+import ru.alexp0111.core_ui.common.LargeTextField
+import ru.alexp0111.core_ui.common.MediumTextField
+import ru.alexp0111.core_ui.common.NeoCard
+import ru.alexp0111.core_ui.common.SmallTextField
+import ru.alexp0111.core_ui.theme.AppTheme
 
 @Composable
 fun MenuScreen() {

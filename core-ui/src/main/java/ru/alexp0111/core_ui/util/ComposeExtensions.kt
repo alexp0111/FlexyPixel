@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.ui.util
+package ru.alexp0111.core_ui.util
 
 import android.content.Context
 import android.view.View
@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.setViewTreeLifecycleOwner
-import ru.alexp0111.flexypixel.ui.theme.AppTheme
+import ru.alexp0111.core_ui.theme.AppTheme
 
 fun Fragment.composeView(
     context: Context = requireContext(),

@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import com.github.terrakok.cicerone.Router
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import ru.alexp0111.flexypixel.ui.GlobalStateHandler
-import ru.alexp0111.flexypixel.ui.util.composeView
-import ru.alexp0111.flexypixel.ui.util.setContentAndStrategy
+import ru.alexp0111.core_ui.util.composeView
+import ru.alexp0111.core_ui.util.setContentAndStrategy
 import javax.inject.Inject
 
 private const val TAG = "MenuFragment"
