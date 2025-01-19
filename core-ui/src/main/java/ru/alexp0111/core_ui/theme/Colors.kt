@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.ui.theme
+package ru.alexp0111.core_ui.theme
 
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color

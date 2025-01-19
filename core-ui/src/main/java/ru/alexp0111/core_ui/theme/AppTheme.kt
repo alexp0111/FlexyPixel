@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.ui.theme
+package ru.alexp0111.core_ui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

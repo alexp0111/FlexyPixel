@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.ui.core
+package ru.alexp0111.core_ui.common
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,10 +17,10 @@ import androidx.compose.ui.unit.dp
 import me.nikhilchaudhari.library.NeuInsets
 import me.nikhilchaudhari.library.neumorphic
 import me.nikhilchaudhari.library.shapes.Punched
-import ru.alexp0111.flexypixel.ui.theme.AppTheme
-import ru.alexp0111.flexypixel.ui.theme.beigeDark
-import ru.alexp0111.flexypixel.ui.theme.beigeStandard
-import ru.alexp0111.flexypixel.ui.theme.whiteShadow
+import ru.alexp0111.core_ui.theme.AppTheme
+import ru.alexp0111.core_ui.theme.beigeDark
+import ru.alexp0111.core_ui.theme.beigeStandard
+import ru.alexp0111.core_ui.theme.whiteShadow
 
 @Composable
 fun NeoCard(

@@ -62,4 +62,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "FlexyPixel"
 include(":app")
- 
+include(":core-ui")

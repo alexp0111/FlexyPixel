@@ -1,9 +1,9 @@
-package ru.alexp0111.flexypixel.ui.core
+package ru.alexp0111.core_ui.common
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
-import ru.alexp0111.flexypixel.ui.theme.flexyPixelTypography
+import ru.alexp0111.core_ui.theme.flexyPixelTypography
 
 @Composable
 fun LargeTextField(
