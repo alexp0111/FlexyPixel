@@ -44,7 +44,7 @@ dependencyResolutionManagement {
             library("composeUiTooling", "androidx.compose.ui:ui-tooling:1.7.6")
         }
         create("unitTestDeps") {
-            library("jUnit", "junit:junit:4.13.2")
+            library("jUnitBom", "org.junit:junit-bom:5.11.4")
             library("robolectric", "org.robolectric:robolectric:4.4")
             library("mockito", "org.mockito:mockito-core:5.1.1")
         }
