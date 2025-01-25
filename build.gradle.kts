@@ -9,4 +9,7 @@ plugins {
 
 subprojects {
     plugins.apply("org.jetbrains.dokka")
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
 }

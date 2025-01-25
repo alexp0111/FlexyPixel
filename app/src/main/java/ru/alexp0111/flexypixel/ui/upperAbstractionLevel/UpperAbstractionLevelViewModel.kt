@@ -1,64 +1,27 @@
 package ru.alexp0111.flexypixel.ui.upperAbstractionLevel
 
-import android.graphics.Bitmap
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.github.terrakok.cicerone.Router
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import ru.alexp0111.flexypixel.data.model.PanelConfiguration
-import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
-import ru.alexp0111.flexypixel.navigation.Screens
-import ru.alexp0111.flexypixel.ui.GlobalStateHandler
-import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
+import ru.alexp0111.core.viewmodel.MVIViewModel
+import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelIntent
+import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelUiState
+import javax.inject.Inject
 
-@AssistedFactory
-interface UpperAbstractionLevelViewModelFactory {
-    fun create(schemeId: Int?): UpperAbstractionLevelViewModel
-}
+class UpperAbstractionLevelViewModel @Inject constructor(
 
-class UpperAbstractionLevelViewModel @AssistedInject constructor(
-    @Assisted private val schemeId: Int?,
-    globalStateHandlerFactory: GlobalStateHandlerFactory,
-    private val router: Router,
-    private val databaseRepository: SavedSchemeRepository,
-) : ViewModel() {
+) : MVIViewModel<UpperAbstractionLevelIntent, UpperAbstractionLevelUiState, Nothing>() {
 
-    private val globalStateHandler =
-        GlobalStateHandler.getInstance(globalStateHandlerFactory, schemeId)
+    override fun setInitialState(): UpperAbstractionLevelUiState {
+        return UpperAbstractionLevelUiState()
+    }
 
-    val segmentImagesBitmapList: MutableStateFlow<List<Bitmap?>> =
-        MutableStateFlow(MutableList(PanelConfiguration.MAX_SIZE) { null })
-
-    val title: MutableStateFlow<String?> = MutableStateFlow(null)
-
-    fun getTitle() {
-        schemeId ?: return
-        viewModelScope.launch(Dispatchers.IO) {
-            title.update {
-                databaseRepository.getSchemeById(schemeId).title
+    override fun handleIntent(intent: UpperAbstractionLevelIntent) =
+        when (intent) {
+            is UpperAbstractionLevelIntent.TitleChanged -> updateTitle(intent.newTitle)
+            is UpperAbstractionLevelIntent.CardClicked -> {
+                /* TODO: handle card click */
             }
         }
-    }
 
-    fun getSegmentsImages() {
-        viewModelScope.launch(Dispatchers.IO) {
-            segmentImagesBitmapList.update {
-                globalStateHandler.getSegmentsBitmapImages()
-            }
-        }
-    }
-
-    fun goToDisplayLevel(segmentNumber: Int) {
-        router.navigateTo(Screens.DisplayLevelScreen(segmentNumber))
-    }
-
-    fun save(title: String) {
-        globalStateHandler.saveStateToDatabase(title)
+    private fun updateTitle(newTitle: String) {
+        setState { uiState.value.copy(title = newTitle) }
     }
 }

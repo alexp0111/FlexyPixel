@@ -1,13 +1,13 @@
 package ru.alexp0111.flexypixel.ui.menu.model
 
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
 
-@Stable
+@Immutable
 data class MenuUiState(
     val menuItems: List<MenuItem>
 )
 
-@Stable
+@Immutable
 data class MenuItem(
     val menuItemType: MenuItemType,
     val iconId: Int,

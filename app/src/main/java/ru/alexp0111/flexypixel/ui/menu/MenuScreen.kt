@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,10 +22,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ru.alexp0111.core_ui.common.LargeTextField
-import ru.alexp0111.core_ui.common.MediumTextField
 import ru.alexp0111.core_ui.common.NeoCard
-import ru.alexp0111.core_ui.common.SmallTextField
+import ru.alexp0111.core_ui.common.text.LargeTextField
+import ru.alexp0111.core_ui.common.text.MediumTextField
+import ru.alexp0111.core_ui.common.text.SmallTextField
 import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.ui.menu.model.MenuIntent
@@ -36,13 +38,21 @@ fun MenuScreen(viewModel: MenuViewModel) {
     val uiState = viewModel.uiState.collectAsState()
     val intentHandler by rememberUpdatedState(viewModel::sendIntent)
 
+    MenuScreenContent(uiState, intentHandler)
+}
+
+@Composable
+private fun MenuScreenContent(
+    uiState: State<MenuUiState>,
+    intentHandler: (MenuIntent) -> Unit = {},
+) {
     Scaffold { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            Column(Modifier.padding(start = 36.dp, end = 36.dp, top = 36.dp)) {
+            Column(Modifier.padding(start = 32.dp, end = 32.dp, top = 32.dp)) {
                 LargeTextField("CHOOSE")
                 MediumTextField("an option")
             }
@@ -57,7 +67,7 @@ private fun OptionsList(
     intentHandler: (MenuIntent) -> Unit = {},
 ) {
     Column(
-        modifier = Modifier.padding(top = 18.dp),
+        modifier = Modifier.padding(top = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ) {
@@ -81,7 +91,7 @@ private fun MenuCard(
 ) {
     NeoCard(
         modifier = Modifier
-            .padding(horizontal = 36.dp, vertical = 18.dp)
+            .padding(horizontal = 32.dp, vertical = 16.dp)
             .height(160.dp),
         onClick = onClick,
     ) {
@@ -114,31 +124,33 @@ private fun MenuCard(
 @Composable
 fun MenuScreenPreview() {
     AppTheme {
-        OptionsList(
-            rememberUpdatedState(
-                MenuUiState(
-                    listOf(
-                        MenuItem(
-                            menuItemType = MenuItemType.NEW_SCHEME,
-                            iconId = R.drawable.plus_file,
-                            title = "CREATE",
-                            subtitle = "new scheme"
-                        ),
-                        MenuItem(
-                            menuItemType = MenuItemType.SAVED_SCHEME,
-                            iconId = R.drawable.user_file,
-                            title = "CHOOSE",
-                            subtitle = "saved scheme"
-                        ),
-                        MenuItem(
-                            menuItemType = MenuItemType.TEMPLATE,
-                            iconId = R.drawable.star_file,
-                            title = "CHOOSE",
-                            subtitle = "template"
+        MenuScreenContent(
+            uiState = remember {
+                mutableStateOf(
+                    MenuUiState(
+                        listOf(
+                            MenuItem(
+                                menuItemType = MenuItemType.NEW_SCHEME,
+                                iconId = R.drawable.plus_file,
+                                title = "CREATE",
+                                subtitle = "new scheme"
+                            ),
+                            MenuItem(
+                                menuItemType = MenuItemType.SAVED_SCHEME,
+                                iconId = R.drawable.user_file,
+                                title = "CHOOSE",
+                                subtitle = "saved scheme"
+                            ),
+                            MenuItem(
+                                menuItemType = MenuItemType.TEMPLATE,
+                                iconId = R.drawable.star_file,
+                                title = "CHOOSE",
+                                subtitle = "template"
+                            )
                         )
                     )
                 )
-            )
+            }
         )
     }
 }

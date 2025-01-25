@@ -1,7 +1,8 @@
 package ru.alexp0111.flexypixel
 
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 import ru.alexp0111.flexypixel.bluetooth.utils.JsonChecker
 
 class JsonCheckerTest {
@@ -21,18 +22,18 @@ class JsonCheckerTest {
         val incorrectStringWithPostfixOpened = "OK\"}{"
         val incorrectStringWithPostfixRight = "us\":\"OK\"}{}"
 
-        Assert.assertEquals("{\"status\":\"OK\"}", JsonChecker.extractRightBracketSequence(correctStringAsIs))
-        Assert.assertEquals("{\"status\":\"OK\"}", JsonChecker.extractRightBracketSequence(correctStringWithPostfixClosed))
-        Assert.assertEquals("{\"status\":\"OK\"}", JsonChecker.extractRightBracketSequence(correctStringWithPostfixOpened))
-        Assert.assertEquals("{\"status\":\"OK\"}", JsonChecker.extractRightBracketSequence(correctStringWithPostfixRight))
+        assertEquals("{\"status\":\"OK\"}", JsonChecker.extractRightBracketSequence(correctStringAsIs))
+        assertEquals("{\"status\":\"OK\"}", JsonChecker.extractRightBracketSequence(correctStringWithPostfixClosed))
+        assertEquals("{\"status\":\"OK\"}", JsonChecker.extractRightBracketSequence(correctStringWithPostfixOpened))
+        assertEquals("{\"status\":\"OK\"}", JsonChecker.extractRightBracketSequence(correctStringWithPostfixRight))
 
-        Assert.assertNull(JsonChecker.extractRightBracketSequence(incorrectStringWithPrefixClosed))
-        Assert.assertNull(JsonChecker.extractRightBracketSequence(incorrectStringWithPrefixOpened))
+        assertNull(JsonChecker.extractRightBracketSequence(incorrectStringWithPrefixClosed))
+        assertNull(JsonChecker.extractRightBracketSequence(incorrectStringWithPrefixOpened))
 
-        Assert.assertNull(JsonChecker.extractRightBracketSequence(incorrectStringAsIs))
-        Assert.assertNull(JsonChecker.extractRightBracketSequence(incorrectStringWithPostfixClosed))
-        Assert.assertNull(JsonChecker.extractRightBracketSequence(incorrectStringWithPostfixOpened))
-        Assert.assertNull(JsonChecker.extractRightBracketSequence(incorrectStringWithPostfixRight))
+        assertNull(JsonChecker.extractRightBracketSequence(incorrectStringAsIs))
+        assertNull(JsonChecker.extractRightBracketSequence(incorrectStringWithPostfixClosed))
+        assertNull(JsonChecker.extractRightBracketSequence(incorrectStringWithPostfixOpened))
+        assertNull(JsonChecker.extractRightBracketSequence(incorrectStringWithPostfixRight))
     }
 
 }
