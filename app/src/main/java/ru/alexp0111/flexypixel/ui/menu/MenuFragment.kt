@@ -11,8 +11,6 @@ import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import ru.alexp0111.flexypixel.ui.GlobalStateHandler
 import javax.inject.Inject
 
-const val NEW_SCHEME_CODE = -1
-
 class MenuFragment : Fragment() {
 
     @Inject

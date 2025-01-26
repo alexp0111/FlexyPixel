@@ -7,7 +7,7 @@ const val SEGMENT_MATRIX_SIDE = 3
 
 @Immutable
 data class UpperAbstractionLevelUiState(
-    val title: String = "TEMPLATE #1",
+    val title: String = "",
     val segmentMatrix: List<List<SegmentUiState>> =
         List(SEGMENT_MATRIX_SIDE) {
             List(SEGMENT_MATRIX_SIDE) {

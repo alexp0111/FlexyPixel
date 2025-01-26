@@ -44,7 +44,7 @@ class MenuViewModel @Inject constructor(
 
     private fun handleMenuItemClick(menuItemType: MenuItemType) =
         when (menuItemType) {
-            MenuItemType.NEW_SCHEME -> router.navigateTo(Screens.UpperAbstractionLevelScreen(NEW_SCHEME_CODE))
+            MenuItemType.NEW_SCHEME -> router.navigateTo(Screens.UpperAbstractionLevelScreen())
             MenuItemType.SAVED_SCHEME -> router.navigateTo(Screens.SavedSchemesScreen())
             MenuItemType.TEMPLATE -> {
                 // todo: templates screen

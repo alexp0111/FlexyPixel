@@ -21,6 +21,7 @@ import ru.alexp0111.core_ui.theme.flexyPixelTypography
 @Composable
 fun LargeEditTextField(
     initialText: String = "",
+    hint: String = "",
     style: TextStyle = flexyPixelTypography.displayLarge,
     imeAction: ImeAction = ImeAction.Done,
     singleLine: Boolean = true,
@@ -28,6 +29,7 @@ fun LargeEditTextField(
 ) {
     TextField(
         value = initialText,
+        placeholder = { LargeTextField(text = hint, color = beigeDark) },
         textStyle = style,
         singleLine = singleLine,
         onValueChange = onValueChanged,
@@ -55,7 +57,7 @@ fun LargeEditTextField(
 private fun LargeEditTextFieldPreview() {
     AppTheme {
         Box(Modifier.padding(32.dp)) {
-            LargeEditTextField("MyText") {}
+            LargeEditTextField(hint = "MyText") {}
         }
     }
 }
