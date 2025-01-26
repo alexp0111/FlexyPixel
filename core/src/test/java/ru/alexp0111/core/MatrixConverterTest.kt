@@ -18,6 +18,12 @@ class MatrixConverterTest {
         assertEquals(expected, MatrixConverter.indexToXY(index, matrixSide))
     }
 
+    @ParameterizedTest
+    @MethodSource("XYtoIndexSource")
+    fun XYtoIndex(x: Int, y: Int, expected: Int, matrixSide: Int) {
+        assertEquals(expected, MatrixConverter.XYtoIndex(x, y, matrixSide))
+    }
+
     private fun indexToXYSource(): Stream<Arguments> = Stream.of(
         Arguments.of(0, Pair(0, 0), 3),
         Arguments.of(1, Pair(1, 0), 3),
@@ -28,6 +34,18 @@ class MatrixConverterTest {
         Arguments.of(6, Pair(0, 2), 3),
         Arguments.of(7, Pair(1, 2), 3),
         Arguments.of(8, Pair(2, 2), 3),
-    );
+    )
+
+    private fun XYtoIndexSource(): Stream<Arguments> = Stream.of(
+        Arguments.of(0, 0, 0, 3),
+        Arguments.of(1, 0, 1, 3),
+        Arguments.of(2, 0, 2, 3),
+        Arguments.of(0, 1, 3, 3),
+        Arguments.of(1, 1, 4, 3),
+        Arguments.of(2, 1, 5, 3),
+        Arguments.of(0, 2, 6, 3),
+        Arguments.of(1, 2, 7, 3),
+        Arguments.of(2, 2, 8, 3),
+    )
 
 }

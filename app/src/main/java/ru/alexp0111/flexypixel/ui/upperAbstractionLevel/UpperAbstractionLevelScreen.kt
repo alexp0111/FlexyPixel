@@ -1,6 +1,5 @@
 package ru.alexp0111.flexypixel.ui.upperAbstractionLevel
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.alexp0111.core_ui.common.NeoButton
@@ -29,6 +30,7 @@ import ru.alexp0111.core_ui.common.text.LargeEditTextField
 import ru.alexp0111.core_ui.common.text.MediumTextField
 import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.SegmentUiState
+import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelEffect
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelIntent
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelUiState
 
@@ -37,25 +39,38 @@ internal fun UpperAbstractionLevelScreen(
     viewModel: UpperAbstractionLevelViewModel,
 ) {
     val uiState = viewModel.uiState.collectAsState()
+    val snackBarHostState = remember { SnackbarHostState() }
     val intentHandler by rememberUpdatedState(viewModel::sendIntent)
-    UpperAbstractionLevelScreenContent(uiState, intentHandler)
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect {
+            when(it) {
+                is UpperAbstractionLevelEffect.ShowSnackBar -> snackBarHostState.showSnackbar(it.message)
+            }
+        }
+    }
+
+    UpperAbstractionLevelScreenContent(uiState, snackBarHostState, intentHandler)
 }
 
 @Composable
 private fun UpperAbstractionLevelScreenContent(
     uiState: State<UpperAbstractionLevelUiState>,
+    snackBarHostState: SnackbarHostState,
     intentHandler: (UpperAbstractionLevelIntent) -> Unit = {},
 ) {
-    val context = LocalContext.current
-
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(32.dp)
             ) {
-                LargeEditTextField(uiState.value.title) {
+                LargeEditTextField(
+                    initialText = uiState.value.title,
+                    hint = "Title",
+                ) {
                     intentHandler(UpperAbstractionLevelIntent.TitleChanged(it))
                 }
                 VerticalEmptyDivider(16.dp)
@@ -67,7 +82,7 @@ private fun UpperAbstractionLevelScreenContent(
                 modifier = Modifier.padding(32.dp),
                 title = "Save"
             ) {
-                Toast.makeText(context, "sus", Toast.LENGTH_SHORT).show()
+                intentHandler(UpperAbstractionLevelIntent.Save)
             }
         }
     ) { padding ->
@@ -123,7 +138,8 @@ private fun UpperAbstractionLevelScreenContentPreview() {
                 mutableStateOf(
                     UpperAbstractionLevelUiState()
                 )
-            }
+            },
+            snackBarHostState = SnackbarHostState()
         )
     }
 }

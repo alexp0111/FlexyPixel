@@ -6,4 +6,8 @@ object MatrixConverter {
         val y = index / matrixSide
         return Pair(x, y)
     }
+
+    fun XYtoIndex(x: Int, y: Int, matrixSide: Int): Int {
+        return y * matrixSide + x
+    }
 }
