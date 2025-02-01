@@ -24,7 +24,6 @@ import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
 import ru.alexp0111.flexypixel.databinding.FragmentTestBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
-import ru.alexp0111.flexypixel.media.BitmapProcessor
 import ru.alexp0111.flexypixel.media.MediaFilesProcessor
 import javax.inject.Inject
 
@@ -221,7 +220,7 @@ class TestFragment : Fragment() {
                 launch {
                     mediaFilesProcessor.bitmaps.collect { bitmapList ->
                         bitmapList.forEachIndexed { index, bitmap ->
-                            val bitmapAsString = BitmapProcessor.convertBitmapToPixelStringMatrix(bitmap)
+                            // val bitmapAsString = BitmapProcessor.convertBitmapToPixelStringMatrix(bitmap)
                             // BitmapProcessor.applyBitmapToFrame()
                             // messageHandler.sendFrames(listOf(MessageFrame(bitmapAsString)), 1000)
                         }

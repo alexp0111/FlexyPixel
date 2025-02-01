@@ -34,6 +34,11 @@ class UpperAbstractionLevelFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.sendIntent(UpperAbstractionLevelIntent.RefreshSegmentInfo)
+    }
+
     private fun injectSelf() {
         FragmentComponent.from(this).inject(this)
     }

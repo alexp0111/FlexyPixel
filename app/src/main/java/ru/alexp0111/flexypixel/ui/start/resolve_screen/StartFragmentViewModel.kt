@@ -11,12 +11,19 @@ import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.util.PermissionResolver
 import javax.inject.Inject
 
+private const val DEBUG_ONLY_SKIP_CONNECTION = false
+
 class StartFragmentViewModel @Inject constructor(
     private val controller: AndroidBluetoothController,
     private val permissionResolver: PermissionResolver,
     private val router: Router,
 ) : ViewModel() {
     fun resolveNextScreen() {
+        if (DEBUG_ONLY_SKIP_CONNECTION) {
+            goToMenu()
+            return
+        }
+
         if (!permissionResolver.isSystemCompletelyReady()) {
             goToSearchScreen()
             return
