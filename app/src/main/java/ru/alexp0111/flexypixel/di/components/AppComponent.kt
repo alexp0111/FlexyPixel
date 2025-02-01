@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.Component
 import ru.alexp0111.flexypixel.FlexyPixelApplication
 import ru.alexp0111.flexypixel.di.modules.AppModule
+import ru.alexp0111.flexypixel.di.modules.BindModule
 import ru.alexp0111.flexypixel.di.modules.BluetoothModule
 import ru.alexp0111.flexypixel.di.modules.DatabaseModule
 import ru.alexp0111.flexypixel.di.modules.NavigationModule
@@ -16,6 +17,7 @@ import javax.inject.Singleton
         NavigationModule::class,
         BluetoothModule::class,
         DatabaseModule::class,
+        BindModule::class,
     ]
 )
 interface AppComponent :

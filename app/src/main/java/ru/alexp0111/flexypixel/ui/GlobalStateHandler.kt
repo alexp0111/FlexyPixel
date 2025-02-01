@@ -1,8 +1,6 @@
 package ru.alexp0111.flexypixel.ui
 
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
 import android.util.Log
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -10,15 +8,15 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
-import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
 import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
 import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
-import ru.alexp0111.flexypixel.media.BitmapProcessor
+import ru.alexp0111.flexypixel.media.IBitmapProcessor
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.drawing.DrawingGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelGlobalStateHolder
@@ -34,7 +32,8 @@ const val EMPTY_CELL = -1
 class GlobalStateHandler @AssistedInject constructor(
     private val databaseRepository: SavedSchemeRepository,
     private val messageHandler: MessageHandler,
-    @Assisted private val schemeId: Int?,
+    private val bitmapProcessor: IBitmapProcessor,
+    @Assisted val schemeId: Int?,
 ) : UpperAbstractionLevelGlobalStateHolder,
     DrawingGlobalStateHolder,
     DisplayLevelGlobalStateHolder {
@@ -57,18 +56,14 @@ class GlobalStateHandler @AssistedInject constructor(
 
     /** Upper Abstraction Level */
 
-    override fun getSegmentsBitmapImages(): List<Bitmap?> {
-        Log.d(TAG, "returnSegmentImages")
-        return if (schemeId == null) {
-            MutableList(PanelConfiguration.MAX_SIZE) { null }
-        } else {
-            // TODO: goto BD
-            MutableList(PanelConfiguration.MAX_SIZE) {
-                Bitmap.createBitmap(8, 8, Bitmap.Config.ARGB_8888).also {
-                    Canvas(it).drawColor(Color.WHITE)
-                }
-            }
+    override fun getSegmentsBitmapImages(size: Int): List<Bitmap?> {
+        val bitmapList = MutableList<Bitmap?>(CommonSizeConstants.SEGMENTS_TOTAL_AMOUNT) { null }
+        for (segment in 0..bitmapList.lastIndex) {
+            val panelsOrderList = getPanelsConfiguration(segment)
+            if (panelsOrderList.all { it == EMPTY_CELL }) continue
+            bitmapList[segment] = bitmapProcessor.generateBitmapForSegment(panelsOrderList, size)
         }
+        return bitmapList
     }
 
     /** Display Level */
@@ -99,7 +94,7 @@ class GlobalStateHandler @AssistedInject constructor(
                     val panelInStringPixels = frameCycle.frames.first().panels[panelOrder].pixels
                     put(
                         panelOrder,
-                        BitmapProcessor.convertPixelStringMatrixToBitmap(panelInStringPixels)
+                        bitmapProcessor.convertPixelStringMatrixToBitmap(panelInStringPixels)
                     )
                 }
             }

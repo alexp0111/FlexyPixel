@@ -1,5 +1,6 @@
 package ru.alexp0111.flexypixel.ui.upperAbstractionLevel
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,11 +17,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.alexp0111.core_ui.common.NeoButton
@@ -29,7 +34,6 @@ import ru.alexp0111.core_ui.common.divider.VerticalEmptyDivider
 import ru.alexp0111.core_ui.common.text.LargeEditTextField
 import ru.alexp0111.core_ui.common.text.MediumTextField
 import ru.alexp0111.core_ui.theme.AppTheme
-import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.SegmentUiState
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelEffect
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelIntent
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelUiState
@@ -44,7 +48,7 @@ internal fun UpperAbstractionLevelScreen(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect {
-            when(it) {
+            when (it) {
                 is UpperAbstractionLevelEffect.ShowSnackBar -> snackBarHostState.showSnackbar(it.message)
             }
         }
@@ -93,7 +97,8 @@ private fun UpperAbstractionLevelScreenContent(
             contentAlignment = Alignment.TopCenter
         ) {
             UpperAbstractionLevelScreenSegmentMatrix(
-                segmentMatrixState = uiState.value.segmentMatrix,
+                uiState = uiState,
+                intentHandler = intentHandler,
                 onCardClicked = { x, y ->
                     intentHandler(UpperAbstractionLevelIntent.CardClicked(x, y))
                 }
@@ -104,9 +109,16 @@ private fun UpperAbstractionLevelScreenContent(
 
 @Composable
 private fun UpperAbstractionLevelScreenSegmentMatrix(
-    segmentMatrixState: List<List<SegmentUiState>>,
+    uiState: State<UpperAbstractionLevelUiState>,
+    intentHandler: (UpperAbstractionLevelIntent) -> Unit = {},
     onCardClicked: (Int, Int) -> Unit,
 ) {
+    val segmentMatrixState = uiState.value.segmentMatrix
+    val cardSizePx = remember { mutableIntStateOf(0) }
+    LaunchedEffect(cardSizePx.intValue) {
+        intentHandler(UpperAbstractionLevelIntent.CardSizeMeasured(cardSizePx.intValue))
+    }
+
     Column {
         segmentMatrixState.forEachIndexed { y, _ ->
             Row(
@@ -116,12 +128,22 @@ private fun UpperAbstractionLevelScreenSegmentMatrix(
                 segmentMatrixState[y].forEachIndexed { x, _ ->
                     NeoCard(
                         modifier = Modifier
+                            .onGloballyPositioned { coordinates ->
+                                cardSizePx.intValue = coordinates.size.height
+                            }
                             .weight(1f)
                             .aspectRatio(1f)
                             .padding(8.dp),
                         onClick = { onCardClicked(x, y) }
                     ) {
-                        // TODO: Implement bitmap
+                        segmentMatrixState[y][x].bitmap?.let {
+                            Image(
+                                modifier = Modifier.fillMaxSize().padding(8.dp),
+                                bitmap = it.asImageBitmap(),
+                                contentScale = ContentScale.Crop,
+                                contentDescription = null,
+                            )
+                        }
                     }
                 }
             }
