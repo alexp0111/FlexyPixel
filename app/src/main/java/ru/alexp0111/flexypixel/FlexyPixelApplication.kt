@@ -5,7 +5,7 @@ import ru.alexp0111.flexypixel.di.components.AppComponent
 import ru.alexp0111.flexypixel.di.components.DaggerAppComponent
 import ru.alexp0111.flexypixel.di.modules.AppModule
 
-class FlexyPixelApplication : Application() {
+internal class FlexyPixelApplication : Application() {
 
     val appComponent: AppComponent by lazy {
         initComponent()

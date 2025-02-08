@@ -21,10 +21,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import ru.alexp0111.core_ui.util.composeView
+import ru.alexp0111.core_ui.util.setContentAndStrategy
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentDisplayLevelBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import ru.alexp0111.flexypixel.ui.EMPTY_CELL
+import ru.alexp0111.flexypixel.ui.displayLevel.screen.DisplayLevelScreen
 import soup.neumorphism.NeumorphImageView
 import soup.neumorphism.ShapeType
 import java.util.Stack
@@ -32,12 +35,15 @@ import javax.inject.Inject
 
 private const val SEGMENT_NUMBER_KEY = "SEGMENT_NUMBER_KEY"
 
-class DisplayLevelFragment : Fragment() {
+internal class DisplayLevelFragment : Fragment() {
 
     @Inject
     lateinit var stateHolderFactory: DisplayLevelViewModelFactory
 
-    private var stateHolder: DisplayLevelViewModel? = null
+    @Inject
+    lateinit var viewModel: DisplayLevelViewModel
+
+    private var stateHolder: DisplayLevelOldViewModel? = null
 
     private var _binding: FragmentDisplayLevelBinding? = null
     private val binding get() = _binding!!
@@ -61,7 +67,11 @@ class DisplayLevelFragment : Fragment() {
         _binding = FragmentDisplayLevelBinding.inflate(inflater, container, false)
         val segmentNumber = arguments?.getInt(SEGMENT_NUMBER_KEY) ?: 0
         stateHolder?.getPanelsConfiguration(segmentNumber)
-        return binding.root
+        return composeView {
+            setContentAndStrategy {
+                DisplayLevelScreen(viewModel)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -155,7 +165,7 @@ class DisplayLevelFragment : Fragment() {
 
 
                         //если вытаскиваем из нижней ячейки
-                        if (ownerPosition == DisplayLevelViewModel.HOLDER_POSITION) {
+                        if (ownerPosition == DisplayLevelOldViewModel.HOLDER_POSITION) {
                             stateHolder?.fromHolderToMatrix(destinationPosition)
                         }
                         //если вытаскиваем из ячейки с позицией ownerPosition

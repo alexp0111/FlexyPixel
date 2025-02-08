@@ -13,7 +13,7 @@ import ru.alexp0111.flexypixel.ui.start.resolve_screen.StartFragment
 import ru.alexp0111.flexypixel.ui.test.TestFragment
 import ru.alexp0111.flexypixel.ui.util.BluetoothResolverFragment
 
-interface FragmentComponent {
+internal interface FragmentComponent {
 
     fun inject(fragment: UpperAbstractionLevelFragment)
     fun inject(fragment: StartFragment)

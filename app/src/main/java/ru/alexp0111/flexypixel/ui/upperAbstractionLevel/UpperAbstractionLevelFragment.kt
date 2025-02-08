@@ -13,10 +13,10 @@ import javax.inject.Inject
 
 private const val SCHEME_ID_KEY = "SCHEME_ID_KEY"
 
-class UpperAbstractionLevelFragment : Fragment() {
+internal class UpperAbstractionLevelFragment : Fragment() {
 
     @Inject
-    lateinit var viewModel: UpperAbstractionLevelViewModel
+    internal lateinit var viewModel: UpperAbstractionLevelViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectSelf()

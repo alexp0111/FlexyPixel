@@ -2,6 +2,7 @@ package ru.alexp0111.flexypixel.ui.menu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,16 +47,19 @@ private fun MenuScreenContent(
     uiState: State<MenuUiState>,
     intentHandler: (MenuIntent) -> Unit = {},
 ) {
-    Scaffold { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-        ) {
+    Scaffold(
+        topBar = {
             Column(Modifier.padding(start = 32.dp, end = 32.dp, top = 32.dp)) {
                 LargeTextField("CHOOSE")
                 MediumTextField("an option")
             }
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
             OptionsList(uiState, intentHandler)
         }
     }
