@@ -20,7 +20,7 @@ import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLe
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelUiState
 import javax.inject.Inject
 
-class UpperAbstractionLevelViewModel @Inject constructor(
+internal class UpperAbstractionLevelViewModel @Inject constructor(
     private val router: Router,
     private val databaseRepository: SavedSchemeRepository,
     private val upperAbstractionLevelConverter: IUpperAbstractionLevelConverter,
@@ -40,15 +40,7 @@ class UpperAbstractionLevelViewModel @Inject constructor(
             is UpperAbstractionLevelIntent.CardSizeMeasured -> initSegmentBitmaps(intent.size)
             UpperAbstractionLevelIntent.RefreshSegmentInfo -> refreshSegmentBitmaps()
             UpperAbstractionLevelIntent.Save -> saveScheme()
-            is UpperAbstractionLevelIntent.CardClicked -> {
-                goToDisplayLevel(
-                    MatrixConverter.XYtoIndex(
-                        intent.x,
-                        intent.y,
-                        CommonSizeConstants.SEGMENTS_MATRIX_SIDE
-                    )
-                )
-            }
+            is UpperAbstractionLevelIntent.CardClicked -> goToDisplayLevel(intent.x, intent.y)
         }
 
     private fun initScheme(schemeId: Int?) {
@@ -109,7 +101,8 @@ class UpperAbstractionLevelViewModel @Inject constructor(
     private fun conflictWithExistingScheme(schemes: List<UserSavedScheme>, title: String) =
         schemes.any { it.title == title && it.id != globalStateHandler?.schemeId }
 
-    private fun goToDisplayLevel(segmentNumber: Int) {
+    private fun goToDisplayLevel(segmentX: Int, segmentY: Int) {
+        val segmentNumber = MatrixConverter.XYtoIndex(segmentX, segmentY, CommonSizeConstants.SEGMENTS_MATRIX_SIDE)
         router.navigateTo(Screens.DisplayLevelScreen(segmentNumber))
     }
 }

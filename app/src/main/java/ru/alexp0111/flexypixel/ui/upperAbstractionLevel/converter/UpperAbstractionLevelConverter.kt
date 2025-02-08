@@ -5,7 +5,7 @@ import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.SegmentUiState
 import javax.inject.Inject
 
-class UpperAbstractionLevelConverter @Inject constructor() : IUpperAbstractionLevelConverter {
+internal class UpperAbstractionLevelConverter @Inject constructor() : IUpperAbstractionLevelConverter {
 
     override fun convertSegmentListToMatrix(bitmapList: List<Bitmap?>): MutableList<List<SegmentUiState>> =
         mutableListOf<List<SegmentUiState>>().apply {

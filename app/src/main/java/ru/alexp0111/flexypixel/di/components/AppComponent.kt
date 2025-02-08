@@ -20,7 +20,7 @@ import javax.inject.Singleton
         BindModule::class,
     ]
 )
-interface AppComponent :
+internal interface AppComponent :
     ActivityComponent,
     FragmentComponent {
 

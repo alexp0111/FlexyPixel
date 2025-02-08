@@ -8,7 +8,7 @@ import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.converter.IUpperAbstract
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.converter.UpperAbstractionLevelConverter
 
 @Module
-interface BindModule {
+internal interface BindModule {
     @Binds
     fun bindUpperAbstractionLevelConverter(converter: UpperAbstractionLevelConverter): IUpperAbstractionLevelConverter
 
