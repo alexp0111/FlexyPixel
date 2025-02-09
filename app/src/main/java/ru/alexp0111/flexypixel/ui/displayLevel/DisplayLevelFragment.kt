@@ -27,6 +27,7 @@ import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentDisplayLevelBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import ru.alexp0111.flexypixel.ui.EMPTY_CELL
+import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelIntent
 import ru.alexp0111.flexypixel.ui.displayLevel.screen.DisplayLevelScreen
 import soup.neumorphism.NeumorphImageView
 import soup.neumorphism.ShapeType
@@ -38,12 +39,9 @@ private const val SEGMENT_NUMBER_KEY = "SEGMENT_NUMBER_KEY"
 internal class DisplayLevelFragment : Fragment() {
 
     @Inject
-    lateinit var stateHolderFactory: DisplayLevelViewModelFactory
-
-    @Inject
     lateinit var viewModel: DisplayLevelViewModel
 
-    private var stateHolder: DisplayLevelOldViewModel? = null
+    // private var stateHolder: DisplayLevelOldViewModel? = null
 
     private var _binding: FragmentDisplayLevelBinding? = null
     private val binding get() = _binding!!
@@ -57,7 +55,7 @@ internal class DisplayLevelFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injectSelf()
-        stateHolder = stateHolderFactory.create()
+        //stateHolder = stateHolderFactory.create()
     }
 
     override fun onCreateView(
@@ -66,7 +64,8 @@ internal class DisplayLevelFragment : Fragment() {
     ): View {
         _binding = FragmentDisplayLevelBinding.inflate(inflater, container, false)
         val segmentNumber = arguments?.getInt(SEGMENT_NUMBER_KEY) ?: 0
-        stateHolder?.getPanelsConfiguration(segmentNumber)
+        viewModel.sendIntent(DisplayLevelIntent.InitSegment(segmentNumber))
+        // stateHolder?.getPanelsConfiguration(segmentNumber)
         return composeView {
             setContentAndStrategy {
                 DisplayLevelScreen(viewModel)
@@ -76,28 +75,28 @@ internal class DisplayLevelFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpContainerList()
-        setUpDragListeners()
-        lifecycleScope.launch {
-            stateHolder?.apply {
-                val uiState = combine(
-                    displayLocationInHolder,
-                    displayLocationInMatrix,
-                    bitmapMap
-                ) { v1, v2, v3 ->
-                    Triple(v1, v2, v3)
-                }
-                uiState.collect {
-                    spawnDisplaysInHolder(it.first)
-                    spawnDisplaysInMatrix(it.second)
-                }
-            }
-        }
-
-        //test logic
-        binding.heading.setOnClickListener {
-            Toast.makeText(requireContext(), stateHolder.toString(), Toast.LENGTH_LONG).show()
-        }
+//        setUpContainerList()
+//        setUpDragListeners()
+//        lifecycleScope.launch {
+//            stateHolder?.apply {
+//                val uiState = combine(
+//                    displayLocationInHolder,
+//                    displayLocationInMatrix,
+//                    bitmapMap
+//                ) { v1, v2, v3 ->
+//                    Triple(v1, v2, v3)
+//                }
+//                uiState.collect {
+//                    spawnDisplaysInHolder(it.first)
+//                    spawnDisplaysInMatrix(it.second)
+//                }
+//            }
+//        }
+//
+//        //test logic
+//        binding.heading.setOnClickListener {
+//            Toast.makeText(requireContext(), stateHolder.toString(), Toast.LENGTH_LONG).show()
+//        }
 
     }
 
@@ -166,18 +165,18 @@ internal class DisplayLevelFragment : Fragment() {
 
                         //если вытаскиваем из нижней ячейки
                         if (ownerPosition == DisplayLevelOldViewModel.HOLDER_POSITION) {
-                            stateHolder?.fromHolderToMatrix(destinationPosition)
+//                            stateHolder?.fromHolderToMatrix(destinationPosition)
                         }
                         //если вытаскиваем из ячейки с позицией ownerPosition
                         else {
-                            stateHolder?.fromMatrixToMatrix(ownerPosition, destinationPosition)
+//                            stateHolder?.fromMatrixToMatrix(ownerPosition, destinationPosition)
                         }
                     }
                     //если вытаскиваем из ячейки с позицией ownerPosition и передаем в нижнюю ячейку
                     else if (cardMode == CardMode.RAISED) {
                         if (view.childCount == 1) draggedView.setShadowElevation(9f)
                         draggedView.setStrokeWidth(0f)
-                        stateHolder?.fromMatrixToHolder(ownerPosition)
+//                        stateHolder?.fromMatrixToHolder(ownerPosition)
                     }
 
                     owner.removeView(draggedView)
@@ -239,54 +238,54 @@ internal class DisplayLevelFragment : Fragment() {
     ): NeumorphImageView {
         val panelView = NeumorphImageView(requireContext())
 
-        val layoutParams = FrameLayout.LayoutParams(
-            dpToPx(125, panelView.resources),
-            dpToPx(125, panelView.resources)
-        )
-
-        layoutParams.gravity = Gravity.CENTER
-        panelView.layoutParams = layoutParams
-        panelView.setStrokeColor(ColorStateList.valueOf(Color.WHITE))
-        panelView.setPadding(dpToPx(30, panelView.resources))
-
-        if (position != 0 || spawnMode == SpawnMode.MATRIX) {
-            panelView.setShadowElevation(600f)
-        }
-
-        if (spawnMode == SpawnMode.MATRIX) {
-            panelView.setStrokeWidth(2f)
-        }
-
-        panelView.setBackgroundColor(resources.getColor(R.color.beige))
-        panelView.setShadowColorDark(resources.getColor(R.color.darker_beige))
-        panelView.setShadowColorLight(resources.getColor(R.color.white_shadow))
-        panelView.setShapeType(ShapeType.FLAT)
-
-        val bitmap: Bitmap? = stateHolder?.bitmapMap?.value?.getOrElse(panelNumber) { null }
-
-        if (bitmap != null) {
-            panelView.setImageBitmap(bitmap)
-        } else {
-            panelView.setBackgroundColor(Color.BLACK)
-        }
-
-        panelView.scaleType = ImageView.ScaleType.FIT_CENTER
-
-        panelView.setOnLongClickListener {
-            val clipText = "ClipData Text $panelNumber"
-            val item = ClipData.Item(clipText)
-            val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
-            val data = ClipData(clipText, mimeTypes, item)
-
-            val dragShowBuilder = View.DragShadowBuilder(it)
-            it.startDragAndDrop(data, dragShowBuilder, it, 0)
-
-            it.visibility = View.INVISIBLE
-            true
-        }
-        panelView.setOnClickListener {
-            stateHolder?.goToDrawingFragment(panelNumber)
-        }
+//        val layoutParams = FrameLayout.LayoutParams(
+//            dpToPx(125, panelView.resources),
+//            dpToPx(125, panelView.resources)
+//        )
+//
+//        layoutParams.gravity = Gravity.CENTER
+//        panelView.layoutParams = layoutParams
+//        panelView.setStrokeColor(ColorStateList.valueOf(Color.WHITE))
+//        panelView.setPadding(dpToPx(30, panelView.resources))
+//
+//        if (position != 0 || spawnMode == SpawnMode.MATRIX) {
+//            panelView.setShadowElevation(600f)
+//        }
+//
+//        if (spawnMode == SpawnMode.MATRIX) {
+//            panelView.setStrokeWidth(2f)
+//        }
+//
+//        panelView.setBackgroundColor(resources.getColor(R.color.beige))
+//        panelView.setShadowColorDark(resources.getColor(R.color.darker_beige))
+//        panelView.setShadowColorLight(resources.getColor(R.color.white_shadow))
+//        panelView.setShapeType(ShapeType.FLAT)
+//
+////        val bitmap: Bitmap? = stateHolder?.bitmapMap?.value?.getOrElse(panelNumber) { null }
+//
+//        if (bitmap != null) {
+//            panelView.setImageBitmap(bitmap)
+//        } else {
+//            panelView.setBackgroundColor(Color.BLACK)
+//        }
+//
+//        panelView.scaleType = ImageView.ScaleType.FIT_CENTER
+//
+//        panelView.setOnLongClickListener {
+//            val clipText = "ClipData Text $panelNumber"
+//            val item = ClipData.Item(clipText)
+//            val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
+//            val data = ClipData(clipText, mimeTypes, item)
+//
+//            val dragShowBuilder = View.DragShadowBuilder(it)
+//            it.startDragAndDrop(data, dragShowBuilder, it, 0)
+//
+//            it.visibility = View.INVISIBLE
+//            true
+//        }
+//        panelView.setOnClickListener {
+//            stateHolder?.goToDrawingFragment(panelNumber)
+//        }
         return panelView
     }
 
@@ -318,7 +317,7 @@ internal class DisplayLevelFragment : Fragment() {
 
     override fun onStop() {
         val segmentNumber = arguments?.getInt(SEGMENT_NUMBER_KEY) ?: 0
-        stateHolder?.sendPanelsConfiguration(segmentNumber)
+//        stateHolder?.sendPanelsConfiguration(segmentNumber)
         panelViewsList.clear()
         containerList.clear()
         super.onStop()

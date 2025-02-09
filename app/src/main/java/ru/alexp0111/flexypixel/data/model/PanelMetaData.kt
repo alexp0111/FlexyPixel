@@ -1,5 +1,6 @@
 package ru.alexp0111.flexypixel.data.model
 
+import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.flexypixel.data.DrawingColor
 
 data class PanelMetaData(
@@ -15,6 +16,12 @@ data class PanelMetaData(
         get() {
             return (absoluteY / 3) * 3 + (absoluteX / 3)
         }
+
+    val localX: Int
+        get() = absoluteX % CommonSizeConstants.PANELS_MATRIX_SIDE
+
+    val localY: Int
+        get() = absoluteY % CommonSizeConstants.PANELS_MATRIX_SIDE
 
     companion object {
         const val TYPE_64 = 64

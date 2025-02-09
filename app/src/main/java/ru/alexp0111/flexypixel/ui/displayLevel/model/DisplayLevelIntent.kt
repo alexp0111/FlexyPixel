@@ -1,9 +1,12 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.model
 
 internal sealed interface DisplayLevelIntent {
+    data class InitSegment(val segmentNumber: Int): DisplayLevelIntent
+
     data object DeletePanels: DisplayLevelIntent
     data object DownloadFileToPanels: DisplayLevelIntent
     data object GoToPanel: DisplayLevelIntent
+
     data class Click(val clickIntent: DisplayLevelClick): DisplayLevelIntent
     data class DragAndDrop(val dndIntent: DisplayLevelDragAndDrop): DisplayLevelIntent
 }

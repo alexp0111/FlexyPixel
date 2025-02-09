@@ -76,9 +76,9 @@ class DisplayLevelOldViewModel @AssistedInject constructor(
     }
 
     private fun getDisplayMatrix(segmentNum: Int) {
-        displayLocationInMatrix.update {
-            globalStateHandler.getPanelsConfiguration(segmentNum)
-        }
+        // displayLocationInMatrix.update {
+        //     globalStateHandler.getPanelsConfiguration(segmentNum)
+        // }
     }
 
     private fun getDisplayHolder() {

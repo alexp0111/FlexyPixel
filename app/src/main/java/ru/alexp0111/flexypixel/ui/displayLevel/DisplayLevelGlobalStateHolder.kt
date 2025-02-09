@@ -1,9 +1,10 @@
 package ru.alexp0111.flexypixel.ui.displayLevel
 
 import android.graphics.Bitmap
+import ru.alexp0111.flexypixel.data.model.PanelMetaData
 
 interface DisplayLevelGlobalStateHolder {
-    fun getPanelsConfiguration(segmentNumber: Int): MutableList<Int>
+    fun getPanelsConfiguration(segmentNumber: Int): Set<PanelMetaData>
 
     fun getHolderUpperItem(): Int
 

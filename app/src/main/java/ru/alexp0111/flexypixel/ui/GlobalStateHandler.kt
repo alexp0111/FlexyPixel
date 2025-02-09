@@ -59,23 +59,22 @@ class GlobalStateHandler @AssistedInject constructor(
     override fun getSegmentsBitmapImages(size: Int): List<Bitmap?> {
         val bitmapList = MutableList<Bitmap?>(CommonSizeConstants.SEGMENTS_TOTAL_AMOUNT) { null }
         for (segment in 0..bitmapList.lastIndex) {
-            val panelsOrderList = getPanelsConfiguration(segment)
-            if (panelsOrderList.all { it == EMPTY_CELL }) continue
-            bitmapList[segment] = bitmapProcessor.generateBitmapForSegment(panelsOrderList, size)
+            val panelMetaDataSet = getPanelsConfiguration(segment)
+            if (panelMetaDataSet.isEmpty()) continue
+            bitmapList[segment] = bitmapProcessor.generateBitmapForSegment(panelMetaDataSet, size)
         }
         return bitmapList
     }
 
     /** Display Level */
 
-    override fun getPanelsConfiguration(segmentNumber: Int): MutableList<Int> {
-        return MutableList(9) { EMPTY_CELL }.apply {
-            for (position in 0..8) {
-                val panelMetaData = getPanelInSegmentIfExists(position, segmentNumber)
-                panelMetaData ?: continue
-                this[position] = panelMetaData.order
-            }
+    override fun getPanelsConfiguration(segmentNumber: Int): Set<PanelMetaData> {
+        val panelMetaDataSet = mutableSetOf<PanelMetaData>()
+        for (panelOrder in 0 until CommonSizeConstants.PANELS_TOTAL_AMOUNT) {
+            val panelMetaData = getPanelInSegmentIfExists(panelOrder, segmentNumber)
+            panelMetaData?.let { panelMetaDataSet.add(it) }
         }
+        return panelMetaDataSet
     }
 
     private fun getPanelInSegmentIfExists(position: Int, segmentNumber: Int): PanelMetaData? {
@@ -89,7 +88,7 @@ class GlobalStateHandler @AssistedInject constructor(
 
     override fun getPanelsImages(segmentNumber: Int): MutableMap<Int, Bitmap> {
         return mutableMapOf<Int, Bitmap>().apply {
-            getPanelsConfiguration(segmentNumber).forEach { panelOrder ->
+            getPanelsConfiguration(segmentNumber).map { it.order }.forEach { panelOrder ->
                 if (panelOrder != EMPTY_CELL) {
                     val panelInStringPixels = frameCycle.frames.first().panels[panelOrder].pixels
                     put(
