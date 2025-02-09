@@ -79,7 +79,7 @@ private fun DisplayLevelScreenContent(
                     onDragStart = { onDragStart(intentHandler, PanelUiModel()) },
                     onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) }
                 ) {
-                    DisplayLevelPanel(panelSize.intValue)
+                    DisplayLevelPanel(panelSize.intValue, PanelUiModel())
                 }
             }
         }
@@ -157,7 +157,7 @@ private fun DisplayLevelPanelTarget(
                 onClick = { /* TODO: handle onTap & Enter edit mode */ }
             ) {
                 if (containsPanel) {
-                    DisplayLevelPanel(panelSize.value)
+                    DisplayLevelPanel(panelSize.value, uiState.value.panelMatrix[y][x])
                 }
             }
         }

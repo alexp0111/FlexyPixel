@@ -10,13 +10,11 @@ import androidx.core.graphics.red
 import androidx.core.graphics.set
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.annotations.FlexyPixelScalable
-import ru.alexp0111.core.matrix.MatrixConverter
 import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
-import ru.alexp0111.flexypixel.ui.EMPTY_CELL
 import javax.inject.Inject
 import kotlin.math.round
 import kotlin.math.sqrt
@@ -38,7 +36,7 @@ class BitmapProcessor @Inject constructor() : IBitmapProcessor {
     }
 
     @FlexyPixelScalable
-    override fun generateBitmapForSegment(panelsOrderList: List<Int>, cardSize: Int): Bitmap {
+    override fun generateBitmapForSegment(panelMetaDataSet: Set<PanelMetaData>, cardSize: Int): Bitmap {
         val panelToOffsetRatio = 4
         val scalingSize = panelToOffsetRatio * CommonSizeConstants.PANELS_MATRIX_SIDE + (CommonSizeConstants.PANELS_MATRIX_SIDE + 1)
 
@@ -50,13 +48,12 @@ class BitmapProcessor @Inject constructor() : IBitmapProcessor {
         val canvas = Canvas(bitmap)
         val paint = Paint().apply { color = Color.BLACK }
 
-        for (i in 0 until CommonSizeConstants.PANELS_MATRIX_SIDE) {
-            for (j in 0 until CommonSizeConstants.PANELS_MATRIX_SIDE) {
-                val panelIndex = MatrixConverter.XYtoIndex(j, i, CommonSizeConstants.PANELS_MATRIX_SIDE)
-                if (panelsOrderList[panelIndex] == EMPTY_CELL) continue
+        for (panelY in 0 until CommonSizeConstants.PANELS_MATRIX_SIDE) {
+            for (panelX in 0 until CommonSizeConstants.PANELS_MATRIX_SIDE) {
+                if (!panelMetaDataSet.any { it.localX == panelX && it.localY == panelY }) continue
 
-                val x = (j * (squareSize + scaledPixelSize) + scaledPixelSize)
-                val y = (i * (squareSize + scaledPixelSize) + scaledPixelSize)
+                val x = (panelX * (squareSize + scaledPixelSize) + scaledPixelSize)
+                val y = (panelY * (squareSize + scaledPixelSize) + scaledPixelSize)
 
                 canvas.drawRoundRect(x, y, x + squareSize, y + squareSize, scaledPixelSize, scaledPixelSize, paint)
             }
