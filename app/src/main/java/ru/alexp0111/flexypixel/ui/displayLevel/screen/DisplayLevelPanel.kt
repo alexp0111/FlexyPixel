@@ -13,24 +13,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import ru.alexp0111.core_ui.theme.beigeStandard
 
-/* TODO: Refactor this template to original panel ui */
 @Composable
-internal fun DisplayLevelPanel() {
-    val borderPx = with(LocalDensity.current) { 8.dp.toPx() }
+internal fun DisplayLevelPanel(
+    panelSize: Int,
+) {
+    val borderPx = with(LocalDensity.current) { 4.dp.toPx() }
     val cornerRadiusPx = with(LocalDensity.current) { 24.dp.toPx() }
+    val panelSizeDp = with(LocalDensity.current) { panelSize.toDp() }
 
-    Box(Modifier.size(80.dp)) {
+    Box(Modifier.size(panelSizeDp)) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawRoundRect(
-                color = Color.Black,
+                color = Color.White,
                 size = Size(size.width - borderPx * 2, size.height - borderPx * 2),
                 topLeft = Offset(borderPx, borderPx),
                 style = Stroke(width = borderPx),
                 cornerRadius = CornerRadius(cornerRadiusPx)
             )
             drawRoundRect(
-                color = Color.Red,
+                color = beigeStandard,
                 size = Size(size.width - borderPx * 2, size.height - borderPx * 2),
                 topLeft = Offset(borderPx, borderPx),
                 cornerRadius = CornerRadius(cornerRadiusPx)

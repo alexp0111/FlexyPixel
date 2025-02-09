@@ -1,6 +1,5 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,9 +11,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -26,11 +27,11 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ru.alexp0111.core_ui.common.NeoSlot
 import ru.alexp0111.core_ui.common.model.Coordinate
 import ru.alexp0111.core_ui.common.text.LargeTextField
 import ru.alexp0111.core_ui.common.text.MediumTextField
 import ru.alexp0111.core_ui.theme.AppTheme
-import ru.alexp0111.core_ui.theme.beigeDark
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelViewModel
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop.Down
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop.Fail
@@ -58,6 +59,7 @@ private fun DisplayLevelScreenContent(
     intentHandler: (DisplayLevelIntent) -> Unit = {},
 ) {
     val offsetMap = remember { mutableMapOf<Coordinate, Rect>() }
+    val panelSize = remember { mutableIntStateOf(0) }
 
     Scaffold(
         topBar = {
@@ -71,13 +73,13 @@ private fun DisplayLevelScreenContent(
                 Modifier
                     .fillMaxWidth()
                     .height(180.dp),
-                contentAlignment = Alignment.BottomCenter
+                contentAlignment = Alignment.Center
             ) {
                 DraggableView(
                     onDragStart = { onDragStart(intentHandler, PanelUiModel()) },
                     onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) }
                 ) {
-                    DisplayLevelPanel()
+                    DisplayLevelPanel(panelSize.intValue)
                 }
             }
         }
@@ -87,7 +89,7 @@ private fun DisplayLevelScreenContent(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            DisplayLevelPanelMatrixContent(uiState, offsetMap, intentHandler)
+            DisplayLevelPanelMatrixContent(uiState, offsetMap, panelSize, intentHandler)
         }
     }
 }
@@ -97,6 +99,7 @@ private fun DisplayLevelScreenContent(
 private fun DisplayLevelPanelMatrixContent(
     uiState: State<DisplayLevelUiState>,
     offsetMap: MutableMap<Coordinate, Rect>,
+    panelSize: MutableState<Int>,
     intentHandler: (DisplayLevelIntent) -> Unit = {},
 ) {
     Column {
@@ -112,7 +115,7 @@ private fun DisplayLevelPanelMatrixContent(
                             .aspectRatio(1f)
                             .padding(8.dp)
                     ) {
-                        DisplayLevelPanelTarget(uiState, offsetMap, intentHandler, x, y)
+                        DisplayLevelPanelTarget(uiState, offsetMap, panelSize, intentHandler, x, y)
                     }
                 }
             }
@@ -124,15 +127,17 @@ private fun DisplayLevelPanelMatrixContent(
 private fun DisplayLevelPanelTarget(
     uiState: State<DisplayLevelUiState>,
     offsetMap: MutableMap<Coordinate, Rect>,
+    panelSize: MutableState<Int>,
     intentHandler: (DisplayLevelIntent) -> Unit = {},
     x: Int,
     y: Int,
 ) {
+    val containsPanel = uiState.value.panelMatrix[y][x].sourceY == y && uiState.value.panelMatrix[y][x].sourceX == x
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(beigeDark)
             .onGloballyPositioned { layoutCoordinates ->
+                panelSize.value = layoutCoordinates.size.height
                 layoutCoordinates
                     .boundsInWindow()
                     .let { rect ->
@@ -141,13 +146,19 @@ private fun DisplayLevelPanelTarget(
             },
         contentAlignment = Alignment.Center
     ) {
-        DraggableView(
-            onDragStart = { onDragStart(intentHandler, uiState.value.panelMatrix[y][x]) },
-            onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) },
-            onClick = { /* TODO: handle onTap & Enter edit mode */ }
+        NeoSlot(
+            modifier = Modifier.fillMaxSize(),
+            strokeWidth = if (containsPanel) 0.dp else 6.dp,
         ) {
-            if (uiState.value.panelMatrix[y][x].sourceY == y && uiState.value.panelMatrix[y][x].sourceX == x) {
-                DisplayLevelPanel()
+            DraggableView(
+                modifier = Modifier.fillMaxSize(),
+                onDragStart = { onDragStart(intentHandler, uiState.value.panelMatrix[y][x]) },
+                onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) },
+                onClick = { /* TODO: handle onTap & Enter edit mode */ }
+            ) {
+                if (containsPanel) {
+                    DisplayLevelPanel(panelSize.value)
+                }
             }
         }
     }
