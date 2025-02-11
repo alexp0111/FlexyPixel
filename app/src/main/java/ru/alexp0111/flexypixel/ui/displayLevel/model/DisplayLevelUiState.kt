@@ -29,6 +29,5 @@ internal data class PanelUiModel(
 internal enum class PanelStatus {
     DEFAULT,
     SELECTED,
-    PLACED_CORRECT,
     PLACED_WRONG
 }

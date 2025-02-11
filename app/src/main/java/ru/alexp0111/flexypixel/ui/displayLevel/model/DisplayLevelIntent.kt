@@ -7,13 +7,8 @@ internal sealed interface DisplayLevelIntent {
     data object DownloadFileToPanels: DisplayLevelIntent
     data object GoToPanel: DisplayLevelIntent
 
-    data class Click(val clickIntent: DisplayLevelClick): DisplayLevelIntent
+    data class Click(val panel: PanelUiModel): DisplayLevelIntent
     data class DragAndDrop(val dndIntent: DisplayLevelDragAndDrop): DisplayLevelIntent
-}
-
-internal sealed interface DisplayLevelClick {
-    data class Select(val panel: PanelUiModel): DisplayLevelClick
-    data class UnSelect(val panel: PanelUiModel): DisplayLevelClick
 }
 
 internal sealed interface DisplayLevelDragAndDrop {

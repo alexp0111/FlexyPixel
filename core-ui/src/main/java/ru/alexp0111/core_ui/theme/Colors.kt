@@ -6,6 +6,8 @@ import androidx.compose.ui.graphics.Color
 val black = Color(0xFF000000)
 val white = Color(0xFFFFFFFF)
 
+val red = Color(0xFFFF5722)
+
 
 val beigeStandard = Color(0xFFEEE4DC)
 val beigeDark = Color(0xFFC5B9B0)
