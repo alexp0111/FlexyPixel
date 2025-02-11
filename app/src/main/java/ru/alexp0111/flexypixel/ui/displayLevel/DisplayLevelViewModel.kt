@@ -7,11 +7,11 @@ import ru.alexp0111.core.viewmodel.MVIViewModel
 import ru.alexp0111.flexypixel.ui.GlobalStateHandler
 import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.IDisplayLevelConverter
-import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelClick
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelEffect
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelIntent
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelUiState
+import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelStatus
 import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelUiModel
 import javax.inject.Inject
 
@@ -31,7 +31,7 @@ internal class DisplayLevelViewModel @Inject constructor(
         when (intent) {
             is DisplayLevelIntent.InitSegment -> loadConfiguration(intent.segmentNumber)
             is DisplayLevelIntent.DragAndDrop -> handleDragAndDropIntent(intent.dndIntent)
-            is DisplayLevelIntent.Click -> handleClickIntent(intent.clickIntent)
+            is DisplayLevelIntent.Click -> handleClickIntent(intent.panel)
             DisplayLevelIntent.DeletePanels -> { /* todo */ }
             DisplayLevelIntent.DownloadFileToPanels -> { /* todo */ }
             DisplayLevelIntent.GoToPanel -> { /* todo */ }
@@ -44,11 +44,23 @@ internal class DisplayLevelViewModel @Inject constructor(
             DisplayLevelDragAndDrop.Fail -> handlePanelDropFail()
         }
 
-    private fun handleClickIntent(intent: DisplayLevelClick) =
-        when (intent) {
-            is DisplayLevelClick.Select -> { /* todo */ }
-            is DisplayLevelClick.UnSelect -> { /* todo */ }
+    private fun handleClickIntent(clickedPanel: PanelUiModel) {
+        val clickedPanelState = uiState.value.panelMatrix[clickedPanel.sourceY][clickedPanel.sourceX]
+        // TODO: On PLACED_WRONG click - show error snackbar
+        val updatedPanelState = when(clickedPanelState.status) {
+            PanelStatus.DEFAULT -> clickedPanelState.copy(status = PanelStatus.SELECTED)
+            PanelStatus.SELECTED -> clickedPanelState.copy(status = PanelStatus.DEFAULT)
+            PanelStatus.PLACED_WRONG -> clickedPanelState
         }
+
+        setState {
+            uiState.value.copy(
+                panelMatrix = uiState.value.panelMatrix.toMutableList().map { it.toMutableList() }.apply {
+                    this[updatedPanelState.sourceY][updatedPanelState.sourceX] = updatedPanelState
+                }
+            )
+        }
+    }
 
     /* Init */
 

@@ -154,7 +154,7 @@ private fun DisplayLevelPanelTarget(
                 modifier = Modifier.fillMaxSize(),
                 onDragStart = { onDragStart(intentHandler, uiState.value.panelMatrix[y][x]) },
                 onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) },
-                onClick = { /* TODO: handle onTap & Enter edit mode */ }
+                onClick = { intentHandler(DisplayLevelIntent.Click(uiState.value.panelMatrix[y][x])) }
             ) {
                 if (containsPanel) {
                     DisplayLevelPanel(panelSize.value, uiState.value.panelMatrix[y][x])
