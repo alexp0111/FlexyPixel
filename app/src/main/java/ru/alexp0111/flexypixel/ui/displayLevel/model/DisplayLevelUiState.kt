@@ -14,7 +14,13 @@ internal data class DisplayLevelUiState(
                 PanelUiModel()
             }
         },
-)
+) {
+    val isSelectionModeOn: Boolean
+        get() = panelMatrix.flatten().any { it.status == PanelStatus.SELECTED }
+
+    val isOnlyOnePanelSelected: Boolean
+        get() = panelMatrix.flatten().count { it.status == PanelStatus.SELECTED } == 1
+}
 
 @Immutable
 internal data class PanelUiModel(

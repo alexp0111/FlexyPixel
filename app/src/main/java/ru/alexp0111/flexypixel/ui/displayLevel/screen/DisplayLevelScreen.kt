@@ -1,5 +1,6 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.screen
 
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,9 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,20 +27,26 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ru.alexp0111.core_ui.common.NeoImageButton
 import ru.alexp0111.core_ui.common.NeoSlot
 import ru.alexp0111.core_ui.common.model.Coordinate
 import ru.alexp0111.core_ui.common.text.LargeTextField
 import ru.alexp0111.core_ui.common.text.MediumTextField
 import ru.alexp0111.core_ui.theme.AppTheme
+import ru.alexp0111.core_ui.util.conditional
+import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelViewModel
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop.Down
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop.Fail
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop.Up
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelIntent
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelUiState
+import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelStatus
 import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelUiModel
+import ru.alexp0111.core_ui.R as coreUiR
 
 
 @Composable
@@ -69,18 +77,10 @@ private fun DisplayLevelScreenContent(
             }
         },
         bottomBar = {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .height(180.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                DraggableView(
-                    onDragStart = { onDragStart(intentHandler, PanelUiModel()) },
-                    onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) }
-                ) {
-                    DisplayLevelPanel(panelSize.intValue, PanelUiModel())
-                }
+            if (uiState.value.isSelectionModeOn) {
+                BottomPanelActions(uiState.value.isOnlyOnePanelSelected, intentHandler)
+            } else {
+                BottomPanelSource(offsetMap, panelSize, intentHandler)
             }
         }
     ) { padding ->
@@ -94,12 +94,66 @@ private fun DisplayLevelScreenContent(
     }
 }
 
+@Composable
+private fun BottomPanelActions(
+    isOnlyOnePanelSelected: Boolean,
+    intentHandler: (DisplayLevelIntent) -> Unit = {},
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(120.dp)
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        NeoImageButton(
+            imageId = coreUiR.drawable.ic_delete,
+            modifier = Modifier.width(80.dp),
+            onClick = { intentHandler(DisplayLevelIntent.DeletePanels) }
+        )
+        if (isOnlyOnePanelSelected) {
+            NeoImageButton(
+                imageId = coreUiR.drawable.ic_edit,
+                modifier = Modifier.weight(1f),
+                onClick = { intentHandler(DisplayLevelIntent.GoToPanel) }
+            )
+        }
+        NeoImageButton(
+            imageId = coreUiR.drawable.ic_add_file,
+            modifier = Modifier.width(80.dp).conditional(!isOnlyOnePanelSelected) { weight(1f) },
+            onClick = { intentHandler(DisplayLevelIntent.DownloadFileToPanels) }
+        )
+    }
+}
+
+@Composable
+private fun BottomPanelSource(
+    offsetMap: MutableMap<Coordinate, Rect>,
+    panelSize: MutableIntState,
+    intentHandler: (DisplayLevelIntent) -> Unit = {},
+) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(180.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        DraggableView(
+            onDragStart = { onDragStart(intentHandler, PanelUiModel()) },
+            onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) }
+        ) {
+            DisplayLevelPanel(panelSize.intValue, PanelUiModel())
+        }
+    }
+}
+
 
 @Composable
 private fun DisplayLevelPanelMatrixContent(
     uiState: State<DisplayLevelUiState>,
     offsetMap: MutableMap<Coordinate, Rect>,
-    panelSize: MutableState<Int>,
+    panelSize: MutableIntState,
     intentHandler: (DisplayLevelIntent) -> Unit = {},
 ) {
     Column {
@@ -127,7 +181,7 @@ private fun DisplayLevelPanelMatrixContent(
 private fun DisplayLevelPanelTarget(
     uiState: State<DisplayLevelUiState>,
     offsetMap: MutableMap<Coordinate, Rect>,
-    panelSize: MutableState<Int>,
+    panelSize: MutableIntState,
     intentHandler: (DisplayLevelIntent) -> Unit = {},
     x: Int,
     y: Int,
@@ -137,7 +191,7 @@ private fun DisplayLevelPanelTarget(
         modifier = Modifier
             .fillMaxSize()
             .onGloballyPositioned { layoutCoordinates ->
-                panelSize.value = layoutCoordinates.size.height
+                panelSize.intValue = layoutCoordinates.size.height
                 layoutCoordinates
                     .boundsInWindow()
                     .let { rect ->
@@ -157,7 +211,7 @@ private fun DisplayLevelPanelTarget(
                 onClick = { intentHandler(DisplayLevelIntent.Click(uiState.value.panelMatrix[y][x])) }
             ) {
                 if (containsPanel) {
-                    DisplayLevelPanel(panelSize.value, uiState.value.panelMatrix[y][x])
+                    DisplayLevelPanel(panelSize.intValue, uiState.value.panelMatrix[y][x])
                 }
             }
         }
@@ -187,12 +241,76 @@ private fun extractCoordinateByOffset(offsetMap: MutableMap<Coordinate, Rect>, o
 
 @Preview
 @Composable
-private fun DisplayLevelScreenContentPreview() {
+private fun DisplayLevelScreenContentEmptyPreview() {
     AppTheme {
         DisplayLevelScreenContent(
             uiState = remember {
                 mutableStateOf(
                     DisplayLevelUiState()
+                )
+            },
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun DisplayLevelScreenContentFullPreview() {
+    val resources = LocalContext.current.resources
+    AppTheme {
+        DisplayLevelScreenContent(
+            uiState = remember {
+                mutableStateOf(
+                    DisplayLevelUiState(
+                        panelMatrix = listOf(
+                            listOf(
+                                PanelUiModel(
+                                    sourceX = 0,
+                                    sourceY = 0,
+                                    order = 4,
+                                    status = PanelStatus.PLACED_WRONG
+                                ),
+                                PanelUiModel(
+                                    sourceX = 1,
+                                    sourceY = 0,
+                                    order = 3,
+                                    status = PanelStatus.SELECTED
+                                ),
+                                PanelUiModel(),
+                            ),
+                            listOf(
+                                PanelUiModel(),
+                                PanelUiModel(
+                                    sourceX = 1,
+                                    sourceY = 1,
+                                    order = 2
+                                ),
+                                PanelUiModel(),
+                            ),
+                            listOf(
+                                PanelUiModel(),
+                                PanelUiModel(
+                                    bitmap = BitmapFactory.decodeResource(
+                                        resources,
+                                        R.drawable.cat_8_8
+                                    ),
+                                    sourceX = 1,
+                                    sourceY = 2,
+                                    order = 1,
+                                    status = PanelStatus.SELECTED
+                                ),
+                                PanelUiModel(
+                                    bitmap = BitmapFactory.decodeResource(
+                                        resources,
+                                        R.drawable.cat_8_8
+                                    ),
+                                    sourceX = 2,
+                                    sourceY = 2,
+                                    order = 0
+                                ),
+                            ),
+                        )
+                    )
                 )
             },
         )
