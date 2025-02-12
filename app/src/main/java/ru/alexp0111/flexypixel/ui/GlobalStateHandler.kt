@@ -82,7 +82,7 @@ class GlobalStateHandler @AssistedInject constructor(
         return frameCycle.configuration.getPanelMetaDataByCoordinates(x, y)
     }
 
-    override fun getHolderUpperItem(): Int {
+    override fun getPanelsAmount(): Int {
         return frameCycle.configuration.listOfMetaData.size
     }
 

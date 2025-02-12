@@ -82,14 +82,14 @@ class DisplayLevelOldViewModel @AssistedInject constructor(
     }
 
     private fun getDisplayHolder() {
-        displayLocationInHolder.update {
-            val topElement = globalStateHandler.getHolderUpperItem()
-            Stack<Int>().apply {
-                for (displayNumber in PanelConfiguration.MAX_SIZE - 1 downTo topElement) {
-                    push(displayNumber)
-                }
-            }
-        }
+//        displayLocationInHolder.update {
+//            val topElement = globalStateHandler.getHolderUpperItem()
+//            Stack<Int>().apply {
+//                for (displayNumber in PanelConfiguration.MAX_SIZE - 1 downTo topElement) {
+//                    push(displayNumber)
+//                }
+//            }
+//        }
     }
 
     fun sendPanelsConfiguration(segmentNum: Int) {
