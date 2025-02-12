@@ -4,6 +4,7 @@ import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import ru.alexp0111.core.viewmodel.MVIViewModel
+import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.ui.GlobalStateHandler
 import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.IDisplayLevelConverter
@@ -34,8 +35,23 @@ internal class DisplayLevelViewModel @Inject constructor(
             is DisplayLevelIntent.Click -> handleClickIntent(intent.panel)
             DisplayLevelIntent.DeletePanels -> { /* todo */ }
             DisplayLevelIntent.DownloadFileToPanels -> { /* todo */ }
-            DisplayLevelIntent.GoToPanel -> { /* todo */ }
+            DisplayLevelIntent.GoToPanel -> goToSelectedPanel()
         }
+
+    /* Init */
+
+    private fun loadConfiguration(segmentNumber: Int) {
+        launch {
+            val panelMetaDataSet = async { globalStateHandler.getPanelsConfiguration(segmentNumber) }
+            val panelOrderToBitmap = async { globalStateHandler.getPanelsImages(segmentNumber) }
+            val matrix = displayLevelConverter.convertOrderedPanelsWithBitmapsToUiMatrix(
+                panelMetaDataSet = panelMetaDataSet.await(),
+                panelOrderToBitmap = panelOrderToBitmap.await()
+            )
+
+            setState { uiState.value.copy(segmentNumber = segmentNumber, panelMatrix = matrix) }
+        }
+    }
 
     private fun handleDragAndDropIntent(intent: DisplayLevelDragAndDrop) =
         when (intent) {
@@ -43,6 +59,8 @@ internal class DisplayLevelViewModel @Inject constructor(
             is DisplayLevelDragAndDrop.Down -> handlePanelDrop(intent.dropX, intent.dropY)
             DisplayLevelDragAndDrop.Fail -> handlePanelDropFail()
         }
+
+    /* Drag and drop */
 
     private fun handleClickIntent(clickedPanel: PanelUiModel) {
         val clickedPanelState = uiState.value.panelMatrix[clickedPanel.sourceY][clickedPanel.sourceX]
@@ -62,28 +80,14 @@ internal class DisplayLevelViewModel @Inject constructor(
         }
     }
 
-    /* Init */
-
-    private fun loadConfiguration(segmentNumber: Int) {
-        launch {
-            val panelMetaDataSet = async { globalStateHandler.getPanelsConfiguration(segmentNumber) }
-            val panelOrderToBitmap = async { globalStateHandler.getPanelsImages(segmentNumber) }
-            val matrix = displayLevelConverter.convertOrderedPanelsWithBitmapsToUiMatrix(
-                panelMetaDataSet = panelMetaDataSet.await(),
-                panelOrderToBitmap = panelOrderToBitmap.await()
-            )
-
-            setState { uiState.value.copy(segmentNumber = segmentNumber, panelMatrix = matrix) }
-        }
-    }
-
-    /* Drag and drop */
-
     private fun handlePanelDrag(draggedPanel: PanelUiModel) =
         setState { uiState.value.copy(draggedPanel = draggedPanel) }
 
     private fun handlePanelDrop(dropX: Int, dropY: Int) {
         val draggedPanel = uiState.value.draggedPanel ?: return
+
+        // TODO: Should pass validation checks first of all
+        val newOrder =  if (draggedPanel.order == -1) globalStateHandler.getPanelsAmount() else draggedPanel.order
 
         // TODO: Extract copy logic to delegate
         setState {
@@ -93,11 +97,22 @@ internal class DisplayLevelViewModel @Inject constructor(
                     if (draggedPanel.sourceY != -1 && draggedPanel.sourceX != -1) {
                         this[draggedPanel.sourceY][draggedPanel.sourceX] = PanelUiModel()
                     }
-                    this[dropY][dropX] = draggedPanel.copy(sourceX = dropX, sourceY = dropY)
+                    this[dropY][dropX] = draggedPanel.copy(
+                        sourceX = dropX,
+                        sourceY = dropY,
+                        order = newOrder,
+                    )
                 }
             )
         }
     }
 
     private fun handlePanelDropFail() = setState { uiState.value.copy(draggedPanel = null) }
+
+    /* Go to panel */
+
+    private fun goToSelectedPanel() {
+        val panel = uiState.value.panelMatrix.flatten().firstOrNull { it.status == PanelStatus.SELECTED } ?: return
+        router.navigateTo(Screens.DrawingScreen(panel.order))
+    }
 }

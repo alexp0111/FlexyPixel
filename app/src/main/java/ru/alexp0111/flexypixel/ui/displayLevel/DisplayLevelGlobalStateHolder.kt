@@ -6,7 +6,7 @@ import ru.alexp0111.flexypixel.data.model.PanelMetaData
 interface DisplayLevelGlobalStateHolder {
     fun getPanelsConfiguration(segmentNumber: Int): Set<PanelMetaData>
 
-    fun getHolderUpperItem(): Int
+    fun getPanelsAmount(): Int
 
     fun getPanelsImages(segmentNumber: Int): MutableMap<Int, Bitmap>
 
