@@ -121,7 +121,9 @@ private fun BottomPanelActions(
         }
         NeoImageButton(
             imageId = coreUiR.drawable.ic_add_file,
-            modifier = Modifier.width(80.dp).conditional(!isOnlyOnePanelSelected) { weight(1f) },
+            modifier = Modifier
+                .width(80.dp)
+                .conditional(!isOnlyOnePanelSelected) { weight(1f) },
             onClick = { intentHandler(DisplayLevelIntent.DownloadFileToPanels) }
         )
     }
@@ -204,13 +206,13 @@ private fun DisplayLevelPanelTarget(
             modifier = Modifier.fillMaxSize(),
             strokeWidth = if (containsPanel) 0.dp else 6.dp,
         ) {
-            DraggableView(
-                modifier = Modifier.fillMaxSize(),
-                onDragStart = { onDragStart(intentHandler, uiState.value.panelMatrix[y][x]) },
-                onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) },
-                onClick = { intentHandler(DisplayLevelIntent.Click(uiState.value.panelMatrix[y][x])) }
-            ) {
-                if (containsPanel) {
+            if (containsPanel) {
+                DraggableView(
+                    modifier = Modifier.fillMaxSize(),
+                    onDragStart = { onDragStart(intentHandler, uiState.value.panelMatrix[y][x]) },
+                    onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) },
+                    onClick = { intentHandler(DisplayLevelIntent.Click(uiState.value.panelMatrix[y][x])) }
+                ) {
                     DisplayLevelPanel(panelSize.intValue, uiState.value.panelMatrix[y][x])
                 }
             }

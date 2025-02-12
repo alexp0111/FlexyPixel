@@ -32,8 +32,9 @@ fun NeoSlot(
 ) {
     Card(
         onClick = onClick,
+        enabled = false,
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = beigeStandard),
+        colors = CardDefaults.cardColors(disabledContainerColor = beigeStandard),
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
