@@ -3,6 +3,7 @@ package ru.alexp0111.flexypixel.ui.displayLevel.model
 import android.graphics.Bitmap
 import androidx.compose.runtime.Immutable
 import ru.alexp0111.core.CommonSizeConstants
+import ru.alexp0111.flexypixel.data.model.PanelStatus
 
 @Immutable
 internal data class DisplayLevelUiState(
@@ -28,12 +29,5 @@ internal data class PanelUiModel(
     val sourceX: Int = -1,
     val sourceY: Int = -1,
     val order: Int = -1,
-    val status: PanelStatus = PanelStatus.DEFAULT
+    val status: PanelStatus = PanelStatus.DEFAULT,
 )
-
-@Immutable
-internal enum class PanelStatus {
-    DEFAULT,
-    SELECTED,
-    PLACED_WRONG
-}

@@ -22,7 +22,7 @@ private const val RADIUS_RATIO = 5
 private const val MARGINS_RATIO = 12
 private const val PANEL_NUMBER_KEY = "PANEL_NUMBER_KEY"
 
-class DrawingFragment @Inject constructor() : Fragment() {
+internal class DrawingFragment @Inject constructor() : Fragment() {
 
     @Inject
     lateinit var stateHolderFactory: DrawingViewModelFactory

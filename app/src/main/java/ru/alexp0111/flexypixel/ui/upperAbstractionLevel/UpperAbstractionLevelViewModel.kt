@@ -12,8 +12,8 @@ import ru.alexp0111.core.viewmodel.MVIViewModel
 import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
 import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.navigation.Screens
-import ru.alexp0111.flexypixel.ui.GlobalStateHandler
-import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
+import ru.alexp0111.flexypixel.business.GlobalStateHandler
+import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.converter.IUpperAbstractionLevelConverter
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelEffect
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelIntent

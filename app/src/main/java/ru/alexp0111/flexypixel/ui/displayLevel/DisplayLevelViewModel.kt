@@ -4,15 +4,15 @@ import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import ru.alexp0111.core.viewmodel.MVIViewModel
+import ru.alexp0111.flexypixel.data.model.PanelStatus
 import ru.alexp0111.flexypixel.navigation.Screens
-import ru.alexp0111.flexypixel.ui.GlobalStateHandler
-import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
+import ru.alexp0111.flexypixel.business.GlobalStateHandler
+import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.IDisplayLevelConverter
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelEffect
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelIntent
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelUiState
-import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelStatus
 import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelUiModel
 import javax.inject.Inject
 

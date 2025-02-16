@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import ru.alexp0111.core_ui.util.composeView
 import ru.alexp0111.core_ui.util.setContentAndStrategy
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
-import ru.alexp0111.flexypixel.ui.GlobalStateHandler
+import ru.alexp0111.flexypixel.business.GlobalStateHandler
 import javax.inject.Inject
 
 class MenuFragment : Fragment() {

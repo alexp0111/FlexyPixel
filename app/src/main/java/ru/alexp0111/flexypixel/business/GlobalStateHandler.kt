@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.ui
+package ru.alexp0111.flexypixel.business
 
 import android.graphics.Bitmap
 import android.util.Log
@@ -10,10 +10,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
+import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
 import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import ru.alexp0111.flexypixel.data.model.PanelOrientation
 import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
 import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
@@ -22,20 +24,22 @@ import ru.alexp0111.flexypixel.ui.drawing.DrawingGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelGlobalStateHolder
 
 @AssistedFactory
-interface GlobalStateHandlerFactory {
+internal interface GlobalStateHandlerFactory {
     fun create(schemeId: Int?): GlobalStateHandler
 }
 
 private const val TAG = "GlobalStateHandler"
 const val EMPTY_CELL = -1
 
-class GlobalStateHandler @AssistedInject constructor(
+internal class GlobalStateHandler @AssistedInject constructor(
     private val databaseRepository: SavedSchemeRepository,
     private val messageHandler: MessageHandler,
     private val bitmapProcessor: IBitmapProcessor,
+    private val panelValidator: IPanelPositionValidator,
     @Assisted val schemeId: Int?,
 ) : UpperAbstractionLevelGlobalStateHolder,
     DrawingGlobalStateHolder,
+    IPanelPositionValidator by panelValidator,
     DisplayLevelGlobalStateHolder {
 
     private lateinit var frameCycle: FrameCycle
@@ -100,6 +104,10 @@ class GlobalStateHandler @AssistedInject constructor(
         }
     }
 
+    fun validate(): Set<PanelMetaData> {
+        return validate(frameCycle.configuration.listOfMetaData.toSet())
+    }
+
     /*
     * TODO: Test case with reordering panels. Should we allow it?
     * */
@@ -124,7 +132,7 @@ class GlobalStateHandler @AssistedInject constructor(
                             type = PanelMetaData.TYPE_64,
                             absoluteX = absoluteX,
                             absoluteY = absoluteY,
-                            rotation = 0,
+                            orientation = PanelOrientation.LEFT,
                             palette = PanelMetaData.getDefaultPalette()
                         )
                     )
@@ -137,7 +145,7 @@ class GlobalStateHandler @AssistedInject constructor(
             }
         }
         handleRemovedPanels(segmentNumber, orderToXAndY)
-        handleRotation()
+        //handleRotation()
     }
 
     private fun handleRemovedPanels(
@@ -163,35 +171,35 @@ class GlobalStateHandler @AssistedInject constructor(
         }
     }
 
-    private fun handleRotation() {
-        frameCycle.configuration.listOfMetaData.forEachIndexed { index, panelMetaData ->
-            frameCycle.configuration.listOfMetaData[index] =
-                frameCycle.configuration.listOfMetaData[index].copy(
-                    rotation = getPanelRotation(panelMetaData)
-                )
-        }
-    }
-
-    private fun getPanelRotation(panelMetaData: PanelMetaData): Int {
-        return when (panelMetaData.order) {
-            0 -> 0
-            frameCycle.configuration.listOfMetaData.lastIndex -> 0
-            else -> calculatePanelRotationInChain(panelMetaData)
-        }
-    }
-
-    private fun calculatePanelRotationInChain(panelMetaData: PanelMetaData): Int {
-        val thisPanelX = panelMetaData.absoluteX
-        val thisPanelY = panelMetaData.absoluteY
-        val nextPanelX = frameCycle.configuration.listOfMetaData[panelMetaData.order + 1].absoluteX
-        val nextPanelY = frameCycle.configuration.listOfMetaData[panelMetaData.order + 1].absoluteY
-        return when {
-            thisPanelY == nextPanelY && thisPanelX > nextPanelX -> 0
-            thisPanelY == nextPanelY && thisPanelX < nextPanelX -> 2
-            thisPanelY < nextPanelY && thisPanelX == nextPanelX -> 3
-            else -> 1
-        }
-    }
+//    private fun handleRotation() {
+//        frameCycle.configuration.listOfMetaData.forEachIndexed { index, panelMetaData ->
+//            frameCycle.configuration.listOfMetaData[index] =
+//                frameCycle.configuration.listOfMetaData[index].copy(
+//                    rotation = getPanelRotation(panelMetaData)
+//                )
+//        }
+//    }
+//
+//    private fun getPanelRotation(panelMetaData: PanelMetaData): Int {
+//        return when (panelMetaData.order) {
+//            0 -> 0
+//            frameCycle.configuration.listOfMetaData.lastIndex -> 0
+//            else -> calculatePanelRotationInChain(panelMetaData)
+//        }
+//    }
+//
+//    private fun calculatePanelRotationInChain(panelMetaData: PanelMetaData): Int {
+//        val thisPanelX = panelMetaData.absoluteX
+//        val thisPanelY = panelMetaData.absoluteY
+//        val nextPanelX = frameCycle.configuration.listOfMetaData[panelMetaData.order + 1].absoluteX
+//        val nextPanelY = frameCycle.configuration.listOfMetaData[panelMetaData.order + 1].absoluteY
+//        return when {
+//            thisPanelY == nextPanelY && thisPanelX > nextPanelX -> 0
+//            thisPanelY == nextPanelY && thisPanelX < nextPanelX -> 2
+//            thisPanelY < nextPanelY && thisPanelX == nextPanelX -> 3
+//            else -> 1
+//        }
+//    }
 
     /** Drawing Level */
 
