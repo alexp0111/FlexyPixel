@@ -4,10 +4,10 @@ import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import ru.alexp0111.core.viewmodel.MVIViewModel
-import ru.alexp0111.flexypixel.data.model.PanelStatus
-import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.business.GlobalStateHandler
 import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
+import ru.alexp0111.flexypixel.data.model.PanelStatus
+import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.IDisplayLevelConverter
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelEffect
@@ -49,7 +49,7 @@ internal class DisplayLevelViewModel @Inject constructor(
                 panelOrderToBitmap = panelOrderToBitmap.await()
             )
 
-            setState { uiState.value.copy(segmentNumber = segmentNumber, panelMatrix = matrix) }
+            setState { uiState.value.copy(segmentNumber = segmentNumber, panels = matrix) }
         }
     }
 
@@ -63,21 +63,18 @@ internal class DisplayLevelViewModel @Inject constructor(
     /* Drag and drop */
 
     private fun handleClickIntent(clickedPanel: PanelUiModel) {
-        val clickedPanelState = uiState.value.panelMatrix[clickedPanel.sourceY][clickedPanel.sourceX]
+        val clickedPanelState = uiState.value.get(clickedPanel.sourceX, clickedPanel.sourceY) ?: return
         // TODO: On PLACED_WRONG click - show error snackbar
-        val updatedPanelState = when(clickedPanelState.status) {
+        val newPanel = when (clickedPanelState.status) {
             PanelStatus.DEFAULT -> clickedPanelState.copy(status = PanelStatus.SELECTED)
             PanelStatus.SELECTED -> clickedPanelState.copy(status = PanelStatus.DEFAULT)
             PanelStatus.PLACED_WRONG -> clickedPanelState
         }
+        val metaDataPanel = displayLevelConverter.convertPanelUiModelToMetaData(newPanel, uiState.value.segmentNumber)
+        val newGlobalConfig = globalStateHandler.updateAndGetValidatedConfig(metaDataPanel)
+        val newLocalConfig = displayLevelConverter.convertGlobalToLocalOnUpdate(uiState.value.panels, newGlobalConfig)
 
-        setState {
-            uiState.value.copy(
-                panelMatrix = uiState.value.panelMatrix.toMutableList().map { it.toMutableList() }.apply {
-                    this[updatedPanelState.sourceY][updatedPanelState.sourceX] = updatedPanelState
-                }
-            )
-        }
+        setState { uiState.value.copy(panels = newLocalConfig) }
     }
 
     private fun handlePanelDrag(draggedPanel: PanelUiModel) =
@@ -86,25 +83,25 @@ internal class DisplayLevelViewModel @Inject constructor(
     private fun handlePanelDrop(dropX: Int, dropY: Int) {
         val draggedPanel = uiState.value.draggedPanel ?: return
 
-        // TODO: Should pass validation checks first of all
-        val newOrder =  if (draggedPanel.order == -1) globalStateHandler.getPanelsAmount() else draggedPanel.order
-
-        // TODO: Extract copy logic to delegate
-        setState {
-            uiState.value.copy(
-                draggedPanel = null,
-                panelMatrix = uiState.value.panelMatrix.toMutableList().map { it.toMutableList() }.apply {
-                    if (draggedPanel.sourceY != -1 && draggedPanel.sourceX != -1) {
-                        this[draggedPanel.sourceY][draggedPanel.sourceX] = PanelUiModel()
-                    }
-                    this[dropY][dropX] = draggedPanel.copy(
-                        sourceX = dropX,
-                        sourceY = dropY,
-                        order = newOrder,
-                    )
-                }
-            )
+        val newPanel = updateDraggedPanel(draggedPanel, dropX, dropY)
+        val metaDataPanel = displayLevelConverter.convertPanelUiModelToMetaData(newPanel, uiState.value.segmentNumber)
+        val newGlobalConfig = globalStateHandler.updateAndGetValidatedConfig(metaDataPanel)
+        val newLocalConfig = if (draggedPanel.order == -1) {
+            displayLevelConverter.convertGlobalToLocalOnAdd(uiState.value.panels, newGlobalConfig)
+        } else {
+            displayLevelConverter.convertGlobalToLocalOnUpdate(uiState.value.panels, newGlobalConfig)
         }
+
+        setState { uiState.value.copy(draggedPanel = null, panels = newLocalConfig) }
+    }
+
+    private fun updateDraggedPanel(draggedPanel: PanelUiModel, dropX: Int, dropY: Int): PanelUiModel {
+        val newOrder = if (draggedPanel.order == -1) globalStateHandler.getPanelsAmount() else draggedPanel.order
+        return draggedPanel.copy(
+            order = newOrder,
+            sourceX = dropX,
+            sourceY = dropY,
+        )
     }
 
     private fun handlePanelDropFail() = setState { uiState.value.copy(draggedPanel = null) }
@@ -112,7 +109,7 @@ internal class DisplayLevelViewModel @Inject constructor(
     /* Go to panel */
 
     private fun goToSelectedPanel() {
-        val panel = uiState.value.panelMatrix.flatten().firstOrNull { it.status == PanelStatus.SELECTED } ?: return
+        val panel = uiState.value.panels.firstOrNull { it.status == PanelStatus.SELECTED } ?: return
         router.navigateTo(Screens.DrawingScreen(panel.order))
     }
 }

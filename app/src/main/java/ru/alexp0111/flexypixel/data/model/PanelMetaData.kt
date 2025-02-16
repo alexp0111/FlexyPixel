@@ -10,7 +10,7 @@ data class PanelMetaData(
     var absoluteY: Int,
     var orientation: PanelOrientation = PanelOrientation.LEFT,
     val status: PanelStatus = PanelStatus.DEFAULT,
-    var palette: MutableList<DrawingColor>,
+    var palette: MutableList<DrawingColor> = getDefaultPalette(),
 ) {
 
     val segment: Int
