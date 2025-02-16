@@ -30,7 +30,7 @@ import ru.alexp0111.core_ui.theme.black
 import ru.alexp0111.core_ui.theme.red
 import ru.alexp0111.core_ui.util.conditional
 import ru.alexp0111.flexypixel.R
-import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelStatus
+import ru.alexp0111.flexypixel.data.model.PanelStatus
 import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelUiModel
 
 @Composable

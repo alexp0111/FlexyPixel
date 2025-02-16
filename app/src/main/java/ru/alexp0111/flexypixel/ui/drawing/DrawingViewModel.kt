@@ -11,15 +11,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.alexp0111.flexypixel.ui.GlobalStateHandler
-import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
+import ru.alexp0111.flexypixel.business.GlobalStateHandler
+import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
 
 @AssistedFactory
-interface DrawingViewModelFactory {
+internal interface DrawingViewModelFactory {
     fun create(schemeId: Int? = null): DrawingViewModel
 }
 
-class DrawingViewModel @AssistedInject constructor(
+internal class DrawingViewModel @AssistedInject constructor(
     @Assisted private val schemeId: Int?,
     globalStateHandlerFactory: GlobalStateHandlerFactory,
 ) : ViewModel(), DrawingActionConsumer, StateHolder {

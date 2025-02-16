@@ -5,17 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentSavedSchemesBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
-import ru.alexp0111.flexypixel.ui.GlobalStateHandler
+import ru.alexp0111.flexypixel.business.GlobalStateHandler
 import javax.inject.Inject
 
 class SavedSchemesFragment : Fragment() {

@@ -14,17 +14,17 @@ import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
 import ru.alexp0111.flexypixel.navigation.Screens
-import ru.alexp0111.flexypixel.ui.EMPTY_CELL
-import ru.alexp0111.flexypixel.ui.GlobalStateHandler
-import ru.alexp0111.flexypixel.ui.GlobalStateHandlerFactory
+import ru.alexp0111.flexypixel.business.EMPTY_CELL
+import ru.alexp0111.flexypixel.business.GlobalStateHandler
+import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
 import java.util.Stack
 
 @AssistedFactory
-interface DisplayLevelViewModelFactory {
+internal interface DisplayLevelViewModelFactory {
     fun create(schemeId: Int? = null): DisplayLevelOldViewModel
 }
 
-class DisplayLevelOldViewModel @AssistedInject constructor(
+internal class DisplayLevelOldViewModel @AssistedInject constructor(
     @Assisted private val schemeId: Int?,
     globalStateHandlerFactory: GlobalStateHandlerFactory,
     private val router: Router,

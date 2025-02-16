@@ -8,7 +8,8 @@ data class PanelMetaData(
     val type: Int = TYPE_64,
     var absoluteX: Int,
     var absoluteY: Int,
-    var rotation: Int,
+    var orientation: PanelOrientation = PanelOrientation.LEFT,
+    val status: PanelStatus = PanelStatus.DEFAULT,
     var palette: MutableList<DrawingColor>,
 ) {
 
@@ -43,4 +44,17 @@ data class PanelMetaData(
             return MutableList(PALETTE_SIZE) { DrawingColor(0, 0, 0) }
         }
     }
+}
+
+enum class PanelOrientation {
+    LEFT,
+    UP,
+    RIGHT,
+    DOWN;
+}
+
+enum class PanelStatus {
+    DEFAULT,
+    SELECTED,
+    PLACED_WRONG;
 }

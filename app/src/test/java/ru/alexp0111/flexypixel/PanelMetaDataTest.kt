@@ -3,6 +3,7 @@ package ru.alexp0111.flexypixel
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import ru.alexp0111.flexypixel.data.model.PanelOrientation
 
 class PanelMetaDataTest {
 
@@ -27,7 +28,7 @@ class PanelMetaDataTest {
             type = PanelMetaData.TYPE_64,
             absoluteX = 0,
             absoluteY = 0,
-            rotation = 0,
+            orientation = PanelOrientation.LEFT,
             palette = PanelMetaData.getDefaultPalette(),
         )
         assertEquals(0, panel.copy(absoluteX = 0, absoluteY = 0).segment)

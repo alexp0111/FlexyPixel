@@ -1,36 +1,23 @@
 package ru.alexp0111.flexypixel.ui.displayLevel
 
 import android.annotation.SuppressLint
-import android.content.ClipData
 import android.content.ClipDescription
-import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.os.Bundle
 import android.view.DragEvent
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.Toast
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
 import ru.alexp0111.core_ui.util.composeView
 import ru.alexp0111.core_ui.util.setContentAndStrategy
-import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.databinding.FragmentDisplayLevelBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
-import ru.alexp0111.flexypixel.ui.EMPTY_CELL
+import ru.alexp0111.flexypixel.business.EMPTY_CELL
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelIntent
 import ru.alexp0111.flexypixel.ui.displayLevel.screen.DisplayLevelScreen
 import soup.neumorphism.NeumorphImageView
-import soup.neumorphism.ShapeType
 import java.util.Stack
 import javax.inject.Inject
 

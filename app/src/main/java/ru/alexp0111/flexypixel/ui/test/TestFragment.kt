@@ -22,6 +22,7 @@ import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import ru.alexp0111.flexypixel.data.model.PanelOrientation
 import ru.alexp0111.flexypixel.databinding.FragmentTestBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import ru.alexp0111.flexypixel.media.MediaFilesProcessor
@@ -157,7 +158,7 @@ class TestFragment : Fragment() {
                     type = PanelMetaData.TYPE_64,
                     absoluteX = 0,
                     absoluteY = 0,
-                    rotation = 0,
+                    orientation = PanelOrientation.LEFT,
                     palette = MutableList(PanelMetaData.PALETTE_SIZE) { DrawingColor(0, 0, 0) }
                 )
             )
