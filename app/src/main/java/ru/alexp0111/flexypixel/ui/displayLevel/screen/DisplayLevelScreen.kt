@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core_ui.common.NeoImageButton
 import ru.alexp0111.core_ui.common.NeoSlot
 import ru.alexp0111.core_ui.common.model.Coordinate
@@ -159,12 +160,12 @@ private fun DisplayLevelPanelMatrixContent(
     intentHandler: (DisplayLevelIntent) -> Unit = {},
 ) {
     Column {
-        uiState.value.panelMatrix.forEachIndexed { y, _ ->
+        (0 until CommonSizeConstants.PANELS_MATRIX_SIDE).forEach { y ->
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                uiState.value.panelMatrix[y].forEachIndexed { x, _ ->
+                (0 until CommonSizeConstants.PANELS_MATRIX_SIDE).forEach { x ->
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -188,7 +189,8 @@ private fun DisplayLevelPanelTarget(
     x: Int,
     y: Int,
 ) {
-    val containsPanel = uiState.value.panelMatrix[y][x].sourceY == y && uiState.value.panelMatrix[y][x].sourceX == x
+    val containsPanel = uiState.value.get(x, y)?.sourceY == y && uiState.value.get(x, y)?.sourceX == x
+    val currentPanel = uiState.value.get(x, y) ?: PanelUiModel()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -209,11 +211,11 @@ private fun DisplayLevelPanelTarget(
             if (containsPanel) {
                 DraggableView(
                     modifier = Modifier.fillMaxSize(),
-                    onDragStart = { onDragStart(intentHandler, uiState.value.panelMatrix[y][x]) },
+                    onDragStart = { onDragStart(intentHandler, currentPanel) },
                     onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) },
-                    onClick = { intentHandler(DisplayLevelIntent.Click(uiState.value.panelMatrix[y][x])) }
+                    onClick = { intentHandler(DisplayLevelIntent.Click(currentPanel)) }
                 ) {
-                    DisplayLevelPanel(panelSize.intValue, uiState.value.panelMatrix[y][x])
+                    DisplayLevelPanel(panelSize.intValue, currentPanel)
                 }
             }
         }
@@ -264,52 +266,42 @@ private fun DisplayLevelScreenContentFullPreview() {
             uiState = remember {
                 mutableStateOf(
                     DisplayLevelUiState(
-                        panelMatrix = listOf(
-                            listOf(
-                                PanelUiModel(
-                                    sourceX = 0,
-                                    sourceY = 0,
-                                    order = 4,
-                                    status = PanelStatus.PLACED_WRONG
-                                ),
-                                PanelUiModel(
-                                    sourceX = 1,
-                                    sourceY = 0,
-                                    order = 3,
-                                    status = PanelStatus.SELECTED
-                                ),
-                                PanelUiModel(),
+                        panels = setOf(
+                            PanelUiModel(
+                                sourceX = 0,
+                                sourceY = 0,
+                                order = 4,
+                                status = PanelStatus.PLACED_WRONG
                             ),
-                            listOf(
-                                PanelUiModel(),
-                                PanelUiModel(
-                                    sourceX = 1,
-                                    sourceY = 1,
-                                    order = 2
-                                ),
-                                PanelUiModel(),
+                            PanelUiModel(
+                                sourceX = 1,
+                                sourceY = 0,
+                                order = 3,
+                                status = PanelStatus.SELECTED
                             ),
-                            listOf(
-                                PanelUiModel(),
-                                PanelUiModel(
-                                    bitmap = BitmapFactory.decodeResource(
-                                        resources,
-                                        R.drawable.cat_8_8
-                                    ),
-                                    sourceX = 1,
-                                    sourceY = 2,
-                                    order = 1,
-                                    status = PanelStatus.SELECTED
+                            PanelUiModel(
+                                sourceX = 1,
+                                sourceY = 1,
+                                order = 2
+                            ),
+                            PanelUiModel(
+                                bitmap = BitmapFactory.decodeResource(
+                                    resources,
+                                    R.drawable.cat_8_8
                                 ),
-                                PanelUiModel(
-                                    bitmap = BitmapFactory.decodeResource(
-                                        resources,
-                                        R.drawable.cat_8_8
-                                    ),
-                                    sourceX = 2,
-                                    sourceY = 2,
-                                    order = 0
+                                sourceX = 1,
+                                sourceY = 2,
+                                order = 1,
+                                status = PanelStatus.SELECTED
+                            ),
+                            PanelUiModel(
+                                bitmap = BitmapFactory.decodeResource(
+                                    resources,
+                                    R.drawable.cat_8_8
                                 ),
+                                sourceX = 2,
+                                sourceY = 2,
+                                order = 0
                             ),
                         )
                     )

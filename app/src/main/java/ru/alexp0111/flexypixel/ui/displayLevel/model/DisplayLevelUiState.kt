@@ -2,25 +2,23 @@ package ru.alexp0111.flexypixel.ui.displayLevel.model
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.Immutable
-import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.flexypixel.data.model.PanelStatus
 
 @Immutable
 internal data class DisplayLevelUiState(
     val segmentNumber: Int = 0,
     val draggedPanel: PanelUiModel? = null,
-    val panelMatrix: List<List<PanelUiModel>> =
-        List(CommonSizeConstants.PANELS_MATRIX_SIDE) {
-            List(CommonSizeConstants.PANELS_MATRIX_SIDE) {
-                PanelUiModel()
-            }
-        },
+    val panels: Set<PanelUiModel> = emptySet(),
 ) {
     val isSelectionModeOn: Boolean
-        get() = panelMatrix.flatten().any { it.status == PanelStatus.SELECTED }
+        get() = panels.any { it.status == PanelStatus.SELECTED }
 
     val isOnlyOnePanelSelected: Boolean
-        get() = panelMatrix.flatten().count { it.status == PanelStatus.SELECTED } == 1
+        get() = panels.count { it.status == PanelStatus.SELECTED } == 1
+
+    fun get(x: Int, y: Int): PanelUiModel? {
+        return panels.find { it.sourceX == x && it.sourceY == y}
+    }
 }
 
 @Immutable

@@ -73,27 +73,17 @@ internal class GlobalStateHandler @AssistedInject constructor(
     /** Display Level */
 
     override fun getPanelsConfiguration(segmentNumber: Int): Set<PanelMetaData> {
-        val panelMetaDataSet = mutableSetOf<PanelMetaData>()
-        for (panelOrder in 0 until CommonSizeConstants.PANELS_TOTAL_AMOUNT) {
-            val panelMetaData = getPanelInSegmentIfExists(panelOrder, segmentNumber)
-            panelMetaData?.let { panelMetaDataSet.add(it) }
-        }
-        return panelMetaDataSet
-    }
-
-    private fun getPanelInSegmentIfExists(position: Int, segmentNumber: Int): PanelMetaData? {
-        val (x, y) = PanelMetaData.getAbsoluteCoordinates(position, segmentNumber)
-        return frameCycle.configuration.getPanelMetaDataByCoordinates(x, y)
+        return validatedConfig().filter { it.segment == segmentNumber }.toSet()
     }
 
     override fun getPanelsAmount(): Int {
         return frameCycle.configuration.listOfMetaData.size
     }
 
-    override fun getPanelsImages(segmentNumber: Int): MutableMap<Int, Bitmap> {
-        return mutableMapOf<Int, Bitmap>().apply {
+    override fun getPanelsImages(segmentNumber: Int): MutableMap<Int, Bitmap?> {
+        return mutableMapOf<Int, Bitmap?>().apply {
             getPanelsConfiguration(segmentNumber).map { it.order }.forEach { panelOrder ->
-                if (panelOrder != EMPTY_CELL) {
+                if (panelOrder != EMPTY_CELL && panelOrder < frameCycle.frames.first().panels.size) {
                     val panelInStringPixels = frameCycle.frames.first().panels[panelOrder].pixels
                     put(
                         panelOrder,
@@ -104,7 +94,16 @@ internal class GlobalStateHandler @AssistedInject constructor(
         }
     }
 
-    fun validate(): Set<PanelMetaData> {
+    fun updateAndGetValidatedConfig(newMetaData: PanelMetaData): Set<PanelMetaData> {
+        val currentConfig = frameCycle.configuration.listOfMetaData.toSet()
+        if (newMetaData.order in currentConfig.map { it.order }) {
+            frameCycle.configuration.listOfMetaData.removeAll { it.order == newMetaData.order }
+        }
+        frameCycle.configuration.listOfMetaData.add(newMetaData)
+        return validatedConfig()
+    }
+
+    private fun validatedConfig(): Set<PanelMetaData> {
         return validate(frameCycle.configuration.listOfMetaData.toSet())
     }
 
@@ -170,36 +169,6 @@ internal class GlobalStateHandler @AssistedInject constructor(
                 frame.panels.dropLast(amountOfElementsToRemoveFormEnd).toMutableList()
         }
     }
-
-//    private fun handleRotation() {
-//        frameCycle.configuration.listOfMetaData.forEachIndexed { index, panelMetaData ->
-//            frameCycle.configuration.listOfMetaData[index] =
-//                frameCycle.configuration.listOfMetaData[index].copy(
-//                    rotation = getPanelRotation(panelMetaData)
-//                )
-//        }
-//    }
-//
-//    private fun getPanelRotation(panelMetaData: PanelMetaData): Int {
-//        return when (panelMetaData.order) {
-//            0 -> 0
-//            frameCycle.configuration.listOfMetaData.lastIndex -> 0
-//            else -> calculatePanelRotationInChain(panelMetaData)
-//        }
-//    }
-//
-//    private fun calculatePanelRotationInChain(panelMetaData: PanelMetaData): Int {
-//        val thisPanelX = panelMetaData.absoluteX
-//        val thisPanelY = panelMetaData.absoluteY
-//        val nextPanelX = frameCycle.configuration.listOfMetaData[panelMetaData.order + 1].absoluteX
-//        val nextPanelY = frameCycle.configuration.listOfMetaData[panelMetaData.order + 1].absoluteY
-//        return when {
-//            thisPanelY == nextPanelY && thisPanelX > nextPanelX -> 0
-//            thisPanelY == nextPanelY && thisPanelX < nextPanelX -> 2
-//            thisPanelY < nextPanelY && thisPanelX == nextPanelX -> 3
-//            else -> 1
-//        }
-//    }
 
     /** Drawing Level */
 

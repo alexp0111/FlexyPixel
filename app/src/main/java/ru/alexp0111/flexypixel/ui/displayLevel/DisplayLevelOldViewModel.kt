@@ -70,9 +70,9 @@ internal class DisplayLevelOldViewModel @AssistedInject constructor(
     }
 
     private fun getDisplayImages(segmentNum: Int) {
-        bitmapMap.update {
-            globalStateHandler.getPanelsImages(segmentNum)
-        }
+//        bitmapMap.update {
+//            globalStateHandler.getPanelsImages(segmentNum)
+//        }
     }
 
     private fun getDisplayMatrix(segmentNum: Int) {

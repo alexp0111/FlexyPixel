@@ -40,7 +40,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 0,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf()
                 ),
                 PanelMetaData(
                     order = 1,
@@ -48,7 +47,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 0,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf()
                 ),
             ),
             setOf(
@@ -58,7 +56,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 0,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.RIGHT,
-                    palette = mutableListOf()
                 ),
                 PanelMetaData(
                     order = 1,
@@ -66,7 +63,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 0,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.RIGHT,
-                    palette = mutableListOf()
                 ),
             ),
         ),
@@ -85,7 +81,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.SELECTED,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 1,
@@ -93,7 +88,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf()
                 ),
             ),
             setOf(
@@ -103,7 +97,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.SELECTED,
                     orientation = PanelOrientation.RIGHT,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 1,
@@ -111,7 +104,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.RIGHT,
-                    palette = mutableListOf()
                 ),
             ),
         ),
@@ -130,7 +122,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.SELECTED,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 1,
@@ -138,7 +129,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf()
                 ),
             ),
             setOf(
@@ -148,7 +138,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.SELECTED,
                     orientation = PanelOrientation.RIGHT,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 1,
@@ -156,7 +145,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf()
                 ),
             ),
         ),
@@ -175,7 +163,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.SELECTED,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 1,
@@ -183,7 +170,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.SELECTED,
                     orientation = PanelOrientation.RIGHT,
-                    palette = mutableListOf()
                 ),
                 PanelMetaData(
                     order = 2,
@@ -191,7 +177,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.RIGHT,
-                    palette = mutableListOf()
                 ),
             ),
             setOf(
@@ -201,7 +186,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.SELECTED,
                     orientation = PanelOrientation.RIGHT,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 1,
@@ -209,7 +193,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf()
                 ),
                 PanelMetaData(
                     order = 2,
@@ -217,7 +200,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf()
                 ),
             ),
         ),
@@ -239,7 +221,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.UP,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 1,
@@ -247,7 +228,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.UP,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 2,
@@ -255,7 +235,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 2,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.UP,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 3,
@@ -263,7 +242,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 2,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.UP,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 4,
@@ -271,7 +249,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 3,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.UP,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 5,
@@ -279,7 +256,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 4,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.UP,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 6,
@@ -287,7 +263,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 4,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.UP,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 7,
@@ -295,7 +270,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 4,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.UP,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 8,
@@ -303,7 +277,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 3,
                     status = PanelStatus.PLACED_WRONG,
                     orientation = PanelOrientation.UP,
-                    palette = mutableListOf(),
                 ),
             ),
             setOf(
@@ -313,7 +286,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.RIGHT,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 1,
@@ -321,7 +293,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 1,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.DOWN,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 2,
@@ -329,7 +300,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 2,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.RIGHT,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 3,
@@ -337,7 +307,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 2,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.DOWN,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 4,
@@ -345,7 +314,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 3,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.DOWN,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 5,
@@ -353,7 +321,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 4,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 6,
@@ -361,7 +328,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 4,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 7,
@@ -369,7 +335,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 4,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.UP,
-                    palette = mutableListOf(),
                 ),
                 PanelMetaData(
                     order = 8,
@@ -377,7 +342,6 @@ internal class PanelPositionValidatorTest {
                     absoluteY = 3,
                     status = PanelStatus.DEFAULT,
                     orientation = PanelOrientation.LEFT,
-                    palette = mutableListOf(),
                 ),
             ),
         ),
