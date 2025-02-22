@@ -33,7 +33,7 @@ internal class DisplayLevelViewModel @Inject constructor(
             is DisplayLevelIntent.InitSegment -> loadConfiguration(intent.segmentNumber)
             is DisplayLevelIntent.DragAndDrop -> handleDragAndDropIntent(intent.dndIntent)
             is DisplayLevelIntent.Click -> handleClickIntent(intent.panel)
-            DisplayLevelIntent.DeletePanels -> { /* todo */ }
+            DisplayLevelIntent.DeletePanels -> handleDeleteIntent()
             DisplayLevelIntent.DownloadFileToPanels -> { /* todo */ }
             DisplayLevelIntent.GoToPanel -> goToSelectedPanel()
         }
@@ -105,6 +105,14 @@ internal class DisplayLevelViewModel @Inject constructor(
     }
 
     private fun handlePanelDropFail() = setState { uiState.value.copy(draggedPanel = null) }
+
+    /* Deletion */
+
+    private fun handleDeleteIntent() {
+        val newGlobalConfig = globalStateHandler.deleteAndGetValidatedConfig()
+        val newLocalConfig = displayLevelConverter.convertGlobalToLocalOnDelete(uiState.value.panels, newGlobalConfig)
+        setState { uiState.value.copy(panels = newLocalConfig) }
+    }
 
     /* Go to panel */
 
