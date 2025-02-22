@@ -13,20 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.layout.boundsInWindow
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -67,9 +61,6 @@ private fun DisplayLevelScreenContent(
     uiState: State<DisplayLevelUiState>,
     intentHandler: (DisplayLevelIntent) -> Unit = {},
 ) {
-    val offsetMap = remember { mutableMapOf<Coordinate, Rect>() }
-    val panelSize = remember { mutableIntStateOf(0) }
-
     Scaffold(
         topBar = {
             Column(Modifier.padding(32.dp)) {
@@ -81,7 +72,7 @@ private fun DisplayLevelScreenContent(
             if (uiState.value.isSelectionModeOn) {
                 BottomPanelActions(uiState.value.isOnlyOnePanelSelected, intentHandler)
             } else {
-                BottomPanelSource(offsetMap, panelSize, intentHandler)
+                BottomPanelSource(intentHandler)
             }
         }
     ) { padding ->
@@ -90,7 +81,7 @@ private fun DisplayLevelScreenContent(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            DisplayLevelPanelMatrixContent(uiState, offsetMap, panelSize, intentHandler)
+            DisplayLevelPanelMatrixContent(uiState, intentHandler)
         }
     }
 }
@@ -131,11 +122,7 @@ private fun BottomPanelActions(
 }
 
 @Composable
-private fun BottomPanelSource(
-    offsetMap: MutableMap<Coordinate, Rect>,
-    panelSize: MutableIntState,
-    intentHandler: (DisplayLevelIntent) -> Unit = {},
-) {
+private fun BottomPanelSource(intentHandler: (DisplayLevelIntent) -> Unit = {}) {
     Box(
         Modifier
             .fillMaxWidth()
@@ -143,10 +130,10 @@ private fun BottomPanelSource(
         contentAlignment = Alignment.Center
     ) {
         DraggableView(
-            onDragStart = { onDragStart(intentHandler, PanelUiModel()) },
-            onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) }
-        ) {
-            DisplayLevelPanel(panelSize.intValue, PanelUiModel())
+            onDragStart = { onDragStart(PanelUiModel(), intentHandler) },
+            onDragEnd = { targetCoordinate -> onDragEnd(targetCoordinate, intentHandler) }
+        ) { panelSize ->
+            DisplayLevelPanel(panelSize, PanelUiModel())
         }
     }
 }
@@ -155,8 +142,6 @@ private fun BottomPanelSource(
 @Composable
 private fun DisplayLevelPanelMatrixContent(
     uiState: State<DisplayLevelUiState>,
-    offsetMap: MutableMap<Coordinate, Rect>,
-    panelSize: MutableIntState,
     intentHandler: (DisplayLevelIntent) -> Unit = {},
 ) {
     Column {
@@ -172,7 +157,7 @@ private fun DisplayLevelPanelMatrixContent(
                             .aspectRatio(1f)
                             .padding(8.dp)
                     ) {
-                        DisplayLevelPanelTarget(uiState, offsetMap, panelSize, intentHandler, x, y)
+                        DisplayLevelPanelTarget(uiState, intentHandler, x, y)
                     }
                 }
             }
@@ -183,26 +168,16 @@ private fun DisplayLevelPanelMatrixContent(
 @Composable
 private fun DisplayLevelPanelTarget(
     uiState: State<DisplayLevelUiState>,
-    offsetMap: MutableMap<Coordinate, Rect>,
-    panelSize: MutableIntState,
     intentHandler: (DisplayLevelIntent) -> Unit = {},
     x: Int,
     y: Int,
 ) {
-    val containsPanel = uiState.value.get(x, y)?.sourceY == y && uiState.value.get(x, y)?.sourceX == x
     val currentPanel = uiState.value.get(x, y) ?: PanelUiModel()
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .onGloballyPositioned { layoutCoordinates ->
-                panelSize.intValue = layoutCoordinates.size.height
-                layoutCoordinates
-                    .boundsInWindow()
-                    .let { rect ->
-                        offsetMap[Coordinate(x, y)] = rect
-                    }
-            },
-        contentAlignment = Alignment.Center
+    val containsPanel = currentPanel.sourceY == y && currentPanel.sourceX == x
+
+    DragAndDropTarget(
+        modifier = Modifier.fillMaxSize(),
+        coordinate = Coordinate(x, y),
     ) {
         NeoSlot(
             modifier = Modifier.fillMaxSize(),
@@ -211,36 +186,32 @@ private fun DisplayLevelPanelTarget(
             if (containsPanel) {
                 DraggableView(
                     modifier = Modifier.fillMaxSize(),
-                    onDragStart = { onDragStart(intentHandler, currentPanel) },
-                    onDragEnd = { offset -> onDragEnd(intentHandler, offsetMap, offset) },
+                    onDragStart = { onDragStart(currentPanel, intentHandler) },
+                    onDragEnd = { targetCoordinate -> onDragEnd(targetCoordinate, intentHandler) },
                     onClick = { intentHandler(DisplayLevelIntent.Click(currentPanel)) }
-                ) {
-                    DisplayLevelPanel(panelSize.intValue, currentPanel)
+                ) { panelSize ->
+                    DisplayLevelPanel(panelSize, currentPanel)
                 }
             }
         }
     }
 }
 
-private fun onDragStart(intentHandler: (DisplayLevelIntent) -> Unit, panel: PanelUiModel) {
+private fun onDragStart(panel: PanelUiModel, intentHandler: (DisplayLevelIntent) -> Unit) {
     intentHandler(DisplayLevelIntent.DragAndDrop(Up(panel)))
 }
 
 private fun onDragEnd(
+    targetCoordinate: Coordinate?,
     intentHandler: (DisplayLevelIntent) -> Unit,
-    offsetMap: MutableMap<Coordinate, Rect>,
-    offset: Offset,
 ) {
-    val targetCoordinate = extractCoordinateByOffset(offsetMap, offset)
     if (targetCoordinate == null) {
         intentHandler(DisplayLevelIntent.DragAndDrop(Fail))
     } else {
-        intentHandler(DisplayLevelIntent.DragAndDrop(Down(targetCoordinate.x, targetCoordinate.y)))
+        intentHandler(DisplayLevelIntent.DragAndDrop(Down(targetCoordinate)))
     }
 }
 
-private fun extractCoordinateByOffset(offsetMap: MutableMap<Coordinate, Rect>, offset: Offset): Coordinate? =
-    offsetMap.filter { (_, rect) -> rect.contains(offset) }.toList().firstOrNull()?.first
 
 
 @Preview

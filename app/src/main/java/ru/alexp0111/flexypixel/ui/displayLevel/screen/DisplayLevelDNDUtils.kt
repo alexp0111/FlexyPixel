@@ -9,54 +9,90 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
+import ru.alexp0111.core_ui.common.model.Coordinate
+
+private const val DRAG_AND_DROP_SCALE_RATIO = 1.2f
+private const val DRAG_AND_DROP_ALPHA = 0.8f
 
 private class DraggableItemInfo {
+    var dndObject by mutableStateOf<(@Composable (Int) -> Unit)?>(null)
+    var dndObjectSize by mutableIntStateOf(0)
     var isDragging: Boolean by mutableStateOf(false)
-    var dragStartOffset by mutableStateOf(Offset.Zero)
-    var dragCurrentOffset by mutableStateOf(Offset.Zero)
-    var draggableComposable by mutableStateOf<(@Composable () -> Unit)?>(null)
+    var dndStartOffset by mutableStateOf(Offset.Zero)
+    var dndCurrentOffset by mutableStateOf(Offset.Zero)
+    var targetOffsetMap = mutableStateMapOf<Coordinate, Rect>()
 }
 
 private val LocalDraggableItemInfo = compositionLocalOf { DraggableItemInfo() }
 
 @Composable
 internal fun DragAndDropStateHandler(
-    modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val state = remember { DraggableItemInfo() }
     CompositionLocalProvider(LocalDraggableItemInfo provides state) {
-        Box(modifier = modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
             content()
             if (state.isDragging) {
-                var targetSize by remember { mutableStateOf(IntSize.Zero) }
-                Box(
-                    modifier = Modifier
-                        .graphicsLayer {
-                            val offset = (state.dragStartOffset + state.dragCurrentOffset)
-                            scaleX = 1.3f
-                            scaleY = 1.3f
-                            alpha = if (targetSize == IntSize.Zero) 0f else 0.9f
-                            translationX = offset.x.minus(targetSize.width / 2)
-                            translationY = offset.y.minus(targetSize.height)
-                        }
-                        .onGloballyPositioned {
-                            targetSize = it.size
-                        }
-                ) {
-                    state.draggableComposable?.invoke()
-                }
+                DraggableComposableDecoration(state)
             }
         }
+    }
+}
+
+@Composable
+private fun DraggableComposableDecoration(state: DraggableItemInfo) {
+    var targetSize by remember { mutableStateOf(IntSize.Zero) }
+    Box(
+        modifier = Modifier
+            .graphicsLayer {
+                val offset = (state.dndStartOffset + state.dndCurrentOffset)
+                scaleX = DRAG_AND_DROP_SCALE_RATIO
+                scaleY = DRAG_AND_DROP_SCALE_RATIO
+                alpha = DRAG_AND_DROP_ALPHA
+                translationX = offset.x - (targetSize.width / 2)
+                translationY = offset.y - targetSize.height
+            }
+            .onGloballyPositioned {
+                targetSize = it.size
+            }
+    ) {
+        state.dndObject?.invoke(state.dndObjectSize)
+    }
+}
+
+@Composable
+internal fun DragAndDropTarget(
+    modifier: Modifier = Modifier,
+    coordinate: Coordinate,
+    content: @Composable (() -> Unit),
+) {
+    val currentState = LocalDraggableItemInfo.current
+    Box(
+        modifier = modifier
+            .onGloballyPositioned { layoutCoordinates ->
+                currentState.dndObjectSize = layoutCoordinates.size.height
+                layoutCoordinates
+                    .boundsInWindow()
+                    .let { rect -> currentState.targetOffsetMap[coordinate] = rect }
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        content()
     }
 }
 
@@ -64,9 +100,9 @@ internal fun DragAndDropStateHandler(
 internal fun DraggableView(
     modifier: Modifier = Modifier,
     onDragStart: () -> Unit = {},
-    onDragEnd: (Offset) -> Unit = {},
+    onDragEnd: (Coordinate?) -> Unit = {},
     onClick: () -> Unit = {},
-    content: @Composable (() -> Unit),
+    content: @Composable ((Int) -> Unit),
 ) {
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
     val currentState = LocalDraggableItemInfo.current
@@ -80,20 +116,23 @@ internal fun DraggableView(
                 onDragStart = { startOffset ->
                     onDragStart.invoke()
                     currentState.isDragging = true
-                    currentState.dragStartOffset = currentPosition + startOffset
-                    currentState.draggableComposable = content
+                    currentState.dndStartOffset = currentPosition + startOffset
+                    currentState.dndObject = content
                 },
                 onDrag = { change, dragAmount ->
                     change.consume()
-                    currentState.dragCurrentOffset += Offset(dragAmount.x, dragAmount.y)
+                    currentState.dndCurrentOffset += Offset(dragAmount.x, dragAmount.y)
                 },
                 onDragEnd = {
-                    onDragEnd.invoke(currentState.dragStartOffset + currentState.dragCurrentOffset)
+                    val offset = currentState.dndStartOffset + currentState.dndCurrentOffset
+                    val targetOffsetMap = currentState.targetOffsetMap.toMap()
+                    val targetCoordinate = extractCoordinateByOffset(targetOffsetMap, offset)
+                    onDragEnd.invoke(targetCoordinate)
                     currentState.isDragging = false
-                    currentState.dragCurrentOffset = Offset.Zero
+                    currentState.dndCurrentOffset = Offset.Zero
                 },
                 onDragCancel = {
-                    currentState.dragCurrentOffset = Offset.Zero
+                    currentState.dndCurrentOffset = Offset.Zero
                     currentState.isDragging = false
                 }
             )
@@ -104,6 +143,9 @@ internal fun DraggableView(
             }
         }
     ) {
-        content()
+        content(currentState.dndObjectSize)
     }
 }
+
+private fun extractCoordinateByOffset(offsetMap: Map<Coordinate, Rect>, offset: Offset): Coordinate? =
+    offsetMap.filter { (_, rect) -> rect.contains(offset) }.toList().firstOrNull()?.first
