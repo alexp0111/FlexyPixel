@@ -25,5 +25,6 @@ internal interface IDisplayLevelConverter {
     fun convertGlobalToLocalOnDelete(
         localPanels: Set<PanelUiModel>,
         globalPanels: Set<PanelMetaData>,
+        segmentNumber: Int,
     ): Set<PanelUiModel>
 }

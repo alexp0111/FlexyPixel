@@ -3,6 +3,7 @@ package ru.alexp0111.flexypixel.ui.displayLevel
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.viewmodel.MVIViewModel
 import ru.alexp0111.flexypixel.business.GlobalStateHandler
 import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
@@ -25,6 +26,10 @@ internal class DisplayLevelViewModel @Inject constructor(
     private val globalStateHandler by lazy {
         GlobalStateHandler.getInstance(globalStateHandlerFactory, null)
     }
+
+    private val isGlobalPanelLimitAchieved
+        get() = globalStateHandler.getPanelsAmount() == CommonSizeConstants.PANELS_TOTAL_AMOUNT
+
 
     override fun setInitialState(): DisplayLevelUiState = DisplayLevelUiState()
 
@@ -49,7 +54,13 @@ internal class DisplayLevelViewModel @Inject constructor(
                 panelOrderToBitmap = panelOrderToBitmap.await()
             )
 
-            setState { uiState.value.copy(segmentNumber = segmentNumber, panels = matrix) }
+            setState {
+                uiState.value.copy(
+                    segmentNumber = segmentNumber,
+                    panels = matrix,
+                    isPanelLimitAchieved = isGlobalPanelLimitAchieved,
+                )
+            }
         }
     }
 
@@ -92,7 +103,13 @@ internal class DisplayLevelViewModel @Inject constructor(
             displayLevelConverter.convertGlobalToLocalOnUpdate(uiState.value.panels, newGlobalConfig)
         }
 
-        setState { uiState.value.copy(draggedPanel = null, panels = newLocalConfig) }
+        setState {
+            uiState.value.copy(
+                draggedPanel = null,
+                panels = newLocalConfig,
+                isPanelLimitAchieved = isGlobalPanelLimitAchieved,
+            )
+        }
     }
 
     private fun updateDraggedPanel(draggedPanel: PanelUiModel, dropX: Int, dropY: Int): PanelUiModel {
@@ -110,8 +127,18 @@ internal class DisplayLevelViewModel @Inject constructor(
 
     private fun handleDeleteIntent() {
         val newGlobalConfig = globalStateHandler.deleteAndGetValidatedConfig()
-        val newLocalConfig = displayLevelConverter.convertGlobalToLocalOnDelete(uiState.value.panels, newGlobalConfig)
-        setState { uiState.value.copy(panels = newLocalConfig) }
+        val newLocalConfig = displayLevelConverter.convertGlobalToLocalOnDelete(
+            uiState.value.panels,
+            newGlobalConfig,
+            uiState.value.segmentNumber
+        )
+
+        setState {
+            uiState.value.copy(
+                panels = newLocalConfig,
+                isPanelLimitAchieved = isGlobalPanelLimitAchieved,
+            )
+        }
     }
 
     /* Go to panel */

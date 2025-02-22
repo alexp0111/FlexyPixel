@@ -9,6 +9,7 @@ internal data class DisplayLevelUiState(
     val segmentNumber: Int = 0,
     val draggedPanel: PanelUiModel? = null,
     val panels: Set<PanelUiModel> = emptySet(),
+    val isPanelLimitAchieved: Boolean = false,
 ) {
     val isSelectionModeOn: Boolean
         get() = panels.any { it.status == PanelStatus.SELECTED }
