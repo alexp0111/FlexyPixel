@@ -13,7 +13,7 @@ data class FrameCycle(
 
         fun getNewInstance(): FrameCycle {
             return FrameCycle(
-                configuration = PanelConfiguration(mutableListOf()),
+                configuration = PanelConfiguration(mutableSetOf()),
                 framesAmount = DEFAULT_FRAMES_AMOUNT,
                 interframeDelay = DEFAULT_INTERFRAME_DELAY,
                 frames = mutableListOf(Frame(mutableListOf()))

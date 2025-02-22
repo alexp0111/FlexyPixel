@@ -9,6 +9,4 @@ interface DisplayLevelGlobalStateHolder {
     fun getPanelsAmount(): Int
 
     fun getPanelsImages(segmentNumber: Int): MutableMap<Int, Bitmap?>
-
-    fun setPanelsConfiguration(segmentNumber: Int, orderToXAndY: MutableMap<Int, Pair<Int, Int>>)
 }
