@@ -58,13 +58,15 @@ internal class DisplayLevelConverter @Inject constructor(
 
     override fun convertGlobalToLocalOnDelete(
         localPanels: Set<PanelUiModel>,
-        globalPanels: Set<PanelMetaData>
+        globalPanels: Set<PanelMetaData>,
+        segmentNumber: Int,
     ): Set<PanelUiModel> =
         localPanels.mapNotNull { localPanel ->
-            val globalPanel = globalPanels.find { globalPanel ->
-                globalPanel.localX == localPanel.sourceX && globalPanel.localY == localPanel.sourceY
-            } ?: return@mapNotNull null
-            copyGlobalToLocal(localPanel, globalPanel)
+            val localAsGlobalPanel = convertPanelUiModelToMetaData(localPanel, segmentNumber)
+            val globalPanel = globalPanels.find {
+                localAsGlobalPanel.absoluteX == it.absoluteX && localAsGlobalPanel.absoluteY == it.absoluteY
+            }
+            return@mapNotNull globalPanel?.let { copyGlobalToLocal(localPanel, it) }
         }.toSet()
 
     private fun copyGlobalToLocal(localPanel: PanelUiModel, globalPanel: PanelMetaData): PanelUiModel =

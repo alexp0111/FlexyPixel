@@ -1,6 +1,7 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.screen
 
 import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.alexp0111.core.CommonSizeConstants
@@ -72,7 +74,7 @@ private fun DisplayLevelScreenContent(
             if (uiState.value.isSelectionModeOn) {
                 BottomPanelActions(uiState.value.isOnlyOnePanelSelected, intentHandler)
             } else {
-                BottomPanelSource(intentHandler)
+                BottomPanelSource(uiState, intentHandler)
             }
         }
     ) { padding ->
@@ -122,18 +124,28 @@ private fun BottomPanelActions(
 }
 
 @Composable
-private fun BottomPanelSource(intentHandler: (DisplayLevelIntent) -> Unit = {}) {
+private fun BottomPanelSource(
+    uiState: State<DisplayLevelUiState>,
+    intentHandler: (DisplayLevelIntent) -> Unit = {},
+) {
     Box(
         Modifier
             .fillMaxWidth()
             .height(180.dp),
         contentAlignment = Alignment.Center
     ) {
-        DraggableView(
-            onDragStart = { onDragStart(PanelUiModel(), intentHandler) },
-            onDragEnd = { targetCoordinate -> onDragEnd(targetCoordinate, intentHandler) }
-        ) { panelSize ->
-            DisplayLevelPanel(panelSize, PanelUiModel())
+        if (uiState.value.isPanelLimitAchieved) {
+            Image(
+                painter = painterResource(coreUiR.drawable.ic_done),
+                contentDescription = null,
+            )
+        } else {
+            DraggableView(
+                onDragStart = { onDragStart(PanelUiModel(), intentHandler) },
+                onDragEnd = { targetCoordinate -> onDragEnd(targetCoordinate, intentHandler) }
+            ) { panelSize ->
+                DisplayLevelPanel(panelSize, PanelUiModel())
+            }
         }
     }
 }
@@ -213,17 +225,22 @@ private fun onDragEnd(
 }
 
 
-
 @Preview
 @Composable
 private fun DisplayLevelScreenContentEmptyPreview() {
     AppTheme {
         DisplayLevelScreenContent(
-            uiState = remember {
-                mutableStateOf(
-                    DisplayLevelUiState()
-                )
-            },
+            uiState = remember { mutableStateOf(DisplayLevelUiState(isPanelLimitAchieved = false)) },
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun DisplayLevelScreenContentPanelLimitAchieved() {
+    AppTheme {
+        DisplayLevelScreenContent(
+            uiState = remember { mutableStateOf(DisplayLevelUiState(isPanelLimitAchieved = true)) },
         )
     }
 }
