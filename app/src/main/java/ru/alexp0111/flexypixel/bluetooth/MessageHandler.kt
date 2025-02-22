@@ -150,9 +150,9 @@ class MessageHandler @Inject constructor(
         }
     }
 
-    fun updateConfiguration(configuration: List<PanelMetaData>) {
+    fun updateConfiguration(configuration: Set<PanelMetaData>) {
         val stringBuilder = StringBuilder().apply {
-            configuration.forEach {
+            configuration.sortedBy { it.order }.forEach {
                 append(MessageConverter.convert(it.type, 3))
             }
             while (this.length != PanelConfiguration.MAX_SIZE*3) {

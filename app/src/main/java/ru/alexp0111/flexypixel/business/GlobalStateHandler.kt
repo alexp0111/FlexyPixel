@@ -13,9 +13,7 @@ import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
 import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.FrameCycle
-import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
-import ru.alexp0111.flexypixel.data.model.PanelOrientation
 import ru.alexp0111.flexypixel.data.model.PanelStatus
 import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
 import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
@@ -96,7 +94,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
     }
 
     fun updateAndGetValidatedConfig(newMetaData: PanelMetaData): Set<PanelMetaData> {
-        val currentConfig = frameCycle.configuration.listOfMetaData.toSet()
+        val currentConfig = frameCycle.configuration.listOfMetaData
         if (newMetaData.order in currentConfig.map { it.order }) {
             frameCycle.configuration.listOfMetaData.removeAll { it.order == newMetaData.order }
         }
@@ -105,7 +103,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
     }
 
     fun deleteAndGetValidatedConfig(): Set<PanelMetaData> {
-        val currentConfig = frameCycle.configuration.listOfMetaData.toSet()
+        val currentConfig = frameCycle.configuration.listOfMetaData
         var removedPanels = 0
         for (order in currentConfig.map { it.order }.sorted()) {
             val currentPanel = currentConfig.find { it.order == order } ?: continue
@@ -122,70 +120,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
     }
 
     private fun validatedConfig(): Set<PanelMetaData> {
-        return validate(frameCycle.configuration.listOfMetaData.toSet())
-    }
-
-    /*
-    * TODO: Test case with reordering panels. Should we allow it?
-    * */
-    override fun setPanelsConfiguration(
-        segmentNumber: Int,
-        orderToXAndY: MutableMap<Int, Pair<Int, Int>>,
-    ) {
-        orderToXAndY.toSortedMap().forEach {
-            val order = it.key
-            val absoluteX = it.value.first
-            val absoluteY = it.value.second
-            if (order <= frameCycle.configuration.listOfMetaData.lastIndex) {
-                frameCycle.configuration.listOfMetaData[order].apply {
-                    this.absoluteX = absoluteX
-                    this.absoluteY = absoluteY
-                }
-            } else {
-                if (order == frameCycle.configuration.listOfMetaData.lastIndex + 1) {
-                    frameCycle.configuration.listOfMetaData.add(
-                        PanelMetaData(
-                            order = order,
-                            type = PanelMetaData.TYPE_64,
-                            absoluteX = absoluteX,
-                            absoluteY = absoluteY,
-                            orientation = PanelOrientation.LEFT,
-                            palette = PanelMetaData.getDefaultPalette()
-                        )
-                    )
-                    frameCycle.frames.onEach { frame ->
-                        frame.panels.add(Panel())
-                    }
-                } else {
-                    Log.d(TAG, "New index do not continue current config")
-                }
-            }
-        }
-        handleRemovedPanels(segmentNumber, orderToXAndY)
-        //handleRotation()
-    }
-
-    private fun handleRemovedPanels(
-        segmentNumber: Int,
-        orderToXAndY: MutableMap<Int, Pair<Int, Int>>,
-    ) {
-        for (panel in frameCycle.configuration.listOfMetaData) {
-            if (panel.order !in orderToXAndY.keys && panel.segment == segmentNumber) {
-                removePanelsWithOrderAndHigher(panel.order)
-                break
-            }
-        }
-    }
-
-    private fun removePanelsWithOrderAndHigher(order: Int) {
-        val amountOfElementsToRemoveFormEnd = frameCycle.configuration.listOfMetaData.size - order
-        frameCycle.configuration.listOfMetaData =
-            frameCycle.configuration.listOfMetaData.dropLast(amountOfElementsToRemoveFormEnd)
-                .toMutableList()
-        frameCycle.frames.onEach { frame ->
-            frame.panels =
-                frame.panels.dropLast(amountOfElementsToRemoveFormEnd).toMutableList()
-        }
+        return validate(frameCycle.configuration.listOfMetaData)
     }
 
     /** Drawing Level */
@@ -203,13 +138,9 @@ internal class GlobalStateHandler @AssistedInject constructor(
         }
     }
 
-    override fun getPanelPalette(panelPosition: Int): MutableList<DrawingColor> {
-        return if (panelPosition > frameCycle.configuration.listOfMetaData.lastIndex) {
-            MutableList(PanelMetaData.PALETTE_SIZE) { DrawingColor(0, 0, 0) }
-        } else {
-            frameCycle.configuration.listOfMetaData[panelPosition].palette
-        }
-    }
+    override fun getPanelPalette(panelPosition: Int): MutableList<DrawingColor> =
+        frameCycle.configuration.listOfMetaData.find { it.order == panelPosition }?.palette
+            ?: MutableList(PanelMetaData.PALETTE_SIZE) { DrawingColor(0, 0, 0) }
 
     override fun updatePixelColorOnPosition(
         panelPosition: Int,
@@ -232,7 +163,9 @@ internal class GlobalStateHandler @AssistedInject constructor(
 
     override fun setPanelPalette(panelPosition: Int, updatedPalette: MutableList<DrawingColor>) {
         if (!isPanelPositionCorrect(panelPosition)) return
-        frameCycle.configuration.listOfMetaData[panelPosition].palette = updatedPalette
+        val panel = frameCycle.configuration.listOfMetaData.find { it.order == panelPosition } ?: return
+        frameCycle.configuration.listOfMetaData.remove(panel)
+        frameCycle.configuration.listOfMetaData.add(panel.copy(palette = updatedPalette))
     }
 
     fun saveStateToDatabase(title: String) {
@@ -266,7 +199,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
 
     private fun isPanelPositionCorrect(panelPosition: Int): Boolean {
         frameCycle.configuration.listOfMetaData.apply {
-            return isNotEmpty() && panelPosition <= lastIndex
+            return isNotEmpty() && panelPosition in map { it.order }
         }
     }
 

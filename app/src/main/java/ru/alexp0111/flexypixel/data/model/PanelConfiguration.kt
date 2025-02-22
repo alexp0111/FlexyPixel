@@ -4,7 +4,7 @@ import ru.alexp0111.flexypixel.bluetooth.MessagePanelConfiguration
 import ru.alexp0111.flexypixel.bluetooth.utils.MessageConverter
 
 data class PanelConfiguration(
-    var listOfMetaData: MutableList<PanelMetaData>,
+    var listOfMetaData: MutableSet<PanelMetaData>,
 ) {
 
     fun getPanelMetaDataByCoordinates(x: Int, y: Int): PanelMetaData? {
