@@ -16,6 +16,7 @@ import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
 import ru.alexp0111.flexypixel.data.model.PanelOrientation
+import ru.alexp0111.flexypixel.data.model.PanelStatus
 import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
 import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
@@ -100,6 +101,23 @@ internal class GlobalStateHandler @AssistedInject constructor(
             frameCycle.configuration.listOfMetaData.removeAll { it.order == newMetaData.order }
         }
         frameCycle.configuration.listOfMetaData.add(newMetaData)
+        return validatedConfig()
+    }
+
+    fun deleteAndGetValidatedConfig(): Set<PanelMetaData> {
+        val currentConfig = frameCycle.configuration.listOfMetaData.toSet()
+        var removedPanels = 0
+        for (order in currentConfig.map { it.order }.sorted()) {
+            val currentPanel = currentConfig.find { it.order == order } ?: continue
+            frameCycle.configuration.listOfMetaData.removeAll { it.order == currentPanel.order }
+            if (currentPanel.status == PanelStatus.SELECTED) {
+                removedPanels++
+            } else {
+                frameCycle.configuration.listOfMetaData.add(
+                    currentPanel.copy(order = currentPanel.order - removedPanels)
+                )
+            }
+        }
         return validatedConfig()
     }
 
