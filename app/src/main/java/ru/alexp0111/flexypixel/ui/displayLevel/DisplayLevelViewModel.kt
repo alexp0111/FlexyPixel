@@ -56,7 +56,7 @@ internal class DisplayLevelViewModel @Inject constructor(
     private fun handleDragAndDropIntent(intent: DisplayLevelDragAndDrop) =
         when (intent) {
             is DisplayLevelDragAndDrop.Up -> handlePanelDrag(intent.panel)
-            is DisplayLevelDragAndDrop.Down -> handlePanelDrop(intent.dropX, intent.dropY)
+            is DisplayLevelDragAndDrop.Down -> handlePanelDrop(intent.dropCoordinate.x, intent.dropCoordinate.y)
             DisplayLevelDragAndDrop.Fail -> handlePanelDropFail()
         }
 

@@ -1,5 +1,7 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.model
 
+import ru.alexp0111.core_ui.common.model.Coordinate
+
 internal sealed interface DisplayLevelIntent {
     data class InitSegment(val segmentNumber: Int): DisplayLevelIntent
 
@@ -13,6 +15,6 @@ internal sealed interface DisplayLevelIntent {
 
 internal sealed interface DisplayLevelDragAndDrop {
     data class Up(val panel: PanelUiModel): DisplayLevelDragAndDrop
-    data class Down(val dropX: Int, val dropY: Int): DisplayLevelDragAndDrop
+    data class Down(val dropCoordinate: Coordinate): DisplayLevelDragAndDrop
     data object Fail: DisplayLevelDragAndDrop
 }
