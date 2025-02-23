@@ -45,6 +45,8 @@ import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelUiState
 import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelUiModel
 import ru.alexp0111.core_ui.R as coreUiR
 
+private const val DRAG_AND_DROP_SCALE_RATIO = 1.2f
+private const val DRAG_AND_DROP_ALPHA = 0.8f
 
 @Composable
 internal fun DisplayLevelScreen(
@@ -53,7 +55,13 @@ internal fun DisplayLevelScreen(
     val uiState = viewModel.uiState.collectAsState()
     val intentHandler by rememberUpdatedState(viewModel::sendIntent)
 
-    DragAndDropStateHandler {
+    DragAndDropStateHandler(
+        dndObjectDecorator = {
+            scaleX = DRAG_AND_DROP_SCALE_RATIO
+            scaleY = DRAG_AND_DROP_SCALE_RATIO
+            alpha = DRAG_AND_DROP_ALPHA
+        }
+    ) {
         DisplayLevelScreenContent(uiState, intentHandler)
     }
 }

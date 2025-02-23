@@ -18,15 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import ru.alexp0111.core_ui.common.model.Coordinate
-
-private const val DRAG_AND_DROP_SCALE_RATIO = 1.2f
-private const val DRAG_AND_DROP_ALPHA = 0.8f
 
 private class DraggableItemInfo {
     var dndObject by mutableStateOf<(@Composable (Int) -> Unit)?>(null)
@@ -41,6 +39,7 @@ private val LocalDraggableItemInfo = compositionLocalOf { DraggableItemInfo() }
 
 @Composable
 internal fun DragAndDropStateHandler(
+    dndObjectDecorator: GraphicsLayerScope.() -> Unit,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val state = remember { DraggableItemInfo() }
@@ -48,24 +47,25 @@ internal fun DragAndDropStateHandler(
         Box(modifier = Modifier.fillMaxSize()) {
             content()
             if (state.isDragging) {
-                DraggableComposableDecoration(state)
+                DraggableComposableDecoration(state, dndObjectDecorator)
             }
         }
     }
 }
 
 @Composable
-private fun DraggableComposableDecoration(state: DraggableItemInfo) {
+private fun DraggableComposableDecoration(
+    state: DraggableItemInfo,
+    dndObjectDecorator: GraphicsLayerScope.() -> Unit,
+) {
     var targetSize by remember { mutableStateOf(IntSize.Zero) }
     Box(
         modifier = Modifier
             .graphicsLayer {
                 val offset = (state.dndStartOffset + state.dndCurrentOffset)
-                scaleX = DRAG_AND_DROP_SCALE_RATIO
-                scaleY = DRAG_AND_DROP_SCALE_RATIO
-                alpha = DRAG_AND_DROP_ALPHA
                 translationX = offset.x - (targetSize.width / 2)
                 translationY = offset.y - targetSize.height
+                dndObjectDecorator()
             }
             .onGloballyPositioned {
                 targetSize = it.size
@@ -101,6 +101,7 @@ internal fun DraggableView(
     modifier: Modifier = Modifier,
     onDragStart: () -> Unit = {},
     onDragEnd: (Coordinate?) -> Unit = {},
+    onDragCancel: () -> Unit = {},
     onClick: () -> Unit = {},
     content: @Composable ((Int) -> Unit),
 ) {
@@ -119,8 +120,7 @@ internal fun DraggableView(
                     currentState.dndStartOffset = currentPosition + startOffset
                     currentState.dndObject = content
                 },
-                onDrag = { change, dragAmount ->
-                    change.consume()
+                onDrag = { _, dragAmount ->
                     currentState.dndCurrentOffset += Offset(dragAmount.x, dragAmount.y)
                 },
                 onDragEnd = {
@@ -132,6 +132,7 @@ internal fun DraggableView(
                     currentState.dndCurrentOffset = Offset.Zero
                 },
                 onDragCancel = {
+                    onDragCancel.invoke()
                     currentState.dndCurrentOffset = Offset.Zero
                     currentState.isDragging = false
                 }
