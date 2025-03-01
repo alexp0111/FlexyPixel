@@ -53,12 +53,14 @@ internal class DisplayLevelViewModel @Inject constructor(
                 panelMetaDataSet = panelMetaDataSet.await(),
                 panelOrderToBitmap = panelOrderToBitmap.await()
             )
+            val selectedAreaIsSquare = globalStateHandler.checkIfSelectedAreaSquare()
 
             setState {
                 uiState.value.copy(
                     segmentNumber = segmentNumber,
                     panels = matrix,
                     isPanelLimitAchieved = isGlobalPanelLimitAchieved,
+                    selectedAreaIsSquare = selectedAreaIsSquare,
                 )
             }
         }
@@ -84,8 +86,9 @@ internal class DisplayLevelViewModel @Inject constructor(
         val metaDataPanel = displayLevelConverter.convertPanelUiModelToMetaData(newPanel, uiState.value.segmentNumber)
         val newGlobalConfig = globalStateHandler.updateAndGetValidatedConfig(metaDataPanel)
         val newLocalConfig = displayLevelConverter.convertGlobalToLocalOnUpdate(uiState.value.panels, newGlobalConfig)
+        val selectedAreaIsSquare = globalStateHandler.checkIfSelectedAreaSquare()
 
-        setState { uiState.value.copy(panels = newLocalConfig) }
+        setState { uiState.value.copy(panels = newLocalConfig, selectedAreaIsSquare = selectedAreaIsSquare) }
     }
 
     private fun handlePanelDrag(draggedPanel: PanelUiModel) =
@@ -102,12 +105,14 @@ internal class DisplayLevelViewModel @Inject constructor(
         } else {
             displayLevelConverter.convertGlobalToLocalOnUpdate(uiState.value.panels, newGlobalConfig)
         }
+        val selectedAreaIsSquare = globalStateHandler.checkIfSelectedAreaSquare()
 
         setState {
             uiState.value.copy(
                 draggedPanel = null,
                 panels = newLocalConfig,
                 isPanelLimitAchieved = isGlobalPanelLimitAchieved,
+                selectedAreaIsSquare = selectedAreaIsSquare,
             )
         }
     }
@@ -132,11 +137,13 @@ internal class DisplayLevelViewModel @Inject constructor(
             newGlobalConfig,
             uiState.value.segmentNumber
         )
+        val selectedAreaIsSquare = globalStateHandler.checkIfSelectedAreaSquare()
 
         setState {
             uiState.value.copy(
                 panels = newLocalConfig,
                 isPanelLimitAchieved = isGlobalPanelLimitAchieved,
+                selectedAreaIsSquare = selectedAreaIsSquare,
             )
         }
     }

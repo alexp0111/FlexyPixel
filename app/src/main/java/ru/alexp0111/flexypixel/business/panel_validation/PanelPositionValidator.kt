@@ -14,6 +14,35 @@ import kotlin.math.abs
  * */
 internal class PanelPositionValidator @Inject constructor() : IPanelPositionValidator {
 
+    override fun checkIfSelectedAreaSquare(panels: Set<PanelMetaData>): Boolean {
+        val selectedPanels = panels.filter { it.status == PanelStatus.SELECTED }
+
+        val minX = selectedPanels.minOfOrNull { it.absoluteX } ?: return false
+        val minY = selectedPanels.minOfOrNull { it.absoluteY } ?: return false
+        val maxX = selectedPanels.maxOfOrNull { it.absoluteX } ?: return false
+        val maxY = selectedPanels.maxOfOrNull { it.absoluteY } ?: return false
+
+        val topLeftPanel = selectedPanels.find { it.absoluteX == minX && it.absoluteY == minY } ?: return false
+        val bottomRightPanel = selectedPanels.find { it.absoluteX == maxX && it.absoluteY == maxY } ?: return false
+
+        return isCornersOfSquare(panels, topLeftPanel, bottomRightPanel)
+    }
+
+    private fun isCornersOfSquare(
+        panels: Set<PanelMetaData>,
+        topLeftPanel: PanelMetaData,
+        bottomRightPanel: PanelMetaData
+    ): Boolean {
+        for (y in topLeftPanel.absoluteY..bottomRightPanel.absoluteY) {
+            for (x in topLeftPanel.absoluteX..bottomRightPanel.absoluteX) {
+                panels.find {
+                    it.absoluteX == x && it.absoluteY == y && it.status == PanelStatus.SELECTED
+                } ?: return false
+            }
+        }
+        return true
+    }
+
     override fun validate(panels: Set<PanelMetaData>): Set<PanelMetaData> {
         val orderedPanelMap = panels.associateBy { it.order }.toMutableMap()
         var orderOfChainBrokenPanel: Int? = null
@@ -52,7 +81,7 @@ internal class PanelPositionValidator @Inject constructor() : IPanelPositionVali
         val currentPanel = requireNotNull(orderedPanelMap[order])
         val nextPanel = orderedPanelMap[order + 1]
 
-        val newStatus = when(currentPanel.status) {
+        val newStatus = when (currentPanel.status) {
             PanelStatus.PLACED_WRONG -> PanelStatus.DEFAULT
             else -> currentPanel.status
         }

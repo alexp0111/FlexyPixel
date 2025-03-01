@@ -80,7 +80,11 @@ private fun DisplayLevelScreenContent(
         },
         bottomBar = {
             if (uiState.value.isSelectionModeOn) {
-                BottomPanelActions(uiState.value.isOnlyOnePanelSelected, intentHandler)
+                BottomPanelActions(
+                    isOnlyOnePanelSelected = uiState.value.isOnlyOnePanelSelected,
+                    selectedAreaIsSquare =  uiState.value.selectedAreaIsSquare,
+                    intentHandler = intentHandler,
+                )
             } else {
                 BottomPanelSource(uiState, intentHandler)
             }
@@ -99,6 +103,7 @@ private fun DisplayLevelScreenContent(
 @Composable
 private fun BottomPanelActions(
     isOnlyOnePanelSelected: Boolean,
+    selectedAreaIsSquare: Boolean,
     intentHandler: (DisplayLevelIntent) -> Unit = {},
 ) {
     Row(
@@ -111,7 +116,9 @@ private fun BottomPanelActions(
     ) {
         NeoImageButton(
             imageId = coreUiR.drawable.ic_delete,
-            modifier = Modifier.width(80.dp),
+            modifier = Modifier
+                .width(80.dp)
+                .conditional(!isOnlyOnePanelSelected && !selectedAreaIsSquare) { weight(1f) },
             onClick = { intentHandler(DisplayLevelIntent.DeletePanels) }
         )
         if (isOnlyOnePanelSelected) {
@@ -121,13 +128,15 @@ private fun BottomPanelActions(
                 onClick = { intentHandler(DisplayLevelIntent.GoToPanel) }
             )
         }
-        NeoImageButton(
-            imageId = coreUiR.drawable.ic_add_file,
-            modifier = Modifier
-                .width(80.dp)
-                .conditional(!isOnlyOnePanelSelected) { weight(1f) },
-            onClick = { intentHandler(DisplayLevelIntent.DownloadFileToPanels) }
-        )
+        if (selectedAreaIsSquare) {
+            NeoImageButton(
+                imageId = coreUiR.drawable.ic_add_file,
+                modifier = Modifier
+                    .width(80.dp)
+                    .conditional(!isOnlyOnePanelSelected) { weight(1f) },
+                onClick = { intentHandler(DisplayLevelIntent.DownloadFileToPanels) }
+            )
+        }
     }
 }
 
