@@ -14,23 +14,10 @@ internal class DisplayLevelConverter @Inject constructor(
         panelOrderToBitmap: Map<Int, Bitmap?>,
     ): Set<PanelUiModel> =
         panelMetaDataSet.map { panelMetaData ->
-            PanelUiModel(
-                bitmap = panelOrderToBitmap[panelMetaData.order],
-                sourceX = panelMetaData.localX,
-                sourceY = panelMetaData.localY,
-                order = panelMetaData.order,
-                status = panelMetaData.status,
+            copyGlobalToLocal(PanelUiModel(), panelMetaData).copy(
+                bitmap = panelOrderToBitmap[panelMetaData.order]
             )
         }.toSet()
-
-    override fun convertPanelUiModelToMetaData(panelUiModel: PanelUiModel, segmentNumber: Int): PanelMetaData {
-        return PanelMetaData(
-            order = panelUiModel.order,
-            absoluteX = MatrixConverter.localXtoGlobal(panelUiModel.sourceX, segmentNumber),
-            absoluteY = MatrixConverter.localYtoGlobal(panelUiModel.sourceY, segmentNumber),
-            status = panelUiModel.status
-        )
-    }
 
     override fun convertGlobalToLocalOnUpdate(
         localPanels: Set<PanelUiModel>,
@@ -69,6 +56,16 @@ internal class DisplayLevelConverter @Inject constructor(
             return@mapNotNull globalPanel?.let { copyGlobalToLocal(localPanel, it) }
         }.toSet()
 
+    override fun convertPanelUiModelToMetaData(panelUiModel: PanelUiModel, segmentNumber: Int): PanelMetaData {
+        return PanelMetaData(
+            order = panelUiModel.order,
+            absoluteX = MatrixConverter.localXtoGlobal(panelUiModel.sourceX, segmentNumber),
+            absoluteY = MatrixConverter.localYtoGlobal(panelUiModel.sourceY, segmentNumber),
+            status = panelUiModel.status,
+            palette = panelUiModel.palette.toMutableList(),
+        )
+    }
+
     private fun copyGlobalToLocal(localPanel: PanelUiModel, globalPanel: PanelMetaData): PanelUiModel =
         PanelUiModel(
             bitmap = localPanel.bitmap,
@@ -76,5 +73,6 @@ internal class DisplayLevelConverter @Inject constructor(
             sourceY = globalPanel.localY,
             order = globalPanel.order,
             status = globalPanel.status,
+            palette = globalPanel.palette,
         )
 }

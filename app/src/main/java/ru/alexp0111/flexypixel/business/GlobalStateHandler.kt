@@ -13,6 +13,7 @@ import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
 import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.FrameCycle
+import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
 import ru.alexp0111.flexypixel.data.model.PanelStatus
 import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
@@ -21,6 +22,7 @@ import ru.alexp0111.flexypixel.media.IBitmapProcessor
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.drawing.DrawingGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelGlobalStateHolder
+import kotlin.math.abs
 
 @AssistedFactory
 internal interface GlobalStateHandlerFactory {
@@ -126,6 +128,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
     /** Drawing Level */
 
     override fun getPanelPixelsConfiguration(panelPosition: Int): MutableList<DrawingColor> {
+        refreshFramesWithMetaData()
         val panelSequence = frameCycle.frames.first().panels
         return if (panelPosition > panelSequence.lastIndex) {
             MutableList(PanelMetaData.TYPE_64) { DrawingColor(9, 9, 9) }
@@ -147,7 +150,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
         color: DrawingColor,
         pixelPosition: Int
     ) {
-        if (!isPanelPositionCorrect(panelPosition)) return
+        refreshFramesWithMetaData()
         frameCycle.frames.onEachIndexed { index, frame ->
             frame.panels[panelPosition].pixels[pixelPosition] = color.asString()
         }
@@ -162,11 +165,13 @@ internal class GlobalStateHandler @AssistedInject constructor(
     }
 
     override fun setPanelPalette(panelPosition: Int, updatedPalette: MutableList<DrawingColor>) {
-        if (!isPanelPositionCorrect(panelPosition)) return
+        refreshFramesWithMetaData()
         val panel = frameCycle.configuration.listOfMetaData.find { it.order == panelPosition } ?: return
         frameCycle.configuration.listOfMetaData.remove(panel)
         frameCycle.configuration.listOfMetaData.add(panel.copy(palette = updatedPalette))
     }
+
+    /** Utils */
 
     fun saveStateToDatabase(title: String) {
         scope.launch {
@@ -197,9 +202,17 @@ internal class GlobalStateHandler @AssistedInject constructor(
         )
     }
 
-    private fun isPanelPositionCorrect(panelPosition: Int): Boolean {
-        frameCycle.configuration.listOfMetaData.apply {
-            return isNotEmpty() && panelPosition in map { it.order }
+    /* Add empty panel to frames & remove if needed */
+    private fun refreshFramesWithMetaData() {
+        val metaData = frameCycle.configuration.listOfMetaData
+        frameCycle.frames.forEachIndexed { frameIndex, frame ->
+            val sizeDifference =  metaData.size - frame.panels.size
+            val trimmedPanels = when {
+                sizeDifference > 0 -> frame.panels + List(sizeDifference) { Panel() }
+                sizeDifference < 0 -> frame.panels.dropLast(abs(sizeDifference))
+                else -> frame.panels
+            }
+            frameCycle.frames[frameIndex].panels = trimmedPanels.toMutableList()
         }
     }
 
