@@ -46,6 +46,9 @@ internal class GlobalStateHandler @AssistedInject constructor(
     private lateinit var frameCycle: FrameCycle
     private val scope = CoroutineScope(Dispatchers.IO)
 
+    private val metaDataSet: MutableSet<PanelMetaData>
+        get() = frameCycle.configuration.listOfMetaData
+
     init {
         Log.d(TAG, "in init block")
         scope.launch {
@@ -78,7 +81,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
     }
 
     override fun getPanelsAmount(): Int {
-        return frameCycle.configuration.listOfMetaData.size
+        return metaDataSet.size
     }
 
     override fun getPanelsImages(segmentNumber: Int): MutableMap<Int, Bitmap?> {
@@ -96,24 +99,23 @@ internal class GlobalStateHandler @AssistedInject constructor(
     }
 
     fun updateAndGetValidatedConfig(newMetaData: PanelMetaData): Set<PanelMetaData> {
-        val currentConfig = frameCycle.configuration.listOfMetaData
-        if (newMetaData.order in currentConfig.map { it.order }) {
-            frameCycle.configuration.listOfMetaData.removeAll { it.order == newMetaData.order }
+        if (newMetaData.order in metaDataSet.map { it.order }) {
+            metaDataSet.removeAll { it.order == newMetaData.order }
         }
-        frameCycle.configuration.listOfMetaData.add(newMetaData)
+        metaDataSet.add(newMetaData)
         return validatedConfig()
     }
 
     fun deleteAndGetValidatedConfig(): Set<PanelMetaData> {
-        val currentConfig = frameCycle.configuration.listOfMetaData
+        val currentConfig = frameCycle.configuration.listOfMetaData.toSet()
         var removedPanels = 0
         for (order in currentConfig.map { it.order }.sorted()) {
             val currentPanel = currentConfig.find { it.order == order } ?: continue
-            frameCycle.configuration.listOfMetaData.removeAll { it.order == currentPanel.order }
+            metaDataSet.removeAll { it.order == currentPanel.order }
             if (currentPanel.status == PanelStatus.SELECTED) {
                 removedPanels++
             } else {
-                frameCycle.configuration.listOfMetaData.add(
+                metaDataSet.add(
                     currentPanel.copy(order = currentPanel.order - removedPanels)
                 )
             }
@@ -121,8 +123,13 @@ internal class GlobalStateHandler @AssistedInject constructor(
         return validatedConfig()
     }
 
+    fun checkIfSelectedAreaSquare(): Boolean {
+        return checkIfSelectedAreaSquare(metaDataSet)
+    }
+
     private fun validatedConfig(): Set<PanelMetaData> {
-        return validate(frameCycle.configuration.listOfMetaData)
+        val validatedConfig = validate(metaDataSet).toMutableSet()
+        return validatedConfig.also { frameCycle.configuration.listOfMetaData = it }
     }
 
     /** Drawing Level */
@@ -142,7 +149,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
     }
 
     override fun getPanelPalette(panelPosition: Int): MutableList<DrawingColor> =
-        frameCycle.configuration.listOfMetaData.find { it.order == panelPosition }?.palette
+        metaDataSet.find { it.order == panelPosition }?.palette
             ?: MutableList(PanelMetaData.PALETTE_SIZE) { DrawingColor(0, 0, 0) }
 
     override fun updatePixelColorOnPosition(
@@ -154,7 +161,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
         frameCycle.frames.onEachIndexed { index, frame ->
             frame.panels[panelPosition].pixels[pixelPosition] = color.asString()
         }
-        messageHandler.updateConfiguration(frameCycle.configuration.listOfMetaData)
+        messageHandler.updateConfiguration(metaDataSet)
         messageHandler.sendPixel(
             panelOrder = panelPosition,
             pixelOrder = pixelPosition,
@@ -166,9 +173,11 @@ internal class GlobalStateHandler @AssistedInject constructor(
 
     override fun setPanelPalette(panelPosition: Int, updatedPalette: MutableList<DrawingColor>) {
         refreshFramesWithMetaData()
-        val panel = frameCycle.configuration.listOfMetaData.find { it.order == panelPosition } ?: return
-        frameCycle.configuration.listOfMetaData.remove(panel)
-        frameCycle.configuration.listOfMetaData.add(panel.copy(palette = updatedPalette))
+        metaDataSet.apply {
+            val panel = find { it.order == panelPosition } ?: return
+            this.remove(panel)
+            this.add(panel.copy(palette = updatedPalette))
+        }
     }
 
     /** Utils */
@@ -204,9 +213,8 @@ internal class GlobalStateHandler @AssistedInject constructor(
 
     /* Add empty panel to frames & remove if needed */
     private fun refreshFramesWithMetaData() {
-        val metaData = frameCycle.configuration.listOfMetaData
         frameCycle.frames.forEachIndexed { frameIndex, frame ->
-            val sizeDifference =  metaData.size - frame.panels.size
+            val sizeDifference =  metaDataSet.size - frame.panels.size
             val trimmedPanels = when {
                 sizeDifference > 0 -> frame.panels + List(sizeDifference) { Panel() }
                 sizeDifference < 0 -> frame.panels.dropLast(abs(sizeDifference))

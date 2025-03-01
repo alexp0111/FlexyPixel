@@ -17,7 +17,16 @@ internal class PanelPositionValidatorTest {
     private val validator = PanelPositionValidator()
 
     @ParameterizedTest
-    @MethodSource("panelSource")
+    @MethodSource("checkIfSelectedAreaSquareSource")
+    fun checkIfSelectedAreaSquare(
+        incomingPanels: Set<PanelMetaData>,
+        expected: Boolean,
+    ) {
+        assertEquals(expected, validator.checkIfSelectedAreaSquare(incomingPanels))
+    }
+
+    @ParameterizedTest
+    @MethodSource("panelValidationSource")
     fun validate(
         incomingPanels: Set<PanelMetaData>,
         expectedPanels: Set<PanelMetaData>,
@@ -25,7 +34,334 @@ internal class PanelPositionValidatorTest {
         assertEquals(expectedPanels, validator.validate(incomingPanels))
     }
 
-    private fun panelSource(): Stream<Arguments> = Stream.of(
+    private fun checkIfSelectedAreaSquareSource(): Stream<Arguments> = Stream.of(
+        /*
+        [ ] [ ] [ ]
+        [ ] [ ] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            emptySet<PanelMetaData>(),
+            false
+        ),
+        /*
+        [-] [ ] [ ]
+        [ ] [ ] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.DEFAULT)),
+            false
+        ),
+        /*
+        [+] [ ] [ ]
+        [ ] [ ] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED)),
+            true
+        ),
+        /*
+        [+] [-] [-]
+        [ ] [ ] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.DEFAULT),
+                PanelMetaData(absoluteX = 2, absoluteY = 0, status = PanelStatus.DEFAULT),
+            ),
+            true
+        ),
+        /*
+        [+] [+] [+]
+        [ ] [ ] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 0, status = PanelStatus.SELECTED),
+            ),
+            true
+        ),
+        /*
+        [+] [-] [+]
+        [ ] [ ] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.DEFAULT),
+                PanelMetaData(absoluteX = 2, absoluteY = 0, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [+] [ ] [+]
+        [ ] [ ] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 0, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [+] [ ] [ ]
+        [-] [ ] [ ]
+        [-] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.DEFAULT),
+                PanelMetaData(absoluteX = 0, absoluteY = 2, status = PanelStatus.DEFAULT),
+            ),
+            true
+        ),
+        /*
+        [+] [ ] [ ]
+        [+] [ ] [ ]
+        [+] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 2, status = PanelStatus.SELECTED),
+            ),
+            true
+        ),
+        /*
+        [+] [ ] [ ]
+        [-] [ ] [ ]
+        [+] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.DEFAULT),
+                PanelMetaData(absoluteX = 0, absoluteY = 2, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [+] [ ] [ ]
+        [ ] [ ] [ ]
+        [+] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 2, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [+] [ ] [ ]
+        [ ] [+] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 1, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [ ] [+] [ ]
+        [+] [ ] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [+] [-] [ ]
+        [-] [+] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.DEFAULT),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.DEFAULT),
+            ),
+            false
+        ),
+        /*
+        [-] [+] [ ]
+        [+] [-] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.DEFAULT),
+                PanelMetaData(absoluteX = 1, absoluteY = 1, status = PanelStatus.DEFAULT),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [+] [+] [ ]
+        [-] [+] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.DEFAULT),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [+] [+] [ ]
+        [+] [-] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 1, status = PanelStatus.DEFAULT),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [+] [-] [ ]
+        [+] [+] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.DEFAULT),
+            ),
+            false
+        ),
+        /*
+        [-] [+] [ ]
+        [+] [+] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.DEFAULT),
+                PanelMetaData(absoluteX = 1, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [+] [+] [ ]
+        [+] [+] [ ]
+        [ ] [ ] [ ]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.SELECTED),
+            ),
+            true
+        ),
+        /*
+        [+] [ ] [ ]
+        [+] [+] [+]
+        [+] [+] [+]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 2, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 2, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 2, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [+] [+] [+]
+        [+] [+] [+]
+        [+] [+] [+]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 2, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 2, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 2, status = PanelStatus.SELECTED),
+            ),
+            true
+        ),
+        /*
+        [+] [+] [+]
+        [+] [-] [+]
+        [+] [+] [+]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 1, status = PanelStatus.DEFAULT),
+                PanelMetaData(absoluteX = 2, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 2, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 2, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 2, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        /*
+        [+] [+] [+]
+        [+] [ ] [+]
+        [+] [+] [+]
+         */
+        Arguments.of(
+            setOf(
+                PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 0, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 1, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 0, absoluteY = 2, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 1, absoluteY = 2, status = PanelStatus.SELECTED),
+                PanelMetaData(absoluteX = 2, absoluteY = 2, status = PanelStatus.SELECTED),
+            ),
+            false
+        ),
+        )
+
+    private fun panelValidationSource(): Stream<Arguments> = Stream.of(
         /*
         [ ] [0] [1] |
         [ ] [ ] [ ] |

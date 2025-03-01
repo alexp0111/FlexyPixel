@@ -12,6 +12,7 @@ internal data class DisplayLevelUiState(
     val draggedPanel: PanelUiModel? = null,
     val panels: Set<PanelUiModel> = emptySet(),
     val isPanelLimitAchieved: Boolean = false,
+    val selectedAreaIsSquare: Boolean = false,
 ) {
     val isSelectionModeOn: Boolean
         get() = panels.any { it.status == PanelStatus.SELECTED }
