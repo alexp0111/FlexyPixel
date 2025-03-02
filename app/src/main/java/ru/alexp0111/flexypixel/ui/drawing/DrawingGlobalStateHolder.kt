@@ -3,7 +3,7 @@ package ru.alexp0111.flexypixel.ui.drawing
 import ru.alexp0111.flexypixel.data.DrawingColor
 
 interface DrawingGlobalStateHolder {
-    fun getPanelPixelsConfiguration(panelPosition: Int): MutableList<DrawingColor>
+    fun getPanelPixels(panelPosition: Int): MutableList<DrawingColor>
 
     fun getPanelPalette(panelPosition: Int): MutableList<DrawingColor>
 

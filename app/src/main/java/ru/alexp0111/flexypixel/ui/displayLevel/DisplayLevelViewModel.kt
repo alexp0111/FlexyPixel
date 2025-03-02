@@ -1,5 +1,6 @@
 package ru.alexp0111.flexypixel.ui.displayLevel
 
+import android.net.Uri
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -39,7 +40,7 @@ internal class DisplayLevelViewModel @Inject constructor(
             is DisplayLevelIntent.DragAndDrop -> handleDragAndDropIntent(intent.dndIntent)
             is DisplayLevelIntent.Click -> handleClickIntent(intent.panel)
             DisplayLevelIntent.DeletePanels -> handleDeleteIntent()
-            DisplayLevelIntent.DownloadFileToPanels -> { /* todo */ }
+            is DisplayLevelIntent.DownloadFileToPanels -> onDownloadMedia(intent.uri)
             DisplayLevelIntent.GoToPanel -> goToSelectedPanel()
         }
 
@@ -145,6 +146,14 @@ internal class DisplayLevelViewModel @Inject constructor(
                 isPanelLimitAchieved = isGlobalPanelLimitAchieved,
                 selectedAreaIsSquare = selectedAreaIsSquare,
             )
+        }
+    }
+
+    /* Handle media request */
+
+    private fun onDownloadMedia(uri: Uri) {
+        globalStateHandler.updateWithUri(uri) {
+            loadConfiguration(uiState.value.segmentNumber)
         }
     }
 

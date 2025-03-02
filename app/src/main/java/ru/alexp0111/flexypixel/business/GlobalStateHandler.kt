@@ -1,6 +1,7 @@
 package ru.alexp0111.flexypixel.business
 
 import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -19,6 +20,8 @@ import ru.alexp0111.flexypixel.data.model.PanelStatus
 import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
 import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
+import ru.alexp0111.flexypixel.media.IMediaFilesProcessor
+import ru.alexp0111.flexypixel.media.model.MediaFileType
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.drawing.DrawingGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelGlobalStateHolder
@@ -36,6 +39,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
     private val databaseRepository: SavedSchemeRepository,
     private val messageHandler: MessageHandler,
     private val bitmapProcessor: IBitmapProcessor,
+    private val mediaFileProcessor: IMediaFilesProcessor,
     private val panelValidator: IPanelPositionValidator,
     @Assisted val schemeId: Int?,
 ) : UpperAbstractionLevelGlobalStateHolder,
@@ -91,7 +95,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
                     val panelInStringPixels = frameCycle.frames.first().panels[panelOrder].pixels
                     put(
                         panelOrder,
-                        bitmapProcessor.convertPixelStringMatrixToBitmap(panelInStringPixels)
+                        bitmapProcessor.convertPanelPixelsToPanelBimap(panelInStringPixels)
                     )
                 }
             }
@@ -127,6 +131,34 @@ internal class GlobalStateHandler @AssistedInject constructor(
         return checkIfSelectedAreaSquare(metaDataSet)
     }
 
+    fun updateWithUri(uri: Uri, onSuccess: () -> Unit) {
+        refreshFramesWithMetaData()
+        val mediaType = mediaFileProcessor.getMediaType(uri) ?: return
+        scope.launch {
+            when (mediaType) {
+                MediaFileType.IMAGE -> {
+                    mediaFileProcessor.getBitmapFromUri(uri, metaDataSet) { bitmap ->
+                        handleBitmapUpdate(bitmap)
+                        onSuccess()
+                    }
+                }
+
+                MediaFileType.GIF -> {
+                    /* todo: gif extraction logic */
+                }
+            }
+        }
+    }
+
+    private fun handleBitmapUpdate(bitmap: Bitmap) {
+        val pixelMatrix = bitmapProcessor.convertBitmapToPixelStringMatrix(bitmap)
+        bitmapProcessor.applyPixelsToFrameCycle(
+            frameCycle = frameCycle,
+            pixelMatrix = pixelMatrix,
+        )
+        tryToSendConfigurationToMC(frameCycle)
+    }
+
     private fun validatedConfig(): Set<PanelMetaData> {
         val validatedConfig = validate(metaDataSet).toMutableSet()
         return validatedConfig.also { frameCycle.configuration.listOfMetaData = it }
@@ -134,18 +166,10 @@ internal class GlobalStateHandler @AssistedInject constructor(
 
     /** Drawing Level */
 
-    override fun getPanelPixelsConfiguration(panelPosition: Int): MutableList<DrawingColor> {
+    override fun getPanelPixels(panelPosition: Int): MutableList<DrawingColor> {
         refreshFramesWithMetaData()
-        val panelSequence = frameCycle.frames.first().panels
-        return if (panelPosition > panelSequence.lastIndex) {
-            MutableList(PanelMetaData.TYPE_64) { DrawingColor(9, 9, 9) }
-        } else {
-            mutableListOf<DrawingColor>().apply {
-                panelSequence[panelPosition].pixels.forEach {
-                    add(DrawingColor.getFromString(it))
-                }
-            }
-        }
+        val stringPixels = frameCycle.frames.first().panels[panelPosition].pixels
+        return stringPixels.map { DrawingColor.getFromString(it) }.toMutableList()
     }
 
     override fun getPanelPalette(panelPosition: Int): MutableList<DrawingColor> =
@@ -214,7 +238,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
     /* Add empty panel to frames & remove if needed */
     private fun refreshFramesWithMetaData() {
         frameCycle.frames.forEachIndexed { frameIndex, frame ->
-            val sizeDifference =  metaDataSet.size - frame.panels.size
+            val sizeDifference = metaDataSet.size - frame.panels.size
             val trimmedPanels = when {
                 sizeDifference > 0 -> frame.panels + List(sizeDifference) { Panel() }
                 sizeDifference < 0 -> frame.panels.dropLast(abs(sizeDifference))

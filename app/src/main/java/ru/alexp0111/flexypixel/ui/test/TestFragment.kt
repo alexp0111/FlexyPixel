@@ -39,9 +39,6 @@ class TestFragment : Fragment() {
     @Inject
     lateinit var messageHandler: MessageHandler
 
-    @Inject
-    lateinit var mediaFilesProcessor: MediaFilesProcessor
-
     private var pixel = 0
     private var testNumOfPanels = 0
 
@@ -162,7 +159,7 @@ class TestFragment : Fragment() {
                     palette = MutableList(PanelMetaData.PALETTE_SIZE) { DrawingColor(0, 0, 0) }
                 )
             )
-            mediaFilesProcessor.handleIncomingMedia(it, metadataList)
+            // mediaFilesProcessor.handleIncomingMedia(it, metadataList)
         }
     }
 
@@ -219,13 +216,13 @@ class TestFragment : Fragment() {
                 }
 
                 launch {
-                    mediaFilesProcessor.bitmaps.collect { bitmapList ->
-                        bitmapList.forEachIndexed { index, bitmap ->
+                    // mediaFilesProcessor.bitmaps.collect { bitmapList ->
+                    //     bitmapList.forEachIndexed { index, bitmap ->
                             // val bitmapAsString = BitmapProcessor.convertBitmapToPixelStringMatrix(bitmap)
                             // BitmapProcessor.applyBitmapToFrame()
                             // messageHandler.sendFrames(listOf(MessageFrame(bitmapAsString)), 1000)
-                        }
-                    }
+                    //     }
+                    // }
                 }
             }
         }

@@ -55,7 +55,7 @@ internal class DrawingViewModel @AssistedInject constructor(
         val panelPosition = state.value.panelPosition
         viewModelScope.launch(Dispatchers.IO) {
             val pixelsUiState = state.value.copy(
-                pixelPanel = globalStateHandler.getPanelPixelsConfiguration(panelPosition),
+                pixelPanel = globalStateHandler.getPanelPixels(panelPosition),
                 palette = globalStateHandler.getPanelPalette(panelPosition),
             )
             consumeAction(DrawingAction.LoadDisplayConfiguration(pixelsUiState))

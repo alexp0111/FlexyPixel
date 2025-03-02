@@ -24,6 +24,7 @@ dependencyResolutionManagement {
             library("materialDesign", "com.google.android.material:material:1.11.0")
             library("constraintLayout", "androidx.constraintlayout:constraintlayout:2.1.4")
             library("swipeRefreshLayout", "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+            library("activityCompose", "androidx.activity:activity-compose:1.9.3")
 
             library("dagger", "com.google.dagger:dagger:2.51")
             library("compiler", "com.google.dagger:dagger-compiler:2.51")
