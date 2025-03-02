@@ -13,27 +13,13 @@ import ru.alexp0111.core.annotations.FlexyPixelScalable
 import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
-import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import ru.alexp0111.flexypixel.data.model.PanelStatus
 import javax.inject.Inject
 import kotlin.math.round
 import kotlin.math.sqrt
 
 class BitmapProcessor @Inject constructor() : IBitmapProcessor {
-
-    fun convertBitmapToPixelStringMatrix(bitmap: Bitmap): Array<Array<String>> {
-        val pixelMatrix = Array(bitmap.height) { Array(bitmap.width) { "000" } }
-        for (row in 0 until bitmap.height) {
-            for (column in 0 until bitmap.width) {
-                val pixel = bitmap.getPixel(column, row)
-                val rChannel = round(pixel.red * 9 / 255f).toInt().toString()
-                val gChannel = round(pixel.green * 9 / 255f).toInt().toString()
-                val bChannel = round(pixel.blue * 9 / 255f).toInt().toString()
-                pixelMatrix[row][column] = rChannel + gChannel + bChannel
-            }
-        }
-        return pixelMatrix
-    }
 
     @FlexyPixelScalable
     override fun generateBitmapForSegment(panelMetaDataSet: Set<PanelMetaData>, cardSize: Int): Bitmap {
@@ -62,32 +48,63 @@ class BitmapProcessor @Inject constructor() : IBitmapProcessor {
         return bitmap
     }
 
-    /**
-     * TODO: Need to be carefully tested!!!
-     * */
-    fun applyBitmapToFrame(
+    @FlexyPixelScalable
+    override fun convertBitmapToPixelStringMatrix(bitmap: Bitmap): Array<Array<String>> {
+        val pixelMatrix = Array(bitmap.height) { Array(bitmap.width) { "000" } }
+        for (row in 0 until bitmap.height) {
+            for (column in 0 until bitmap.width) {
+                val pixel = bitmap.getPixel(column, row)
+                val rChannel = round(pixel.red * 9 / 255f).toInt().toString()
+                val gChannel = round(pixel.green * 9 / 255f).toInt().toString()
+                val bChannel = round(pixel.blue * 9 / 255f).toInt().toString()
+                pixelMatrix[row][column] = rChannel + gChannel + bChannel
+            }
+        }
+        return pixelMatrix
+    }
+
+    @FlexyPixelScalable
+    override fun convertPanelPixelsToPanelBimap(pixels: Array<String>): Bitmap {
+        val blankBitmap = Bitmap.createBitmap(
+            CommonSizeConstants.PANEL_PIXEL_SIDE,
+            CommonSizeConstants.PANEL_PIXEL_SIDE,
+            Bitmap.Config.ARGB_8888
+        )
+        return blankBitmap.apply {
+            pixels.forEachIndexed { index, str ->
+                set(
+                    x = index % CommonSizeConstants.PANEL_PIXEL_SIDE,
+                    y = index / CommonSizeConstants.PANEL_PIXEL_SIDE,
+                    color = DrawingColor.getFromString(str).toColor(),
+                )
+            }
+        }
+    }
+
+
+    override fun applyPixelsToFrameCycle(
         frameCycle: FrameCycle,
         frameIndex: Int,
-        goalPanels: List<PanelMetaData>,
-        bitmapAsMatrix: Array<Array<String>>,
+        pixelMatrix: Array<Array<String>>,
     ) {
+        val config = frameCycle.configuration
+        val goalPanels = config.listOfMetaData.filter { it.status == PanelStatus.SELECTED }
         val startPanel = goalPanels.sortedWith(
             compareBy(
                 { it.absoluteX },
                 { it.absoluteY },
             )
         ).first()
-        val config = frameCycle.configuration
 
-        for (row in startPanel.absoluteY until PanelConfiguration.MAX_SIZE) {
-            for (colum in startPanel.absoluteX until PanelConfiguration.MAX_SIZE) {
+        for (row in startPanel.absoluteY until CommonSizeConstants.PANELS_TOTAL_AMOUNT) {
+            for (colum in startPanel.absoluteX until CommonSizeConstants.PANELS_TOTAL_AMOUNT) {
                 val panel = config.getPanelMetaDataByCoordinates(colum, row) ?: continue
 
                 val bitmapMatrixRowSegment = row - startPanel.absoluteY
                 val bitmapMatrixColumnSegment = colum - startPanel.absoluteX
 
                 val bitmapFragmentAsPanel = getBitmapSegment(
-                    bitmapAsMatrix,
+                    pixelMatrix,
                     bitmapMatrixRowSegment,
                     bitmapMatrixColumnSegment,
                     panel.type,
@@ -115,13 +132,5 @@ class BitmapProcessor @Inject constructor() : IBitmapProcessor {
                 }
             }
         }.toTypedArray()
-    }
-
-    override fun convertPixelStringMatrixToBitmap(pixels: Array<String>): Bitmap {
-        return Bitmap.createBitmap(8, 8, Bitmap.Config.ARGB_8888).apply {
-            pixels.forEachIndexed { index, str ->
-                set(index % 8, index / 8, DrawingColor.getFromString(str).toColor())
-            }
-        }
     }
 }

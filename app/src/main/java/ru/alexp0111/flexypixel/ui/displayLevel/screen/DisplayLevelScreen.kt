@@ -1,6 +1,9 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.screen
 
+import android.content.Intent
 import android.graphics.BitmapFactory
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -106,6 +109,18 @@ private fun BottomPanelActions(
     selectedAreaIsSquare: Boolean,
     intentHandler: (DisplayLevelIntent) -> Unit = {},
 ) {
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        it.data?.data?.let { uri ->
+            intentHandler(DisplayLevelIntent.DownloadFileToPanels(uri))
+        }
+    }
+    val mediaIntent = remember {
+        Intent(Intent.ACTION_GET_CONTENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "gif/*"))
+        }
+    }
     Row(
         Modifier
             .fillMaxWidth()
@@ -134,7 +149,7 @@ private fun BottomPanelActions(
                 modifier = Modifier
                     .width(80.dp)
                     .conditional(!isOnlyOnePanelSelected) { weight(1f) },
-                onClick = { intentHandler(DisplayLevelIntent.DownloadFileToPanels) }
+                onClick = { launcher.launch(mediaIntent) }
             )
         }
     }

@@ -1,12 +1,13 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.model
 
+import android.net.Uri
 import ru.alexp0111.core_ui.common.model.Coordinate
 
 internal sealed interface DisplayLevelIntent {
     data class InitSegment(val segmentNumber: Int): DisplayLevelIntent
 
     data object DeletePanels: DisplayLevelIntent
-    data object DownloadFileToPanels: DisplayLevelIntent
+    data class DownloadFileToPanels(val uri: Uri): DisplayLevelIntent
     data object GoToPanel: DisplayLevelIntent
 
     data class Click(val panel: PanelUiModel): DisplayLevelIntent

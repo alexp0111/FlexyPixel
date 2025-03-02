@@ -5,4 +5,6 @@ object CommonSizeConstants {
     const val SEGMENTS_MATRIX_SIDE = 3
     const val PANELS_TOTAL_AMOUNT = 9
     const val PANELS_MATRIX_SIDE = 3
+    const val PANEL_PIXEL_TOTAL_AMOUNT = 64
+    const val PANEL_PIXEL_SIDE = 8
 }

@@ -6,6 +6,8 @@ import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
 import ru.alexp0111.flexypixel.business.panel_validation.PanelPositionValidator
 import ru.alexp0111.flexypixel.media.BitmapProcessor
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
+import ru.alexp0111.flexypixel.media.IMediaFilesProcessor
+import ru.alexp0111.flexypixel.media.MediaFilesProcessor
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.DisplayLevelConverter
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.IDisplayLevelConverter
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.converter.IUpperAbstractionLevelConverter
@@ -24,4 +26,7 @@ internal interface BindModule {
 
     @Binds
     fun bindPanelPositionValidator(validator: PanelPositionValidator): IPanelPositionValidator
+
+    @Binds
+    fun bindMediaFilesProcessor(processor: MediaFilesProcessor): IMediaFilesProcessor
 }

@@ -56,6 +56,7 @@ dependencies {
     implementation(localDeps.materialDesign)
     implementation(localDeps.constraintLayout)
     implementation(localDeps.swipeRefreshLayout)
+    implementation(localDeps.activityCompose)
 
     /** Jetpack Compose */
     implementation(localDeps.composeRuntime)
