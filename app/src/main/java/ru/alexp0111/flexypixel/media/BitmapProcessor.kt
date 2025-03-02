@@ -17,7 +17,6 @@ import ru.alexp0111.flexypixel.data.model.PanelMetaData
 import ru.alexp0111.flexypixel.data.model.PanelStatus
 import javax.inject.Inject
 import kotlin.math.round
-import kotlin.math.sqrt
 
 class BitmapProcessor @Inject constructor() : IBitmapProcessor {
 
@@ -81,7 +80,7 @@ class BitmapProcessor @Inject constructor() : IBitmapProcessor {
         }
     }
 
-
+    @FlexyPixelScalable
     override fun applyPixelsToFrameCycle(
         frameCycle: FrameCycle,
         frameIndex: Int,
@@ -89,45 +88,25 @@ class BitmapProcessor @Inject constructor() : IBitmapProcessor {
     ) {
         val config = frameCycle.configuration
         val goalPanels = config.listOfMetaData.filter { it.status == PanelStatus.SELECTED }
-        val startPanel = goalPanels.sortedWith(
-            compareBy(
-                { it.absoluteX },
-                { it.absoluteY },
-            )
-        ).first()
+        val startPanel = goalPanels.sortedWith(compareBy({ it.absoluteX }, { it.absoluteY })).first()
 
-        for (row in startPanel.absoluteY until CommonSizeConstants.PANELS_TOTAL_AMOUNT) {
-            for (colum in startPanel.absoluteX until CommonSizeConstants.PANELS_TOTAL_AMOUNT) {
-                val panel = config.getPanelMetaDataByCoordinates(colum, row) ?: continue
+        goalPanels.forEach {
+            val xOffset = (it.absoluteX - startPanel.absoluteX) * CommonSizeConstants.PANEL_PIXEL_SIDE
+            val yOffset = (it.absoluteY - startPanel.absoluteY) * CommonSizeConstants.PANEL_PIXEL_SIDE
 
-                val bitmapMatrixRowSegment = row - startPanel.absoluteY
-                val bitmapMatrixColumnSegment = colum - startPanel.absoluteX
-
-                val bitmapFragmentAsPanel = getBitmapSegment(
-                    pixelMatrix,
-                    bitmapMatrixRowSegment,
-                    bitmapMatrixColumnSegment,
-                    panel.type,
-                )
-
-                frameCycle.frames[frameIndex].panels[panel.order] = Panel(bitmapFragmentAsPanel)
-            }
+            val bitmapFragmentAsPanel = getBitmapSegment(pixelMatrix, xOffset, yOffset)
+            frameCycle.frames[frameIndex].panels[it.order] = Panel(bitmapFragmentAsPanel)
         }
     }
 
     private fun getBitmapSegment(
         bitmapAsMatrix: Array<Array<String>>,
-        bitmapMatrixRowSegment: Int,
-        bitmapMatrixColumnSegment: Int,
-        segmentSize: Int,
+        xOffset: Int,
+        yOffset: Int,
     ): Array<String> {
-        val rowPosition = bitmapMatrixRowSegment * 8
-        val columnPosition = bitmapMatrixColumnSegment * 8
-        val segmentSideSize = sqrt(segmentSize.toFloat()).toInt()
-
         return mutableListOf<String>().apply {
-            for (row in rowPosition until (rowPosition + segmentSideSize)) {
-                for (column in columnPosition until (columnPosition + segmentSideSize)) {
+            for (row in yOffset until (yOffset + CommonSizeConstants.PANEL_PIXEL_SIDE)) {
+                for (column in xOffset until (xOffset + CommonSizeConstants.PANEL_PIXEL_SIDE)) {
                     add(bitmapAsMatrix[row][column])
                 }
             }
