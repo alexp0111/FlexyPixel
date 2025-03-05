@@ -2,14 +2,17 @@ package ru.alexp0111.flexypixel.media
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.core.graphics.set
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.annotations.FlexyPixelScalable
+import ru.alexp0111.core_ui.theme.beigeDark
+import ru.alexp0111.core_ui.theme.black
+import ru.alexp0111.core_ui.theme.red
 import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
@@ -31,12 +34,17 @@ class BitmapProcessor @Inject constructor() : IBitmapProcessor {
 
         val bitmap = Bitmap.createBitmap(trimmedBitmapSize, trimmedBitmapSize, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        val paint = Paint().apply { color = Color.BLACK }
+        val paint = Paint()
 
         for (panelY in 0 until CommonSizeConstants.PANELS_MATRIX_SIDE) {
             for (panelX in 0 until CommonSizeConstants.PANELS_MATRIX_SIDE) {
-                if (!panelMetaDataSet.any { it.localX == panelX && it.localY == panelY }) continue
+                val panel = panelMetaDataSet.find { it.localX == panelX && it.localY == panelY } ?: continue
 
+                paint.color = when(panel.status) {
+                    PanelStatus.DEFAULT -> black.toArgb()
+                    PanelStatus.SELECTED -> beigeDark.toArgb()
+                    PanelStatus.PLACED_WRONG -> red.toArgb()
+                }
                 val x = (panelX * (squareSize + scaledPixelSize) + scaledPixelSize)
                 val y = (panelY * (squareSize + scaledPixelSize) + scaledPixelSize)
 
