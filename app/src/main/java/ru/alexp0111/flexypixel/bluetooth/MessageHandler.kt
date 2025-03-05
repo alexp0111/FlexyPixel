@@ -6,13 +6,11 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import ru.alexp0111.flexypixel.bluetooth.business.IMessageConverter
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResponse
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResult
-import ru.alexp0111.flexypixel.bluetooth.utils.MessageConverter
-import ru.alexp0111.flexypixel.data.model.Frame
-import ru.alexp0111.flexypixel.data.model.PanelConfiguration
+import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
-import java.lang.StringBuilder
 import java.util.LinkedList
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,8 +18,9 @@ import javax.inject.Singleton
 private const val TAG = "MessageHandler"
 
 @Singleton
-class MessageHandler @Inject constructor(
+internal class MessageHandler @Inject constructor(
     private val controller: AndroidBluetoothController,
+    private val messageConverter: IMessageConverter,
 ) {
     @get:Synchronized
     @set:Synchronized
@@ -68,18 +67,18 @@ class MessageHandler @Inject constructor(
         tryPopMessageQueue()
     }
 
-    private fun retryLastSentMessage(): BluetoothMessage? {
-        val message = lastSentMessage ?: return null
-        val type = lastSentMessageType ?: return null
-        messageQueue.push(type, message)
-        return message
-    }
-
     private fun retryConfigIfNeeded(errorMessage: String) {
         if (errorMessage != TransferResponse.UNCONFIGURED) return
         mode?.let {
             messageQueue.push(MessageType.MODE, it)
         }
+    }
+
+    private fun retryLastSentMessage(): BluetoothMessage? {
+        val message = lastSentMessage ?: return null
+        val type = lastSentMessageType ?: return null
+        messageQueue.push(type, message)
+        return message
     }
 
     private fun tryPopMessageQueue() {
@@ -98,44 +97,30 @@ class MessageHandler @Inject constructor(
         }
     }
 
-    fun sendPixel(
-        panelOrder: Int,
-        pixelOrder: Int,
-        rChannel: Int,
-        gChannel: Int,
-        bChannel: Int,
-    ) {
+    fun sendPixel(panelOrder: Int, pixelOrder: Int, r: Int, g: Int, b: Int) {
         changeModeIfNeeded(MessageTransactionMode.PIXEL)
 
-        val message = MessagePixel(
-            panelPosition = panelOrder,
-            pixelPosition = MessageConverter.convert(pixelOrder),
-            pixelColor = rChannel.toString() + gChannel.toString() + bChannel.toString()
+        messageQueue.add(
+            type = MessageType.DATA,
+            message = messageConverter.convertPixelToMessage(panelOrder, pixelOrder, r, g, b)
         )
-
-        messageQueue.add(MessageType.DATA, message)
         tryPopMessageQueue()
     }
 
-    fun sendFrames(frames: MutableList<Frame>, interframeDelay: Int) {
-        val messageFrames = frames.map {
-            it.toMessageFrame()
-        }.toList()
-        sendMessageFrames(messageFrames, interframeDelay)
+    fun sendFrames(frameCycle: FrameCycle) {
+        val messageFrames = messageConverter.convertFramesToMessage(frameCycle)
+        sendMessageFrames(messageFrames, frameCycle.interframeDelay)
     }
 
-    fun sendMessageFrames(frames: List<MessageFrame>, interframeDelay: Int) {
+    private fun sendMessageFrames(frames: List<MessageFrame>, interframeDelay: Int) {
         changeModeIfNeeded(MessageTransactionMode.SEQUENCE)
         configuration?.let {
             messageQueue.add(MessageType.CONFIG, it)
         }
 
-        val message = MessageFramesMetaData(
-            MessageConverter.convert(frames.size),
-            MessageConverter.convert(interframeDelay, MessageFramesMetaData.INTERFRAME_SIZE),
-        )
+        val metaDataMessage = messageConverter.convertFramesToMetaDataMessage(frames, interframeDelay)
+        messageQueue.add(MessageType.DATA, metaDataMessage)
 
-        messageQueue.add(MessageType.DATA, message)
         frames.forEach {
             messageQueue.add(it)
         }
@@ -151,19 +136,8 @@ class MessageHandler @Inject constructor(
     }
 
     fun updateConfiguration(configuration: Set<PanelMetaData>) {
-        val stringBuilder = StringBuilder().apply {
-            configuration.sortedBy { it.order }.forEach {
-                append(MessageConverter.convert(it.type, 3))
-            }
-            while (this.length != PanelConfiguration.MAX_SIZE*3) {
-                append("000")
-            }
-        }
-        updateConfiguration(MessagePanelConfiguration(stringBuilder.toString()))
-    }
-
-    fun updateConfiguration(configuration: Array<String>) {
-        updateConfiguration(MessagePanelConfiguration(configuration.joinToString("")))
+        val panelMetaDataMessage = messageConverter.convertPanelMetaDataToMessage(configuration)
+        updateConfiguration(panelMetaDataMessage)
     }
 
     private fun updateConfiguration(incomingMessagePanelConfiguration: MessagePanelConfiguration) {
