@@ -189,9 +189,9 @@ internal class GlobalStateHandler @AssistedInject constructor(
         messageHandler.sendPixel(
             panelOrder = panelPosition,
             pixelOrder = pixelPosition,
-            rChannel = color.r,
-            gChannel = color.g,
-            bChannel = color.b,
+            r = color.r,
+            g = color.g,
+            b = color.b,
         )
     }
 
@@ -249,9 +249,8 @@ internal class GlobalStateHandler @AssistedInject constructor(
     }
 
     private fun tryToSendConfigurationToMC(cycle: FrameCycle) {
-        schemeId ?: return
         messageHandler.updateConfiguration(cycle.configuration.listOfMetaData)
-        messageHandler.sendFrames(cycle.frames, cycle.interframeDelay)
+        messageHandler.sendFrames(cycle)
     }
 
 

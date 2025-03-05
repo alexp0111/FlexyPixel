@@ -2,6 +2,8 @@ package ru.alexp0111.flexypixel.di.modules
 
 import dagger.Binds
 import dagger.Module
+import ru.alexp0111.flexypixel.bluetooth.business.IMessageConverter
+import ru.alexp0111.flexypixel.bluetooth.business.MessageConverter
 import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
 import ru.alexp0111.flexypixel.business.panel_validation.PanelPositionValidator
 import ru.alexp0111.flexypixel.media.BitmapProcessor
@@ -29,4 +31,7 @@ internal interface BindModule {
 
     @Binds
     fun bindMediaFilesProcessor(processor: MediaFilesProcessor): IMediaFilesProcessor
+
+    @Binds
+    fun bindMessageConverter(messageConverter: MessageConverter): IMessageConverter
 }

@@ -31,7 +31,7 @@ import javax.inject.Inject
 
 private const val TAG = "TestFragment"
 
-class TestFragment : Fragment() {
+internal class TestFragment : Fragment() {
 
     @Inject
     lateinit var router: Router
@@ -70,9 +70,9 @@ class TestFragment : Fragment() {
                 messageHandler.sendPixel(
                     panelOrder = panOrder,
                     pixelOrder = pixOrder,
-                    rChannel = 0,
-                    gChannel = 0,
-                    bChannel = 0,
+                    r = 0,
+                    g = 0,
+                    b = 0,
                 )
             }
 
@@ -90,9 +90,9 @@ class TestFragment : Fragment() {
                 messageHandler.sendPixel(
                     panelOrder = panOrder,
                     pixelOrder = pixOrder,
-                    rChannel = r,
-                    gChannel = g,
-                    bChannel = b,
+                    r = r,
+                    g = g,
+                    b = b,
                 )
 
                 pixel++
@@ -108,19 +108,19 @@ class TestFragment : Fragment() {
                 messageHandler.sendPixel(
                     panelOrder = panOrder,
                     pixelOrder = pixOrder,
-                    rChannel = r,
-                    gChannel = g,
-                    bChannel = b,
+                    r = r,
+                    g = g,
+                    b = b,
                 )
             }
 
             btnSendFrames.setOnClickListener {
                 val numberOfFrames = etNumberOfFrames.text.toString().toInt()
                 val interframeDelay = etInterfameDelay.text.toString().toInt()
-                messageHandler.sendMessageFrames(
-                    getTestFrames(numberOfFrames),
-                    interframeDelay,
-                )
+                // messageHandler.sendMessageFrames(
+                //     getTestFrames(numberOfFrames),
+                //     interframeDelay,
+                // )
             }
 
             btnSaveConfig.setOnClickListener {
@@ -130,7 +130,7 @@ class TestFragment : Fragment() {
                 for (i in numberOfPanels until PanelConfiguration.MAX_SIZE) {
                     curConfig[i] = "000"
                 }
-                messageHandler.updateConfiguration(curConfig)
+                // messageHandler.updateConfiguration(curConfig)
             }
 
             btnLoadMedia.setOnClickListener {
