@@ -6,6 +6,7 @@ import android.util.Log
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,7 +49,10 @@ internal class GlobalStateHandler @AssistedInject constructor(
     DisplayLevelGlobalStateHolder {
 
     private lateinit var frameCycle: FrameCycle
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val errorHandler = CoroutineExceptionHandler { _, throwable ->
+        Log.d("TAG", throwable.message.toString())
+    }
+    private val scope = CoroutineScope(Dispatchers.IO + errorHandler)
 
     private val metaDataSet: MutableSet<PanelMetaData>
         get() = frameCycle.configuration.listOfMetaData
