@@ -14,12 +14,14 @@ import javax.inject.Inject
 
 internal class MessageConverter @Inject constructor() : IMessageConverter {
 
-    override fun convertPixelToMessage(panelOrder: Int, pixelOrder: Int, r: Int, g: Int, b: Int): MessagePixel =
-        MessagePixel(
+    override fun convertPixelToMessage(panelOrder: Int, pixelOrder: Int, r: Int, g: Int, b: Int): MessagePixel {
+        val reversedPixelPosition = CommonSizeConstants.PANEL_PIXEL_TOTAL_AMOUNT - pixelOrder - 1
+        return MessagePixel(
             panelPosition = panelOrder,
-            pixelPosition = parseIntToMessageString(pixelOrder),
+            pixelPosition = parseIntToMessageString(reversedPixelPosition),
             pixelColor = "$r$g$b"
         )
+    }
 
     override fun convertFramesToMetaDataMessage(
         frames: List<MessageFrame>,
@@ -68,7 +70,10 @@ internal class MessageConverter @Inject constructor() : IMessageConverter {
             PanelOrientation.UP -> 3
         }
 
-        return Panel(rotateMatrixByClock(panel.pixels, rotationTimes))
+        val pixels = rotateMatrixByClock(panel.pixels, rotationTimes)
+            .reversedArray() // Specialty of panel hardware organization
+
+        return Panel(pixels)
     }
 
     private fun rotateMatrixByClock(pixels: Array<String>, times: Int): Array<String> {
