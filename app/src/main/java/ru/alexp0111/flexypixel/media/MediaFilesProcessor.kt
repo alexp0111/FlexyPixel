@@ -8,6 +8,8 @@ import android.net.Uri
 import android.util.Log
 import android.webkit.MimeTypeMap
 import com.bumptech.glide.Glide
+import com.bumptech.glide.gifdecoder.StandardGifDecoder
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
@@ -25,6 +27,32 @@ internal class MediaFilesProcessor @Inject constructor(
         val bitmapWidth: Int = getBitmapWidth(metaData) ?: return
         val bitmapHeight: Int = getBitmapHeight(metaData) ?: return
         extractImageAsBitmap(uri, bitmapWidth, bitmapHeight, onBitmapExtracted)
+    }
+
+    override fun getBitmapCycleFromUri(
+        uri: Uri,
+        metaData: Set<PanelMetaData>,
+        onBitmapCycleExtracted: (List<Bitmap>, interframeDelay: Int) -> Unit
+    ) {
+        val bitmapWidth: Int = getBitmapWidth(metaData) ?: return
+        val bitmapHeight: Int = getBitmapHeight(metaData) ?: return
+        extractGifAsBitmap(uri, bitmapWidth, bitmapHeight, onBitmapCycleExtracted)
+    }
+
+    override fun getMediaType(uri: Uri): MediaFileType? {
+        val mimeType = getMimeType(uri)
+        if (mimeType == null) {
+            Log.d(TAG, "mime type cannot be defined")
+            return null
+        }
+        return when (mimeType) {
+            MIME_TYPE_GIF -> MediaFileType.GIF
+            MIME_TYPE_JPEG -> MediaFileType.IMAGE
+            MIME_TYPE_JPG -> MediaFileType.IMAGE
+            MIME_TYPE_BMP -> MediaFileType.IMAGE
+            MIME_TYPE_PNG -> MediaFileType.IMAGE
+            else -> null
+        }
     }
 
     private fun getBitmapWidth(metaData: Set<PanelMetaData>): Int? {
@@ -45,6 +73,7 @@ internal class MediaFilesProcessor @Inject constructor(
         Glide.with(context)
             .asBitmap()
             .load(uri)
+            .centerCrop()
             .into(object : CustomTarget<Bitmap>(width, height) {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     onBitmapExtracted(resource)
@@ -53,21 +82,40 @@ internal class MediaFilesProcessor @Inject constructor(
                 override fun onLoadCleared(placeholder: Drawable?) = Unit
             })
 
-    override fun getMediaType(uri: Uri): MediaFileType? {
-        val mimeType = getMimeType(uri)
-        if (mimeType == null) {
-            Log.d(TAG, "mime type cannot be defined")
-            return null
-        }
-        return when (mimeType) {
-            MIME_TYPE_GIF -> MediaFileType.GIF
-            MIME_TYPE_JPEG -> MediaFileType.IMAGE
-            MIME_TYPE_JPG -> MediaFileType.IMAGE
-            MIME_TYPE_BMP -> MediaFileType.IMAGE
-            MIME_TYPE_PNG -> MediaFileType.IMAGE
-            else -> null
-        }
-    }
+    private fun extractGifAsBitmap(
+        uri: Uri,
+        width: Int,
+        height: Int,
+        onBitmapCycleExtracted: (List<Bitmap>, interframeDelay: Int) -> Unit,
+    ) =
+        Glide.with(context)
+            .asGif()
+            .load(uri)
+            .centerCrop()
+            .into(object : CustomTarget<GifDrawable>(width, height) {
+                override fun onResourceReady(resource: GifDrawable, transition: Transition<in GifDrawable>?) {
+                    val bitmapList = mutableListOf<Bitmap>()
+                    var totalTime = 0
+
+                    val gifState = resource.constantState ?: return
+                    val gifFrameLoader = gifState.javaClass.getDeclaredField("frameLoader").apply { isAccessible = true }.get(gifState)
+                    val gifDecoder = gifFrameLoader.javaClass.getDeclaredField("gifDecoder").apply { isAccessible = true }
+                    val standardGifDecoder = gifDecoder.get(gifFrameLoader) as StandardGifDecoder
+
+                    repeat(standardGifDecoder.frameCount) {
+                        standardGifDecoder.nextFrame?.let { bitmap ->
+                            bitmapList.add(bitmap)
+                            totalTime += standardGifDecoder.nextDelay
+                        }
+                        standardGifDecoder.advance()
+                    }
+
+                    val interframeDelay = totalTime / standardGifDecoder.frameCount
+                    onBitmapCycleExtracted(bitmapList, interframeDelay)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) = Unit
+            })
 
     private fun getMimeType(uri: Uri): String? {
         return if (ContentResolver.SCHEME_CONTENT == uri.scheme) {
