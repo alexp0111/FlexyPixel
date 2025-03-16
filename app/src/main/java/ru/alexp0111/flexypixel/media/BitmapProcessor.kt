@@ -18,10 +18,11 @@ import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
 import ru.alexp0111.flexypixel.data.model.PanelStatus
+import ru.alexp0111.flexypixel.media.model.MediaFileType
 import javax.inject.Inject
 import kotlin.math.round
 
-class BitmapProcessor @Inject constructor() : IBitmapProcessor {
+internal class BitmapProcessor @Inject constructor() : IBitmapProcessor {
 
     @FlexyPixelScalable
     override fun generateBitmapForSegment(panelMetaDataSet: Set<PanelMetaData>, cardSize: Int): Bitmap {
@@ -40,7 +41,7 @@ class BitmapProcessor @Inject constructor() : IBitmapProcessor {
             for (panelX in 0 until CommonSizeConstants.PANELS_MATRIX_SIDE) {
                 val panel = panelMetaDataSet.find { it.localX == panelX && it.localY == panelY } ?: continue
 
-                paint.color = when(panel.status) {
+                paint.color = when (panel.status) {
                     PanelStatus.DEFAULT -> black.toArgb()
                     PanelStatus.SELECTED -> beigeDark.toArgb()
                     PanelStatus.PLACED_WRONG -> red.toArgb()
@@ -89,21 +90,44 @@ class BitmapProcessor @Inject constructor() : IBitmapProcessor {
     }
 
     @FlexyPixelScalable
-    override fun applyPixelsToFrameCycle(
+    override fun applyBitmapsToFrameCycle(
         frameCycle: FrameCycle,
-        frameIndex: Int,
-        pixelMatrix: Array<Array<String>>,
+        type: MediaFileType,
+        bitmaps: List<Bitmap>,
     ) {
         val config = frameCycle.configuration
         val goalPanels = config.listOfMetaData.filter { it.status == PanelStatus.SELECTED }
-        val startPanel = goalPanels.sortedWith(compareBy({ it.absoluteX }, { it.absoluteY })).first()
+        val otherPanels = config.listOfMetaData.filter { it.status == PanelStatus.DEFAULT }
 
-        goalPanels.forEach {
-            val xOffset = (it.absoluteX - startPanel.absoluteX) * CommonSizeConstants.PANEL_PIXEL_SIDE
-            val yOffset = (it.absoluteY - startPanel.absoluteY) * CommonSizeConstants.PANEL_PIXEL_SIDE
+        if (type == MediaFileType.GIF) {
+            frameCycle.frames.forEachIndexed { index, frame ->
+                val bitmap = bitmaps[index]
+                applyBitmapToFrame(frameCycle, goalPanels, bitmap, index)
+
+                // apply images to all frames
+                otherPanels.forEach {
+                    frameCycle.frames[index].panels[it.order] = frameCycle.frames[0].panels[it.order]
+                }
+            }
+        }
+
+        if (type == MediaFileType.IMAGE) {
+            frameCycle.frames.forEachIndexed { index, frame ->
+                val bitmap = bitmaps.first()
+                applyBitmapToFrame(frameCycle, goalPanels, bitmap, index)
+            }
+        }
+    }
+
+    private fun applyBitmapToFrame(frameCycle: FrameCycle, goalPanels: List<PanelMetaData>, bitmap: Bitmap, index: Int) {
+        val startPanel = goalPanels.sortedWith(compareBy({ it.absoluteX }, { it.absoluteY })).first()
+        val pixelMatrix = convertBitmapToPixelStringMatrix(bitmap)
+        goalPanels.forEach { panel ->
+            val xOffset = (panel.absoluteX - startPanel.absoluteX) * CommonSizeConstants.PANEL_PIXEL_SIDE
+            val yOffset = (panel.absoluteY - startPanel.absoluteY) * CommonSizeConstants.PANEL_PIXEL_SIDE
 
             val bitmapFragmentAsPanel = getBitmapSegment(pixelMatrix, xOffset, yOffset)
-            frameCycle.frames[frameIndex].panels[it.order] = Panel(bitmapFragmentAsPanel)
+            frameCycle.frames[index].panels[panel.order] = Panel(bitmapFragmentAsPanel)
         }
     }
 

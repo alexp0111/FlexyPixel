@@ -14,6 +14,7 @@ import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
 import ru.alexp0111.flexypixel.data.DrawingColor
+import ru.alexp0111.flexypixel.data.model.Frame
 import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
@@ -148,17 +149,31 @@ internal class GlobalStateHandler @AssistedInject constructor(
                 }
 
                 MediaFileType.GIF -> {
-                    /* todo: gif extraction logic */
+                    mediaFileProcessor.getBitmapCycleFromUri(uri, metaDataSet) { bitmapList, interframeDelay ->
+                        refreshFramesWithAmount(bitmapList.size)
+                        handleGIFUpdate(bitmapList, interframeDelay)
+                        onSuccess()
+                    }
                 }
             }
         }
     }
 
     private fun handleBitmapUpdate(bitmap: Bitmap) {
-        val pixelMatrix = bitmapProcessor.convertBitmapToPixelStringMatrix(bitmap)
-        bitmapProcessor.applyPixelsToFrameCycle(
+        bitmapProcessor.applyBitmapsToFrameCycle(
             frameCycle = frameCycle,
-            pixelMatrix = pixelMatrix,
+            type = MediaFileType.IMAGE,
+            bitmaps = listOf(bitmap),
+        )
+        tryToSendConfigurationToMC(frameCycle)
+    }
+
+    private fun handleGIFUpdate(bitmapList: List<Bitmap>, interframeDelay: Int) {
+        frameCycle.interframeDelay = interframeDelay
+        bitmapProcessor.applyBitmapsToFrameCycle(
+            frameCycle = frameCycle,
+            type = MediaFileType.GIF,
+            bitmaps = bitmapList,
         )
         tryToSendConfigurationToMC(frameCycle)
     }
@@ -250,6 +265,19 @@ internal class GlobalStateHandler @AssistedInject constructor(
             }
             frameCycle.frames[frameIndex].panels = trimmedPanels.toMutableList()
         }
+    }
+
+    /* Add empty frames & remove if needed */
+    private fun refreshFramesWithAmount(framesAmount: Int) {
+        val panelsAmount = metaDataSet.size
+        val sizeDifference = framesAmount - frameCycle.framesAmount
+        val trimmedFrames = when {
+            sizeDifference > 0 -> frameCycle.frames + MutableList(sizeDifference) { Frame(MutableList(panelsAmount) { Panel() }) }
+            sizeDifference < 0 -> frameCycle.frames.dropLast(abs(sizeDifference))
+            else -> frameCycle.frames
+        }
+        frameCycle.frames = trimmedFrames.toMutableList()
+        frameCycle.framesAmount = framesAmount
     }
 
     private fun tryToSendConfigurationToMC(cycle: FrameCycle) {
