@@ -17,15 +17,14 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.alexp0111.core_ui.common.model.DrawingColor
 import ru.alexp0111.flexypixel.bluetooth.MessageFrame
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
-import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
 import ru.alexp0111.flexypixel.data.model.PanelOrientation
 import ru.alexp0111.flexypixel.databinding.FragmentTestBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
-import ru.alexp0111.flexypixel.media.MediaFilesProcessor
 import javax.inject.Inject
 
 

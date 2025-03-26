@@ -1,7 +1,7 @@
 package ru.alexp0111.flexypixel.data.model
 
 import ru.alexp0111.core.CommonSizeConstants
-import ru.alexp0111.flexypixel.data.DrawingColor
+import ru.alexp0111.core_ui.common.model.DrawingColor
 
 data class PanelMetaData(
     var order: Int = 0,

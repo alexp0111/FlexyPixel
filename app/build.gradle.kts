@@ -61,6 +61,7 @@ dependencies {
     /** Jetpack Compose */
     implementation(localDeps.composeRuntime)
     implementation(localDeps.composeMaterial)
+    implementation(localDeps.composeFoundation)
     implementation(localDeps.composeUiToolingPreview)
     implementation(localDeps.composeUiTooling)
     implementation(localDeps.composeNeomorphism)

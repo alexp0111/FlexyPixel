@@ -10,10 +10,10 @@ import androidx.core.graphics.red
 import androidx.core.graphics.set
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.annotations.FlexyPixelScalable
+import ru.alexp0111.core_ui.common.model.DrawingColor
 import ru.alexp0111.core_ui.theme.beigeDark
 import ru.alexp0111.core_ui.theme.black
 import ru.alexp0111.core_ui.theme.red
-import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
