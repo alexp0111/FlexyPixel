@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,13 +25,20 @@ import ru.alexp0111.core_ui.theme.whiteShadow
 @Composable
 fun NeoCard(
     modifier: Modifier,
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
+    enabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     Card(
         onClick = onClick,
+        enabled = enabled,
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = beigeStandard),
+        colors = CardColors(
+            contentColor = beigeStandard,
+            containerColor = beigeStandard,
+            disabledContentColor = beigeStandard,
+            disabledContainerColor = beigeStandard,
+        ),
         modifier = modifier
             .fillMaxWidth()
             .neumorphic(

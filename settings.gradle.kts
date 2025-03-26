@@ -41,6 +41,7 @@ dependencyResolutionManagement {
 
             library("composeRuntime", "androidx.compose.runtime:runtime:1.7.0")
             library("composeMaterial", "androidx.compose.material3:material3-android:1.3.1")
+            library("composeFoundation", "androidx.compose.foundation:foundation-android:1.7.0")
             library("composeUiToolingPreview", "androidx.compose.ui:ui-tooling-preview-android:1.7.6")
             library("composeUiTooling", "androidx.compose.ui:ui-tooling:1.7.6")
         }

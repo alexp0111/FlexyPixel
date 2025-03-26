@@ -11,9 +11,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.alexp0111.core.CommonSizeConstants
+import ru.alexp0111.core_ui.common.model.DrawingColor
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
-import ru.alexp0111.flexypixel.data.DrawingColor
 import ru.alexp0111.flexypixel.data.model.Frame
 import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel

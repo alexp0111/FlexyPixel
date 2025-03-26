@@ -1,7 +1,7 @@
 package ru.alexp0111.flexypixel.ui.drawing
 
 import kotlinx.coroutines.flow.StateFlow
-import ru.alexp0111.flexypixel.data.DrawingColor
+import ru.alexp0111.core_ui.common.model.DrawingColor
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
 
 data class DrawingUIState(

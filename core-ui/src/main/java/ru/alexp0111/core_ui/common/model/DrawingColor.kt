@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.data
+package ru.alexp0111.core_ui.common.model
 
 import android.graphics.Color
 

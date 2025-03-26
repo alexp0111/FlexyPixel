@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -49,14 +50,58 @@ fun NeoSlot(
     }
 }
 
+@Composable
+fun NeoSlotRounded(
+    modifier: Modifier,
+    strokeWidth: Dp = 6.dp,
+    onClick: () -> Unit = {},
+    content: @Composable () -> Unit,
+) {
+    Card(
+        onClick = onClick,
+        enabled = false,
+        shape = RoundedCornerShape(1000.dp),
+        colors = CardDefaults.cardColors(disabledContainerColor = beigeStandard),
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(1000.dp))
+            .neumorphic(
+                neuShape = Pressed.Oval(),
+                strokeWidth = strokeWidth,
+                lightShadowColor = whiteShadow,
+                darkShadowColor = beigeDark,
+            )
+    ) {
+        content.invoke()
+    }
+}
+
 @Preview
 @Composable
-private fun NeoCardPreview() {
+private fun NeoSlotPreview() {
     AppTheme {
         NeoSlot(
             modifier = Modifier
                 .padding(36.dp)
                 .height(128.dp),
+            onClick = {},
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(text = "Example")
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun NeoSlotRoundedPreview() {
+    AppTheme {
+        NeoSlotRounded(
+            modifier = Modifier.size(100.dp),
             onClick = {},
         ) {
             Box(

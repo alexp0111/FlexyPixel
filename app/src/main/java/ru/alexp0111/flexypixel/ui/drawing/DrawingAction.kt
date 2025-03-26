@@ -1,6 +1,6 @@
 package ru.alexp0111.flexypixel.ui.drawing
 
-import ru.alexp0111.flexypixel.data.DrawingColor
+import ru.alexp0111.core_ui.common.model.DrawingColor
 
 
 sealed interface DrawingAction {
