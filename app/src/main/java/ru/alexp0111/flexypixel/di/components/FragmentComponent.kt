@@ -10,6 +10,7 @@ import ru.alexp0111.flexypixel.ui.menu.MenuFragment
 import ru.alexp0111.flexypixel.ui.savedScheme.SavedSchemesFragment
 import ru.alexp0111.flexypixel.ui.start.device_pairing.SearchBluetoothDevicesFragment
 import ru.alexp0111.flexypixel.ui.start.resolve_screen.StartFragment
+import ru.alexp0111.flexypixel.ui.templates.TemplatesFragment
 import ru.alexp0111.flexypixel.ui.test.TestFragment
 import ru.alexp0111.flexypixel.ui.util.BluetoothResolverFragment
 
@@ -24,6 +25,7 @@ internal interface FragmentComponent {
     fun inject(fragment: DisplayLevelFragment)
     fun inject(drawingFragment: DrawingFragment)
     fun inject(savedSchemesFragment: SavedSchemesFragment)
+    fun inject(savedSchemesFragment: TemplatesFragment)
 
     companion object {
         fun from(fragment: Fragment) : FragmentComponent {

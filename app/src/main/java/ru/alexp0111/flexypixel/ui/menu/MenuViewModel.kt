@@ -46,8 +46,6 @@ class MenuViewModel @Inject constructor(
         when (menuItemType) {
             MenuItemType.NEW_SCHEME -> router.navigateTo(Screens.UpperAbstractionLevelScreen())
             MenuItemType.SAVED_SCHEME -> router.navigateTo(Screens.SavedSchemesScreen())
-            MenuItemType.TEMPLATE -> {
-                // todo: templates screen
-            }
+            MenuItemType.TEMPLATE -> router.navigateTo(Screens.TemplatesScreen())
         }
 }
