@@ -5,26 +5,35 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ru.alexp0111.flexypixel.R
-import ru.alexp0111.flexypixel.databinding.FragmentTemplatesBinding
+import ru.alexp0111.core_ui.util.composeView
+import ru.alexp0111.core_ui.util.setContentAndStrategy
+import ru.alexp0111.flexypixel.di.components.FragmentComponent
+import javax.inject.Inject
 
 
-class TemplatesFragment : Fragment() {
+internal class TemplatesFragment : Fragment() {
 
-    private var _binding: FragmentTemplatesBinding? = null
-    private val binding get() = _binding!!
+    @Inject
+    lateinit var viewModel: TemplatesViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        _binding = FragmentTemplatesBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun onCreate(savedInstanceState: Bundle?) {
+        injectSelf()
+        super.onCreate(savedInstanceState)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return composeView {
+            setContentAndStrategy {
+                TemplatesScreen(viewModel)
+            }
+        }
+    }
+
+    private fun injectSelf() {
+        FragmentComponent.from(this).inject(this)
+    }
+
+    companion object {
+        fun newInstance(): TemplatesFragment = TemplatesFragment()
     }
 }

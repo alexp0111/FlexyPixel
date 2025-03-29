@@ -5,9 +5,11 @@ import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
 import javax.inject.Inject
 
 class SavedSchemeRepository @Inject constructor(
-    private val userSavedSchemeDatabase: UserSavedSchemeDatabase,
+    userSavedSchemeDatabase: UserSavedSchemeDatabase,
 ) {
-    private val userSavedSchemeDao = userSavedSchemeDatabase.userSavedSchemeDao()
+    private val userSavedSchemeDao by lazy {
+        userSavedSchemeDatabase.userSavedSchemeDao()
+    }
 
     suspend fun insertNewScheme(userSavedScheme: UserSavedScheme): Long {
         return userSavedSchemeDao.insertNewScheme(userSavedScheme)

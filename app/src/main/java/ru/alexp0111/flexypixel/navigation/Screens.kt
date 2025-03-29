@@ -16,7 +16,7 @@ import ru.alexp0111.flexypixel.ui.util.BluetoothResolverFragment
 object Screens {
 
     fun TemplatesScreen() = FragmentScreen {
-        TemplatesFragment()
+        TemplatesFragment.newInstance()
     }
 
     fun DisplayLevelScreen(segmentNumber: Int) = FragmentScreen("DisplayLevelScreen_$segmentNumber") {
