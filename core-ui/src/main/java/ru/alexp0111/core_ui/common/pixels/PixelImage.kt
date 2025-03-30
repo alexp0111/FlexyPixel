@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -29,6 +30,12 @@ fun PixelImage(
                 color = Color(pixels[pixelIndex].toColor()),
                 topLeft = Offset(offsetX, offsetY),
                 size = Size(pixelSize, pixelSize),
+                style = Stroke(width = 0.9f)
+            )
+            drawRect(
+                color = Color(pixels[pixelIndex].toColor()),
+                topLeft = Offset(offsetX, offsetY),
+                size = Size(pixelSize, pixelSize),
             )
             val shouldGoOnNewLine = (pixelIndex + 1) % 8 == 0
             if (shouldGoOnNewLine) {
@@ -46,7 +53,7 @@ fun PixelImage(
 private fun PixelImagePreview() {
     AppTheme {
         PixelImage(
-            size = 200.dp,
+            size = 191.dp,
             pixels = Array(64) { listOf("007", "070", "700").random() }
                 .map { DrawingColor.getFromString(it) }
         )
