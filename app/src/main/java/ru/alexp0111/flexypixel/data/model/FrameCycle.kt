@@ -8,8 +8,8 @@ data class FrameCycle(
 ) {
     companion object {
 
-        private const val DEFAULT_FRAMES_AMOUNT = 1
-        private const val DEFAULT_INTERFRAME_DELAY = 1000
+        const val DEFAULT_FRAMES_AMOUNT = 1
+        const val DEFAULT_INTERFRAME_DELAY = 1000
 
         fun getNewInstance(): FrameCycle {
             return FrameCycle(

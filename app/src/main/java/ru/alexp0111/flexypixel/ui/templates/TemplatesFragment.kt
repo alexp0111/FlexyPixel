@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import ru.alexp0111.core_ui.util.composeView
 import ru.alexp0111.core_ui.util.setContentAndStrategy
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
+import ru.alexp0111.flexypixel.ui.templates.screen.TemplatesScreen
 import javax.inject.Inject
 
 

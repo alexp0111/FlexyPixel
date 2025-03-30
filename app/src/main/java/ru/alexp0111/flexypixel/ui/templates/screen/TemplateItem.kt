@@ -1,6 +1,5 @@
-package ru.alexp0111.flexypixel.ui.templates
+package ru.alexp0111.flexypixel.ui.templates.screen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,10 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -30,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core_ui.common.NeoCard
 import ru.alexp0111.core_ui.common.NeoSlotRounded
 import ru.alexp0111.core_ui.common.model.DrawingColor
@@ -37,15 +33,17 @@ import ru.alexp0111.core_ui.common.pixels.PixelImage
 import ru.alexp0111.core_ui.common.text.SmallTextField
 import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.theme.beigeStandard
+import ru.alexp0111.flexypixel.data.model.PanelOrientation
 import ru.alexp0111.flexypixel.ui.templates.model.TemplateItemUiModel
+import ru.alexp0111.flexypixel.ui.templates.model.TemplatesIntent
 import ru.alexp0111.core_ui.R as coreDesignR
 
 @Composable
 internal fun TemplateItem(
-    templateItemUiModel: TemplateItemUiModel,
+    template: TemplateItemUiModel,
+    intentHandler: (TemplatesIntent) -> Unit = {},
 ) {
-    val cardWidth = 168.dp
-    var isCardExpanded by remember { mutableStateOf(templateItemUiModel.enabled) }
+    val cardWidth = 160.dp
     NeoCard(
         modifier = Modifier.width(cardWidth),
         enabled = false,
@@ -54,17 +52,21 @@ internal fun TemplateItem(
             Card(
                 shape = RoundedCornerShape(24.dp),
                 elevation = CardDefaults.cardElevation(0.dp),
-                onClick = {
-                    isCardExpanded = !isCardExpanded
-                    // TODO: send intent to ViewModel
-                },
+                onClick = { intentHandler(TemplatesIntent.TemplateClicked(template)) },
             ) {
-                PixelImage(cardWidth, templateItemUiModel.pixels)
+                PixelImage(cardWidth, template.pixels)
             }
-            AnimatedVisibility(isCardExpanded) {
+            AnimatedVisibility(template.enabled) {
                 Column {
-                    PanelNumberNavigation(templateItemUiModel.currentPanel)
-                    PanelRotateButton(cardWidth)
+                    PanelNumberNavigation(
+                        currentPanelNumber = template.currentPanel,
+                        onPrevious = { intentHandler(TemplatesIntent.TemplatePreviousPanelClicked(template)) },
+                        onNext = { intentHandler(TemplatesIntent.TemplateNextPanelClicked(template)) }
+                    )
+                    PanelRotateButton(
+                        cardWidth = cardWidth,
+                        onRotate = { intentHandler(TemplatesIntent.TemplateRotateClicked(template)) }
+                    )
                 }
             }
         }
@@ -74,6 +76,8 @@ internal fun TemplateItem(
 @Composable
 private fun PanelNumberNavigation(
     currentPanelNumber: Int,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -85,7 +89,7 @@ private fun PanelNumberNavigation(
         Image(
             modifier = Modifier
                 .height(28.dp)
-                .clickable { Log.d("TemplateItem", "left") },
+                .clickable { onPrevious() },
             painter = painterResource(coreDesignR.drawable.ic_arrow),
             contentDescription = null,
         )
@@ -93,14 +97,14 @@ private fun PanelNumberNavigation(
             modifier = Modifier.size(52.dp)
         ) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                SmallTextField(currentPanelNumber.toString())
+                SmallTextField((currentPanelNumber + 1).toString())
             }
         }
         Image(
             modifier = Modifier
                 .rotate(180f)
                 .height(28.dp)
-                .clickable { Log.d("TemplateItem", "right") },
+                .clickable { onNext() },
             painter = painterResource(coreDesignR.drawable.ic_arrow),
             contentDescription = null,
         )
@@ -108,15 +112,16 @@ private fun PanelNumberNavigation(
 }
 
 @Composable
-private fun PanelRotateButton(cardWidth: Dp) {
+private fun PanelRotateButton(
+    cardWidth: Dp,
+    onRotate: () -> Unit,
+) {
     Box(modifier = Modifier.width(cardWidth), contentAlignment = Alignment.Center) {
         Image(
             modifier = Modifier
                 .size(56.dp)
                 .padding(16.dp)
-                .clickable {
-                    Log.d("TemplateItem", "round")
-                },
+                .clickable { onRotate() },
             painter = painterResource(coreDesignR.drawable.ic_rotate),
             contentDescription = null,
         )
@@ -141,8 +146,10 @@ private fun TemplateItemPreview() {
                 Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
                     TemplateItem(
                         TemplateItemUiModel(
+                            id = 0,
                             enabled = true,
                             currentPanel = 4,
+                            orientations = List(CommonSizeConstants.PANELS_TOTAL_AMOUNT) { PanelOrientation.LEFT },
                             pixels = Array(64) { listOf("007", "070", "700").random() }
                                 .map { DrawingColor.getFromString(it) }
                         )
@@ -151,8 +158,10 @@ private fun TemplateItemPreview() {
                 Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
                     TemplateItem(
                         TemplateItemUiModel(
+                            id = 0,
                             enabled = false,
                             currentPanel = 1,
+                            orientations = List(CommonSizeConstants.PANELS_TOTAL_AMOUNT) { PanelOrientation.LEFT },
                             pixels = Array(64) { listOf("007", "070", "700").random() }
                                 .map { DrawingColor.getFromString(it) }
                         )
