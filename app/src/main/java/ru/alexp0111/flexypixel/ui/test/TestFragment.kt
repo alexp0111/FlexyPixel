@@ -38,7 +38,6 @@ internal class TestFragment : Fragment() {
     @Inject
     lateinit var messageHandler: MessageHandler
 
-    private var pixel = 0
     private var testNumOfPanels = 0
 
     private var _binding: FragmentTestBinding? = null
@@ -56,46 +55,6 @@ internal class TestFragment : Fragment() {
     ): View {
         _binding = FragmentTestBinding.inflate(inflater)
         binding.apply {
-            btnRemoveLastPixel.setOnClickListener {
-                pixel--
-                pixel = maxOf(pixel, 0)
-
-                val pixOrder = pixel % 64
-                val panOrder = pixel / 64
-
-                etMovePanelNum.setText(panOrder.toString())
-                etMovePixelNum.setText(pixOrder.toString())
-
-                messageHandler.sendPixel(
-                    panelOrder = panOrder,
-                    pixelOrder = pixOrder,
-                    r = 0,
-                    g = 0,
-                    b = 0,
-                )
-            }
-
-            btnMoveLastPixel.setOnClickListener {
-                val r = (0..9).random()
-                val g = (0..9).random()
-                val b = (0..9).random()
-
-                val pixOrder = pixel % 64
-                val panOrder = pixel / 64
-
-                etMovePanelNum.setText(panOrder.toString())
-                etMovePixelNum.setText(pixOrder.toString())
-
-                messageHandler.sendPixel(
-                    panelOrder = panOrder,
-                    pixelOrder = pixOrder,
-                    r = r,
-                    g = g,
-                    b = b,
-                )
-
-                pixel++
-            }
 
             btnSendOnePixel.setOnClickListener {
                 val r = etTstPixelR.text.toString().toInt()
