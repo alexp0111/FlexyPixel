@@ -15,7 +15,8 @@ class MenuViewModel @Inject constructor(
 ) : MVIViewModel<MenuIntent, MenuUiState, Nothing>() {
 
     override fun setInitialState(): MenuUiState = MenuUiState(
-        listOf(
+        isDebugEnabled = true, // FIXME: Replace with checking USER Role
+        menuItems = listOf(
             MenuItem(
                 menuItemType = MenuItemType.NEW_SCHEME,
                 iconId = R.drawable.plus_file,
@@ -47,5 +48,6 @@ class MenuViewModel @Inject constructor(
             MenuItemType.NEW_SCHEME -> router.navigateTo(Screens.UpperAbstractionLevelScreen())
             MenuItemType.SAVED_SCHEME -> router.navigateTo(Screens.SavedSchemesScreen())
             MenuItemType.TEMPLATE -> router.navigateTo(Screens.TemplatesScreen())
+            MenuItemType.DEBUG -> router.navigateTo(Screens.TestScreen())
         }
 }

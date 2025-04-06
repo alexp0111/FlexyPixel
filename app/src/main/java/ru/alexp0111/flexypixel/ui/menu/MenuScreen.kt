@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.alexp0111.core_ui.common.NeoCard
+import ru.alexp0111.core_ui.common.NeoImageButton
 import ru.alexp0111.core_ui.common.text.LargeTextField
 import ru.alexp0111.core_ui.common.text.MediumTextField
 import ru.alexp0111.core_ui.common.text.SmallTextField
@@ -33,6 +34,8 @@ import ru.alexp0111.flexypixel.ui.menu.model.MenuIntent
 import ru.alexp0111.flexypixel.ui.menu.model.MenuItem
 import ru.alexp0111.flexypixel.ui.menu.model.MenuItemType
 import ru.alexp0111.flexypixel.ui.menu.model.MenuUiState
+import ru.alexp0111.core_ui.R as coreDesignR
+
 
 @Composable
 fun MenuScreen(viewModel: MenuViewModel) {
@@ -83,6 +86,16 @@ private fun OptionsList(
                 onClick = { intentHandler(MenuIntent.MenuItemClicked(menuItem.menuItemType)) }
             )
         }
+        if (uiState.value.isDebugEnabled) {
+            Box(Modifier.padding(top = 16.dp)) {
+                NeoImageButton(
+                    imageId = coreDesignR.drawable.ic_debug,
+                    scale = 0.8f,
+                    modifier = Modifier.size(64.dp),
+                    onClick = { intentHandler(MenuIntent.MenuItemClicked(MenuItemType.DEBUG)) }
+                )
+            }
+        }
     }
 }
 
@@ -132,7 +145,8 @@ fun MenuScreenPreview() {
             uiState = remember {
                 mutableStateOf(
                     MenuUiState(
-                        listOf(
+                        isDebugEnabled = true,
+                        menuItems = listOf(
                             MenuItem(
                                 menuItemType = MenuItemType.NEW_SCHEME,
                                 iconId = R.drawable.plus_file,

@@ -32,7 +32,7 @@ internal fun TestScreen(
 
 @Composable
 private fun TestScreenContent() {
-    var isTerminalOn by remember { mutableStateOf(true) }
+    var isTerminalOn by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             Row(
