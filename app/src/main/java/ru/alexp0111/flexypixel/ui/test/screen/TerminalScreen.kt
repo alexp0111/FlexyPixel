@@ -1,6 +1,7 @@
 package ru.alexp0111.flexypixel.ui.test.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,14 +12,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,26 +35,42 @@ import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.theme.beigeDark
 import ru.alexp0111.core_ui.theme.beigeStandard
 import ru.alexp0111.core_ui.theme.black
+import ru.alexp0111.flexypixel.ui.test.model.TestIntent
+import ru.alexp0111.flexypixel.ui.test.model.TestTerminalMessageType
+import ru.alexp0111.flexypixel.ui.test.model.TestUiState
 
 
 @Composable
-internal fun TerminalScreen(messages: List<Pair<String, Color>>) {
+internal fun TerminalScreen(
+    uiState: State<TestUiState>,
+    intentHandler: (TestIntent) -> Unit = {}
+) {
     Column {
         LazyColumn(modifier = Modifier.weight(1f)) {
-            items(messages.size) { index ->
+            items(uiState.value.terminalMessages) {
                 SmallTextField(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    text = messages[index].first,
-                    color = messages[index].second
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .clickable(interactionSource = null, indication = null) {
+                            intentHandler(TestIntent.TerminalMessageClicked(it))
+                        },
+                    text = it.text,
+                    color = when (it.type) {
+                        TestTerminalMessageType.REQUEST -> beigeDark
+                        TestTerminalMessageType.RESPONSE -> black
+                    }
                 )
             }
         }
-        InputMessageRow()
+        InputMessageRow(uiState, intentHandler)
     }
 }
 
 @Composable
-private fun InputMessageRow() {
+private fun InputMessageRow(
+    uiState: State<TestUiState>,
+    intentHandler: (TestIntent) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -70,10 +88,11 @@ private fun InputMessageRow() {
         ) {
             MediumEditTextField(
                 hint = "JSON message",
+                initialText = uiState.value.terminalInput,
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = false,
                 indicatorColor = beigeStandard,
-                onValueChanged = { },
+                onValueChanged = { intentHandler(TestIntent.TerminalInputChanged(it)) },
             )
         }
         NeoImageButton(
@@ -82,6 +101,7 @@ private fun InputMessageRow() {
             modifier = Modifier
                 .width(64.dp)
                 .height(with(LocalDensity.current) { height.height.toDp() }),
+            onClick = { intentHandler(TestIntent.SendMessage) }
         )
     }
 }
@@ -95,29 +115,8 @@ private fun TerminalScreenPreview() {
                 .fillMaxSize()
                 .background(beigeStandard)
         ) {
-            TerminalScreen(getPreviewList())
+            val state = remember { mutableStateOf(getPreviewTestState()) }
+            TerminalScreen(state)
         }
     }
 }
-
-private fun getPreviewList(): List<Pair<String, Color>> =
-    listOf(
-        Pair("CONF:5,6,7,8", beigeDark),
-        Pair("SUCCES", black),
-        Pair("VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4", beigeDark),
-        Pair("CONF:5,6,7,8", beigeDark),
-        Pair("SUCCES", black),
-        Pair("VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4", beigeDark),
-        Pair("CONF:5,6,7,8", beigeDark),
-        Pair("SUCCES", black),
-        Pair("VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4", beigeDark),
-        Pair("CONF:5,6,7,8", beigeDark),
-        Pair("SUCCES", black),
-        Pair("VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4", beigeDark),
-        Pair("CONF:5,6,7,8", beigeDark),
-        Pair("SUCCES", black),
-        Pair("VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4", beigeDark),
-        Pair("CONF:5,6,7,8", beigeDark),
-        Pair("SUCCES", black),
-        Pair("VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4", beigeDark),
-    )
