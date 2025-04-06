@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,7 @@ fun NeoButton(
 fun NeoImageButton(
     imageId: Int,
     modifier: Modifier = Modifier,
+    scale: Float = 1f,
     onClick: () -> Unit = {},
 ) {
     NeoCard(
@@ -49,7 +51,11 @@ fun NeoImageButton(
             modifier = Modifier.fillMaxSize().padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
-            Image(painterResource(imageId), contentDescription = null)
+            Image(
+                painter = painterResource(imageId),
+                modifier = Modifier.scale(scale),
+                contentDescription = null,
+            )
         }
     }
 }
