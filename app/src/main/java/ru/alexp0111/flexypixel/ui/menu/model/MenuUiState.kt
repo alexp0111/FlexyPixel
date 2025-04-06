@@ -4,7 +4,8 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class MenuUiState(
-    val menuItems: List<MenuItem>
+    val menuItems: List<MenuItem>,
+    val isDebugEnabled: Boolean,
 )
 
 @Immutable
@@ -18,5 +19,6 @@ data class MenuItem(
 enum class MenuItemType {
     NEW_SCHEME,
     SAVED_SCHEME,
-    TEMPLATE;
+    TEMPLATE,
+    DEBUG,
 }

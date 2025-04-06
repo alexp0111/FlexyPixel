@@ -18,13 +18,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.alexp0111.core_ui.common.model.DrawingColor
+import ru.alexp0111.core_ui.util.composeView
+import ru.alexp0111.core_ui.util.setContentAndStrategy
 import ru.alexp0111.flexypixel.bluetooth.MessageFrame
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
-import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
 import ru.alexp0111.flexypixel.data.model.PanelOrientation
 import ru.alexp0111.flexypixel.databinding.FragmentTestBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
+import ru.alexp0111.flexypixel.ui.test.screen.TestScreen
 import javax.inject.Inject
 
 
@@ -34,6 +36,9 @@ internal class TestFragment : Fragment() {
 
     @Inject
     lateinit var router: Router
+
+    @Inject
+    lateinit var testViewModel: TestViewModel
 
     @Inject
     lateinit var messageHandler: MessageHandler
@@ -49,54 +54,55 @@ internal class TestFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        _binding = FragmentTestBinding.inflate(inflater)
-        binding.apply {
-
-            btnSendOnePixel.setOnClickListener {
-                val r = etTstPixelR.text.toString().toInt()
-                val g = etTstPixelG.text.toString().toInt()
-                val b = etTstPixelB.text.toString().toInt()
-                val pixOrder = etTstPixelOrder.text.toString().toInt()
-                val panOrder = etTstPanelOrder.text.toString().toInt()
-
-                messageHandler.sendPixel(
-                    panelOrder = panOrder,
-                    pixelOrder = pixOrder,
-                    r = r,
-                    g = g,
-                    b = b,
-                )
-            }
-
-            btnSendFrames.setOnClickListener {
-                val numberOfFrames = etNumberOfFrames.text.toString().toInt()
-                val interframeDelay = etInterfameDelay.text.toString().toInt()
-                // messageHandler.sendMessageFrames(
-                //     getTestFrames(numberOfFrames),
-                //     interframeDelay,
-                // )
-            }
-
-            btnSaveConfig.setOnClickListener {
-                val numberOfPanels =
-                    etTstConfiguration.text.toString().toInt().also { testNumOfPanels = it }
-                val curConfig = Array(PanelConfiguration.MAX_SIZE) { "064" }
-                for (i in numberOfPanels until PanelConfiguration.MAX_SIZE) {
-                    curConfig[i] = "000"
-                }
-                // messageHandler.updateConfiguration(curConfig)
-            }
-
-            btnLoadMedia.setOnClickListener {
-                requestDataFromSystemProvider()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        composeView {
+            setContentAndStrategy {
+                TestScreen(testViewModel)
             }
         }
-        return binding.root
-    }
+//        _binding = FragmentTestBinding.inflate(inflater)
+//        binding.apply {
+//
+//            btnSendOnePixel.setOnClickListener {
+//                val r = etTstPixelR.text.toString().toInt()
+//                val g = etTstPixelG.text.toString().toInt()
+//                val b = etTstPixelB.text.toString().toInt()
+//                val pixOrder = etTstPixelOrder.text.toString().toInt()
+//                val panOrder = etTstPanelOrder.text.toString().toInt()
+//
+//                messageHandler.sendPixel(
+//                    panelOrder = panOrder,
+//                    pixelOrder = pixOrder,
+//                    r = r,
+//                    g = g,
+//                    b = b,
+//                )
+//            }
+//
+//            btnSendFrames.setOnClickListener {
+//                val numberOfFrames = etNumberOfFrames.text.toString().toInt()
+//                val interframeDelay = etInterfameDelay.text.toString().toInt()
+//                // messageHandler.sendMessageFrames(
+//                //     getTestFrames(numberOfFrames),
+//                //     interframeDelay,
+//                // )
+//            }
+//
+//            btnSaveConfig.setOnClickListener {
+//                val numberOfPanels =
+//                    etTstConfiguration.text.toString().toInt().also { testNumOfPanels = it }
+//                val curConfig = Array(PanelConfiguration.MAX_SIZE) { "064" }
+//                for (i in numberOfPanels until PanelConfiguration.MAX_SIZE) {
+//                    curConfig[i] = "000"
+//                }
+//                // messageHandler.updateConfiguration(curConfig)
+//            }
+//
+//            btnLoadMedia.setOnClickListener {
+//                requestDataFromSystemProvider()
+//            }
+//        }
+//        return binding.root
 
     private val pickMediaFromDevicesLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult(),
@@ -176,9 +182,9 @@ internal class TestFragment : Fragment() {
                 launch {
                     // mediaFilesProcessor.bitmaps.collect { bitmapList ->
                     //     bitmapList.forEachIndexed { index, bitmap ->
-                            // val bitmapAsString = BitmapProcessor.convertBitmapToPixelStringMatrix(bitmap)
-                            // BitmapProcessor.applyBitmapToFrame()
-                            // messageHandler.sendFrames(listOf(MessageFrame(bitmapAsString)), 1000)
+                    // val bitmapAsString = BitmapProcessor.convertBitmapToPixelStringMatrix(bitmap)
+                    // BitmapProcessor.applyBitmapToFrame()
+                    // messageHandler.sendFrames(listOf(MessageFrame(bitmapAsString)), 1000)
                     //     }
                     // }
                 }
