@@ -147,6 +147,10 @@ internal class MessageHandler @Inject constructor(
             }
         }
     }
+
+    fun sendTestMessage(message: String) {
+        messageQueue.add(TestMessage(message))
+    }
 }
 
 fun LinkedList<BluetoothMessage>.add(
