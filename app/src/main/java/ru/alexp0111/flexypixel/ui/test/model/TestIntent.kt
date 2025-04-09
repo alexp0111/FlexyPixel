@@ -1,5 +1,7 @@
 package ru.alexp0111.flexypixel.ui.test.model
 
+import android.net.Uri
+
 internal sealed interface TestIntent {
     data class SendConfig(val totalPanels: Int?) : TestIntent
     data class SendPixel(val testPixelModel: TestPixelModel) : TestIntent
@@ -7,5 +9,5 @@ internal sealed interface TestIntent {
     data object SendMessage : TestIntent
     data class TerminalInputChanged(val input: String) : TestIntent
     data class TerminalMessageClicked(val message: TestTerminalMessage) : TestIntent
-    data object PickMedia : TestIntent
+    data class PickMedia(val uri: Uri) : TestIntent
 }

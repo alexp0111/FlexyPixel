@@ -46,7 +46,7 @@ internal fun TerminalScreen(
     intentHandler: (TestIntent) -> Unit = {}
 ) {
     Column {
-        LazyColumn(modifier = Modifier.weight(1f)) {
+        LazyColumn(modifier = Modifier.weight(1f).fillMaxWidth()) {
             items(uiState.value.terminalMessages) {
                 SmallTextField(
                     modifier = Modifier

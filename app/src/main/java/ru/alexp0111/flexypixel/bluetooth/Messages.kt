@@ -130,3 +130,14 @@ data class MessageFrame(
         return Gson().toJson(this)
     }
 }
+
+/**
+ * Simple DEBUG message
+ * */
+data class TestMessage(
+    private val text: String,
+) : BluetoothMessage {
+    override fun asJson(): String {
+        return text
+    }
+}

@@ -1,5 +1,8 @@
 package ru.alexp0111.flexypixel.ui.test.screen
 
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -180,12 +183,24 @@ private fun SendFramesCard(
 private fun SendMediaCard(
     intentHandler: (TestIntent) -> Unit = {}
 ) {
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        it.data?.data?.let { uri ->
+            intentHandler(TestIntent.PickMedia(uri))
+        }
+    }
+    val mediaIntent = remember {
+        Intent(Intent.ACTION_GET_CONTENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "gif/*"))
+        }
+    }
     NeoImageButton(
         imageId = R.drawable.ic_add_file,
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        onClick = { intentHandler(TestIntent.PickMedia) }
+        onClick = { launcher.launch(mediaIntent) }
     )
 }
 

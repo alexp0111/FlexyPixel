@@ -29,6 +29,7 @@ import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import ru.alexp0111.flexypixel.ui.test.screen.TestScreen
 import javax.inject.Inject
 
+// TODO: REMOVE [THIS IS LEGACY]
 
 private const val TAG = "TestFragment"
 
