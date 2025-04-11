@@ -8,6 +8,7 @@ import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.bluetooth.AndroidBluetoothController
+import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.flexypixel.di.components.ActivityComponent
 import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.ui.util.BluetoothResolverFragment
@@ -16,10 +17,13 @@ import javax.inject.Inject
 
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity() {
+internal class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var router: Router
+
+    @Inject
+    lateinit var messageHandler: MessageHandler
 
     @Inject
     lateinit var navigatorHolder: NavigatorHolder
@@ -47,6 +51,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         navigatorHolder.removeNavigator()
+        messageHandler.saveCurrentState()
         super.onPause()
     }
 

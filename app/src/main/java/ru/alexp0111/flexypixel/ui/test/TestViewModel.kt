@@ -11,6 +11,7 @@ import ru.alexp0111.flexypixel.data.model.FrameCycle
 import ru.alexp0111.flexypixel.data.model.Panel
 import ru.alexp0111.flexypixel.data.model.PanelConfiguration
 import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import ru.alexp0111.flexypixel.data.model.PanelStatus
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
 import ru.alexp0111.flexypixel.media.IMediaFilesProcessor
 import ru.alexp0111.flexypixel.media.model.MediaFileType
@@ -117,13 +118,13 @@ internal class TestViewModel @Inject constructor(
             when (mediaType) {
                 MediaFileType.IMAGE -> mediaFileProcessor.getBitmapFromUri(
                     uri = uri,
-                    metaData = setOf(PanelMetaData(absoluteX = 0, absoluteY = 0)),
+                    metaData = setOf(PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED)),
                     onBitmapExtracted = { handleBitmapUpdate(amountOfPanels, it) }
                 )
 
                 MediaFileType.GIF -> mediaFileProcessor.getBitmapCycleFromUri(
                     uri = uri,
-                    metaData = setOf(PanelMetaData(absoluteX = 0, absoluteY = 0)),
+                    metaData = setOf(PanelMetaData(absoluteX = 0, absoluteY = 0, status = PanelStatus.SELECTED)),
                     onBitmapCycleExtracted = { list, delay -> handleGIFUpdate(amountOfPanels, list, delay) }
                 )
             }
