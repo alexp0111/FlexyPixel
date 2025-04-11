@@ -26,6 +26,8 @@ data class MessageType(
         val CONFIG = MessageType("CONF")
         val MODE = MessageType("MODE")
         val DATA = MessageType("DATA")
+        val SAVE = MessageType("SAVE")
+        val RSTP = MessageType("RSTP")
     }
 }
 

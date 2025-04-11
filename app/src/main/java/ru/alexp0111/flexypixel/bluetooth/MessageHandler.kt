@@ -151,6 +151,14 @@ internal class MessageHandler @Inject constructor(
     fun sendTestMessage(message: String) {
         messageQueue.add(TestMessage(message))
     }
+
+    fun saveCurrentState() {
+        messageQueue.add(MessageType.SAVE)
+    }
+
+    fun clearCurrentState() {
+        messageQueue.add(MessageType.RSTP)
+    }
 }
 
 fun LinkedList<BluetoothMessage>.add(

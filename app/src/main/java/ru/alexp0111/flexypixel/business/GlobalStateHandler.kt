@@ -43,7 +43,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
     private val bitmapProcessor: IBitmapProcessor,
     private val mediaFileProcessor: IMediaFilesProcessor,
     private val panelValidator: IPanelPositionValidator,
-    @Assisted val schemeId: Int?,
+    @Assisted var schemeId: Int?,
 ) : UpperAbstractionLevelGlobalStateHolder,
     DrawingGlobalStateHolder,
     IPanelPositionValidator by panelValidator,
@@ -61,10 +61,12 @@ internal class GlobalStateHandler @AssistedInject constructor(
     init {
         Log.d(TAG, "in init block")
         scope.launch {
-            frameCycle = if (schemeId == null) {
+            val id = schemeId
+            frameCycle = if (id == null) {
+                messageHandler.clearCurrentState()
                 FrameCycle.getNewInstance()
             } else {
-                val cycle = databaseRepository.getSchemeById(schemeId).frameCycle
+                val cycle = databaseRepository.getSchemeById(id).frameCycle
                 tryToSendConfigurationToMC(cycle)
                 cycle
             }
@@ -227,21 +229,17 @@ internal class GlobalStateHandler @AssistedInject constructor(
 
     fun saveStateToDatabase(title: String) {
         scope.launch {
-            if (schemeId == null) {
-                save(title)
-            } else {
-                update(schemeId, title)
-            }
+            schemeId?.let { update(it, title) } ?: save(title)
         }
     }
 
     private suspend fun save(title: String) {
-        databaseRepository.insertNewScheme(
+        schemeId = databaseRepository.insertNewScheme(
             UserSavedScheme(
                 title = title,
                 frameCycle = frameCycle,
             )
-        )
+        ).toInt()
     }
 
     private suspend fun update(schemeId: Int, title: String) {

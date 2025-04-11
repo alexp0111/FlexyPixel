@@ -60,7 +60,7 @@ private fun TemplatesScreenContent(
                 key = { _, item -> item.id },
             ) { _, item ->
                 Box(
-                    Modifier.padding(vertical = 16.dp),
+                    Modifier.padding(vertical = 16.dp).animateItem(),
                     contentAlignment = Alignment.Center,
                 ) {
                     TemplateItem(item, intentHandler)

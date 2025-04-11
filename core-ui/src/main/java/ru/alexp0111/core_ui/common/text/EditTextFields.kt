@@ -28,7 +28,7 @@ fun LargeEditTextField(
     hint: String = "",
     modifier: Modifier = Modifier,
     style: TextStyle = flexyPixelTypography.displayLarge,
-    align: TextAlign = TextAlign.Center,
+    align: TextAlign = TextAlign.Start,
     imeAction: ImeAction = ImeAction.Done,
     inputType: KeyboardType = KeyboardType.Unspecified,
     singleLine: Boolean = true,
