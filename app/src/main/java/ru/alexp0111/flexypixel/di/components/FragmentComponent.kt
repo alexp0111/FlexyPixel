@@ -1,6 +1,7 @@
 package ru.alexp0111.flexypixel.di.components
 
 import androidx.fragment.app.Fragment
+import ru.alexp0111.flexypixel.ui.auth.AuthFragment
 
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelFragment
 import ru.alexp0111.flexypixel.ui.drawing.DrawingFragment
@@ -23,9 +24,10 @@ internal interface FragmentComponent {
     fun inject(fragment: MenuFragment)
     fun inject(fragment: TestFragment)
     fun inject(fragment: DisplayLevelFragment)
-    fun inject(drawingFragment: DrawingFragment)
-    fun inject(savedSchemesFragment: SavedSchemesFragment)
-    fun inject(savedSchemesFragment: TemplatesFragment)
+    fun inject(fragment: DrawingFragment)
+    fun inject(fragment: SavedSchemesFragment)
+    fun inject(fragment: TemplatesFragment)
+    fun inject(fragment: AuthFragment)
 
     companion object {
         fun from(fragment: Fragment) : FragmentComponent {

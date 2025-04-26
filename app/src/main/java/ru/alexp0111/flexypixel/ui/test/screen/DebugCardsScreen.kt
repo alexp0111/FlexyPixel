@@ -75,6 +75,7 @@ private fun DebugConfigCard(
         NeoImageButton(
             imageId = R.drawable.ic_done,
             modifier = Modifier.size(64.dp),
+            scale = 0.8f,
             onClick = { intentHandler(TestIntent.SendConfig(totalPanels.toIntOrNull() ?: 0)) }
         )
     }
@@ -138,6 +139,7 @@ private fun SendPixelCard(
                 modifier = Modifier
                     .height(64.dp)
                     .weight(1f),
+                scale = 0.8f,
                 onClick = { intentHandler(TestIntent.SendPixel(getTestPixelModel())) }
             )
         }
@@ -174,6 +176,7 @@ private fun SendFramesCard(
         NeoImageButton(
             imageId = R.drawable.ic_done,
             modifier = Modifier.size(64.dp),
+            scale = 0.8f,
             onClick = { intentHandler(TestIntent.SendFrames(getTestFramesModel())) }
         )
     }

@@ -72,6 +72,7 @@ dependencies {
 
     /** Glide */
     implementation(localDeps.glide)
+    implementation(localDeps.glideCompose)
 
     /** Cicerone */
     implementation(localDeps.cicerone)

@@ -30,6 +30,7 @@ dependencyResolutionManagement {
             library("compiler", "com.google.dagger:dagger-compiler:2.51")
 
             library("glide", "com.github.bumptech.glide:glide:4.10.0")
+            library("glideCompose", "com.github.bumptech.glide:compose:1.0.0-beta01")
             library("gson", "com.google.code.gson:gson:2.10.1")
             library("cicerone", "com.github.terrakok:cicerone:7.1")
             library("neumorphism", "com.github.fornewid:neumorphism:0.3.2")
