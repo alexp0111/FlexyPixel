@@ -3,7 +3,7 @@ package ru.alexp0111.flexypixel.ui.savedScheme
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
+import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.databinding.ItemSavedSchemeBinding
 
 class SavedSchemesAdapter(

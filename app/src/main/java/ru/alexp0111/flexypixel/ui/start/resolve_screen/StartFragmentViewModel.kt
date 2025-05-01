@@ -11,7 +11,7 @@ import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.util.PermissionResolver
 import javax.inject.Inject
 
-private const val DEBUG_ONLY_SKIP_CONNECTION = true
+private const val DEBUG_ONLY_SKIP_CONNECTION = false
 
 class StartFragmentViewModel @Inject constructor(
     private val controller: AndroidBluetoothController,

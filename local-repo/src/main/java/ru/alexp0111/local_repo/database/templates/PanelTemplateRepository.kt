@@ -1,12 +1,12 @@
-package ru.alexp0111.flexypixel.database.templates
+package ru.alexp0111.local_repo.database.templates
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ru.alexp0111.flexypixel.database.templates.model.PanelTemplate
-import ru.alexp0111.flexypixel.database.templates.prepared.PreparedTemplatesLoader
+import ru.alexp0111.local_repo.database.templates.model.PanelTemplate
+import ru.alexp0111.local_repo.database.templates.prepared.PreparedTemplatesLoader
 import javax.inject.Inject
 
-internal class PanelTemplateRepository @Inject constructor(
+class PanelTemplateRepository @Inject constructor(
     templateDatabase: PanelTemplateDatabase,
 ) {
     private val defaultLoader by lazy { PreparedTemplatesLoader() }

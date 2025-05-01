@@ -1,14 +1,14 @@
-package ru.alexp0111.flexypixel.database.templates
+package ru.alexp0111.local_repo.database.templates
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import ru.alexp0111.flexypixel.database.templates.model.PanelTemplate
+import ru.alexp0111.local_repo.database.templates.model.PanelTemplate
 
 @Dao
-internal interface PanelTemplateDao {
+interface PanelTemplateDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTemplate(template: PanelTemplate): Long

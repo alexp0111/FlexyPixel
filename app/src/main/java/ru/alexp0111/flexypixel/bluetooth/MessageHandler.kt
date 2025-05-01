@@ -6,18 +6,18 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import ru.alexp0111.core.di.AppScope
+import ru.alexp0111.core.model.FrameCycle
+import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.flexypixel.bluetooth.business.IMessageConverter
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResponse
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResult
-import ru.alexp0111.core.model.FrameCycle
-import ru.alexp0111.core.model.PanelMetaData
 import java.util.LinkedList
 import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TAG = "MessageHandler"
 
-@Singleton
+@AppScope
 internal class MessageHandler @Inject constructor(
     private val controller: AndroidBluetoothController,
     private val messageConverter: IMessageConverter,

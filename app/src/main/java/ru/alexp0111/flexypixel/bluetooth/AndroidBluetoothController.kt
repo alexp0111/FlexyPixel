@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.update
+import ru.alexp0111.core.di.AppScope
 import ru.alexp0111.flexypixel.bluetooth.model.ConnectionResult
 import ru.alexp0111.flexypixel.bluetooth.model.FlexyPixelDevice
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResult
@@ -30,14 +31,13 @@ import ru.alexp0111.flexypixel.util.PermissionResolver
 import java.io.IOException
 import java.util.UUID
 import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TAG = "AndroidBluetoothController"
 private const val DEVICE_NAME_REGEX = "Flexy Pixel.*"
 private const val SERVICE_UUID = "00001101-0000-1000-8000-00805F9B34FB"
 
 @SuppressLint("MissingPermission")
-@Singleton
+@AppScope
 class AndroidBluetoothController @Inject constructor(
     private val context: Context,
     private val bluetoothAdapter: BluetoothAdapter,

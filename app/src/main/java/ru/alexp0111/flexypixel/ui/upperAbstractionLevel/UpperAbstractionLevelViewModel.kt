@@ -9,8 +9,8 @@ import kotlinx.coroutines.withContext
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.matrix.MatrixConverter
 import ru.alexp0111.core.viewmodel.MVIViewModel
-import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
-import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
+import ru.alexp0111.local_repo.database.schemes.SavedSchemeRepository
+import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.business.GlobalStateHandler
 import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory

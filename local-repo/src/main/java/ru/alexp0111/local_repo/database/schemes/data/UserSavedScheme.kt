@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.database.schemes.data
+package ru.alexp0111.local_repo.database.schemes.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

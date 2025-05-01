@@ -1,11 +1,11 @@
-package ru.alexp0111.flexypixel.database.templates.prepared
+package ru.alexp0111.local_repo.database.templates.prepared
 
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.model.DrawingColor
 import ru.alexp0111.core.model.PanelOrientation
-import ru.alexp0111.flexypixel.database.templates.model.PanelTemplate
+import ru.alexp0111.local_repo.database.templates.model.PanelTemplate
 
-internal class PreparedTemplatesLoader {
+class PreparedTemplatesLoader {
 
     fun loadDefaultTemplates(): List<PanelTemplate> =
         listOf(

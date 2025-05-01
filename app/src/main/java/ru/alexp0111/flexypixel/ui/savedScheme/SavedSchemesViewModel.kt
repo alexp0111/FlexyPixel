@@ -7,8 +7,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
-import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
+import ru.alexp0111.local_repo.database.schemes.SavedSchemeRepository
+import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.navigation.Screens
 import javax.inject.Inject
 
