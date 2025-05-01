@@ -1,6 +1,5 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.model
 
-import android.graphics.Bitmap
 import androidx.compose.runtime.Immutable
 import ru.alexp0111.core.model.DrawingColor
 import ru.alexp0111.core.model.PanelMetaData.Companion.PALETTE_SIZE
@@ -27,7 +26,7 @@ internal data class DisplayLevelUiState(
 
 @Immutable
 internal data class PanelUiModel(
-    val bitmap: Bitmap? = null,
+    val pixels: List<DrawingColor>? = null,
     val sourceX: Int = -1,
     val sourceY: Int = -1,
     val order: Int = -1,

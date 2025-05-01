@@ -49,10 +49,10 @@ internal class DisplayLevelViewModel @Inject constructor(
     private fun loadConfiguration(segmentNumber: Int) {
         launch {
             val panelMetaDataSet = async { globalStateHandler.getPanelsConfiguration(segmentNumber) }
-            val panelOrderToBitmap = async { globalStateHandler.getPanelsImages(segmentNumber) }
-            val matrix = displayLevelConverter.convertOrderedPanelsWithBitmapsToUiMatrix(
+            val panelOrderToPixels = async { globalStateHandler.getPanelsImages(segmentNumber) }
+            val matrix = displayLevelConverter.convertOrderedPanelsWithPixelsToUiMatrix(
                 panelMetaDataSet = panelMetaDataSet.await(),
-                panelOrderToBitmap = panelOrderToBitmap.await()
+                panelOrderToPixels = panelOrderToPixels.await()
             )
             val selectedAreaIsSquare = globalStateHandler.checkIfSelectedAreaSquare()
 

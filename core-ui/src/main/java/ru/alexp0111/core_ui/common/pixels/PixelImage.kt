@@ -19,11 +19,12 @@ import ru.alexp0111.core_ui.theme.AppTheme
 fun PixelImage(
     size: Dp,
     pixels: List<DrawingColor>,
+    offset: Offset = Offset.Zero,
 ) {
     val pixelSize = with(LocalDensity.current) { size.toPx() } / 8f
     Canvas(modifier = Modifier.size(size)) {
-        var offsetX = 0f
-        var offsetY = 0f
+        var offsetX = offset.x
+        var offsetY = offset.y
 
         for (pixelIndex in 0 until 64) {
             drawRect(
@@ -39,7 +40,7 @@ fun PixelImage(
             )
             val shouldGoOnNewLine = (pixelIndex + 1) % 8 == 0
             if (shouldGoOnNewLine) {
-                offsetX = 0f
+                offsetX = offset.x
                 offsetY += pixelSize
             } else {
                 offsetX += pixelSize
@@ -55,7 +56,8 @@ private fun PixelImagePreview() {
         PixelImage(
             size = 191.dp,
             pixels = Array(64) { listOf("007", "070", "700").random() }
-                .map { DrawingColor.getFromString(it) }
+                .map { DrawingColor.getFromString(it) },
+            offset = Offset(-10f, -10f)
         )
     }
 }

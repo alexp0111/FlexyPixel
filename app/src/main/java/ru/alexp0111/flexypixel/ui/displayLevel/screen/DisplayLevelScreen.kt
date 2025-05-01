@@ -1,7 +1,6 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.screen
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -25,11 +24,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.alexp0111.core.CommonSizeConstants
+import ru.alexp0111.core.model.DrawingColor
+import ru.alexp0111.core.model.PanelStatus
 import ru.alexp0111.core_ui.common.NeoImageButton
 import ru.alexp0111.core_ui.common.NeoSlot
 import ru.alexp0111.core_ui.common.model.Coordinate
@@ -37,8 +37,6 @@ import ru.alexp0111.core_ui.common.text.LargeTextField
 import ru.alexp0111.core_ui.common.text.MediumTextField
 import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.util.conditional
-import ru.alexp0111.flexypixel.R
-import ru.alexp0111.core.model.PanelStatus
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelViewModel
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop.Down
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop.Fail
@@ -85,7 +83,7 @@ private fun DisplayLevelScreenContent(
             if (uiState.value.isSelectionModeOn) {
                 BottomPanelActions(
                     isOnlyOnePanelSelected = uiState.value.isOnlyOnePanelSelected,
-                    selectedAreaIsSquare =  uiState.value.selectedAreaIsSquare,
+                    selectedAreaIsSquare = uiState.value.selectedAreaIsSquare,
                     intentHandler = intentHandler,
                 )
             } else {
@@ -280,7 +278,6 @@ private fun DisplayLevelScreenContentPanelLimitAchieved() {
 @Preview
 @Composable
 private fun DisplayLevelScreenContentFullPreview() {
-    val resources = LocalContext.current.resources
     AppTheme {
         DisplayLevelScreenContent(
             uiState = remember {
@@ -305,20 +302,16 @@ private fun DisplayLevelScreenContentFullPreview() {
                                 order = 2
                             ),
                             PanelUiModel(
-                                bitmap = BitmapFactory.decodeResource(
-                                    resources,
-                                    R.drawable.cat_8_8
-                                ),
+                                pixels = Array(64) { listOf("007", "070", "700").random() }
+                                    .map { DrawingColor.getFromString(it) },
                                 sourceX = 1,
                                 sourceY = 2,
                                 order = 1,
                                 status = PanelStatus.SELECTED
                             ),
                             PanelUiModel(
-                                bitmap = BitmapFactory.decodeResource(
-                                    resources,
-                                    R.drawable.cat_8_8
-                                ),
+                                pixels = Array(64) { listOf("007", "070", "700").random() }
+                                    .map { DrawingColor.getFromString(it) },
                                 sourceX = 2,
                                 sourceY = 2,
                                 order = 0

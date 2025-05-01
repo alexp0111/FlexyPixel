@@ -1,13 +1,13 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.converter
 
-import android.graphics.Bitmap
+import ru.alexp0111.core.model.DrawingColor
 import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelUiModel
 
 internal interface IDisplayLevelConverter {
-    fun convertOrderedPanelsWithBitmapsToUiMatrix(
+    fun convertOrderedPanelsWithPixelsToUiMatrix(
         panelMetaDataSet: Set<PanelMetaData>,
-        panelOrderToBitmap: Map<Int, Bitmap?>,
+        panelOrderToPixels: Map<Int, List<DrawingColor>?>,
     ): Set<PanelUiModel>
 
     fun convertPanelUiModelToMetaData(panelUiModel: PanelUiModel, segmentNumber: Int): PanelMetaData
