@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.bluetooth.model
+package ru.alexp0111.bt_service.model
 
 sealed interface ConnectionResult {
     data object ConnectionEstablished: ConnectionResult

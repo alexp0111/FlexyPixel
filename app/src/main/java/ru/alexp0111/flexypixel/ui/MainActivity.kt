@@ -6,13 +6,13 @@ import com.github.terrakok.cicerone.Navigator
 import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
+import ru.alexp0111.bt_service.AndroidBluetoothController
+import ru.alexp0111.bt_service.business.IMessageHandler
 import ru.alexp0111.flexypixel.R
-import ru.alexp0111.flexypixel.bluetooth.AndroidBluetoothController
-import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.flexypixel.di.components.ActivityComponent
 import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.ui.util.BluetoothResolverFragment
-import ru.alexp0111.flexypixel.util.PermissionResolver
+import ru.alexp0111.bt_service.utils.PermissionResolver
 import javax.inject.Inject
 
 private const val TAG = "MainActivity"
@@ -23,7 +23,7 @@ internal class MainActivity : AppCompatActivity() {
     lateinit var router: Router
 
     @Inject
-    lateinit var messageHandler: MessageHandler
+    lateinit var messageHandler: IMessageHandler
 
     @Inject
     lateinit var navigatorHolder: NavigatorHolder

@@ -10,9 +10,9 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import ru.alexp0111.bt_service.business.IMessageHandler
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.model.DrawingColor
-import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
 import ru.alexp0111.core.model.Frame
 import ru.alexp0111.core.model.FrameCycle
@@ -39,7 +39,7 @@ const val EMPTY_CELL = -1
 
 internal class GlobalStateHandler @AssistedInject constructor(
     private val databaseRepository: SavedSchemeRepository,
-    private val messageHandler: MessageHandler,
+    private val messageHandler: IMessageHandler,
     private val bitmapProcessor: IBitmapProcessor,
     private val mediaFileProcessor: IMediaFilesProcessor,
     private val panelValidator: IPanelPositionValidator,

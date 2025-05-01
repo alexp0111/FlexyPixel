@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.bluetooth
+package ru.alexp0111.bt_service.model.message
 
 import com.google.gson.Gson
 import ru.alexp0111.core.CommonSizeConstants

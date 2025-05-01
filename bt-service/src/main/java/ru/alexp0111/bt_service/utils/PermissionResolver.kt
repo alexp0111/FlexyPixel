@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.util
+package ru.alexp0111.bt_service.utils
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter

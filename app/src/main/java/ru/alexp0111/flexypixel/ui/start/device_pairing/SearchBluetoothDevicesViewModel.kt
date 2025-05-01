@@ -1,6 +1,5 @@
 package ru.alexp0111.flexypixel.ui.start.device_pairing
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
@@ -12,9 +11,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import ru.alexp0111.flexypixel.bluetooth.AndroidBluetoothController
-import ru.alexp0111.flexypixel.bluetooth.model.ConnectionResult
-import ru.alexp0111.flexypixel.bluetooth.model.FlexyPixelDevice
+import ru.alexp0111.bt_service.AndroidBluetoothController
+import ru.alexp0111.bt_service.model.ConnectionResult
+import ru.alexp0111.bt_service.model.FlexyPixelDevice
 import ru.alexp0111.flexypixel.navigation.Screens
 import javax.inject.Inject
 
@@ -90,7 +89,7 @@ class SearchBluetoothDevicesViewModel @Inject constructor(
     private fun connectBluetoothDevice(device: BluetoothDeviceState) {
         viewModelScope.plus(Dispatchers.IO).launch {
             consumeAction(Action.ConnectionInProgress(device))
-            controller.setUpConnection(FlexyPixelDevice.from(device)).collect {
+            controller.setUpConnection(convertStateToFlexyPixelDevice(device)).collect {
                 val action = when (it) {
                     is ConnectionResult.ConnectionEstablished -> {
                         Action.ConnectionSucceed(device)
@@ -107,7 +106,7 @@ class SearchBluetoothDevicesViewModel @Inject constructor(
         viewModelScope.plus(Dispatchers.IO).launch {
             controller.isConnected.collect {
                 val connectedDevice = it.first ?: return@collect
-                if (connectedDevice.address != FlexyPixelDevice.from(device).address) {
+                if (connectedDevice.address != convertStateToFlexyPixelDevice(device).address) {
                     return@collect
                 }
                 val isConnected = it.second
@@ -125,6 +124,12 @@ class SearchBluetoothDevicesViewModel @Inject constructor(
             }
         }
     }
+
+    private fun convertStateToFlexyPixelDevice(state: BluetoothDeviceState) =
+        FlexyPixelDevice(
+            name = state.name,
+            address = state.address
+        )
 
     private fun reduce(
         state: UiState,

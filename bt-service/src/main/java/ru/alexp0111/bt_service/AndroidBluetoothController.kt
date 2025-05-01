@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.bluetooth
+package ru.alexp0111.bt_service
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
@@ -22,12 +22,12 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.update
 import ru.alexp0111.core.di.AppScope
-import ru.alexp0111.flexypixel.bluetooth.model.ConnectionResult
-import ru.alexp0111.flexypixel.bluetooth.model.FlexyPixelDevice
-import ru.alexp0111.flexypixel.bluetooth.model.TransferResult
-import ru.alexp0111.flexypixel.bluetooth.receivers.AvailableDevicesReceiver
-import ru.alexp0111.flexypixel.bluetooth.receivers.BluetoothStateReceiver
-import ru.alexp0111.flexypixel.util.PermissionResolver
+import ru.alexp0111.bt_service.model.ConnectionResult
+import ru.alexp0111.bt_service.model.FlexyPixelDevice
+import ru.alexp0111.bt_service.model.transfer.TransferResult
+import ru.alexp0111.bt_service.receivers.AvailableDevicesReceiver
+import ru.alexp0111.bt_service.receivers.BluetoothStateReceiver
+import ru.alexp0111.bt_service.utils.PermissionResolver
 import java.io.IOException
 import java.util.UUID
 import javax.inject.Inject

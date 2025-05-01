@@ -1,9 +1,9 @@
-package ru.alexp0111.flexypixel
+package ru.alexp0111.bt_service
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import ru.alexp0111.flexypixel.bluetooth.utils.JsonChecker
+import ru.alexp0111.bt_service.utils.JsonChecker
 
 class JsonCheckerTest {
 

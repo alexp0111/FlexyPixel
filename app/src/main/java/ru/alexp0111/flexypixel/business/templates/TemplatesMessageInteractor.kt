@@ -1,7 +1,7 @@
 package ru.alexp0111.flexypixel.business.templates
 
+import ru.alexp0111.bt_service.business.IMessageHandler
 import ru.alexp0111.core.CommonSizeConstants
-import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.core.model.Frame
 import ru.alexp0111.core.model.FrameCycle
 import ru.alexp0111.core.model.Panel
@@ -11,7 +11,7 @@ import ru.alexp0111.local_repo.database.templates.model.PanelTemplate
 import javax.inject.Inject
 
 internal class TemplatesMessageInteractor @Inject constructor(
-    private val messageHandler: MessageHandler,
+    private val messageHandler: IMessageHandler,
 ) : ITemplatesMessageInteractor {
     override fun sendTemplate(template: PanelTemplate) {
         val frame = Frame(

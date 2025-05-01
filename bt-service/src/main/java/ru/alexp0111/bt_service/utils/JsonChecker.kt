@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.bluetooth.utils
+package ru.alexp0111.bt_service.utils
 
 import java.util.Stack
 

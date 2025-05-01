@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.bluetooth
+package ru.alexp0111.bt_service.business
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -6,22 +6,29 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import ru.alexp0111.bt_service.AndroidBluetoothController
+import ru.alexp0111.bt_service.model.message.BluetoothMessage
+import ru.alexp0111.bt_service.model.message.MessageFrame
+import ru.alexp0111.bt_service.model.message.MessagePanelConfiguration
+import ru.alexp0111.bt_service.model.message.MessageTransactionMode
+import ru.alexp0111.bt_service.model.message.MessageType
+import ru.alexp0111.bt_service.model.message.TestMessage
 import ru.alexp0111.core.di.AppScope
 import ru.alexp0111.core.model.FrameCycle
 import ru.alexp0111.core.model.PanelMetaData
-import ru.alexp0111.flexypixel.bluetooth.business.IMessageConverter
-import ru.alexp0111.flexypixel.bluetooth.model.TransferResponse
-import ru.alexp0111.flexypixel.bluetooth.model.TransferResult
+import ru.alexp0111.bt_service.model.message.converter.IMessageConverter
+import ru.alexp0111.bt_service.model.transfer.TransferResponse
+import ru.alexp0111.bt_service.model.transfer.TransferResult
 import java.util.LinkedList
 import javax.inject.Inject
 
 private const val TAG = "MessageHandler"
 
 @AppScope
-internal class MessageHandler @Inject constructor(
+class MessageHandler @Inject constructor(
     private val controller: AndroidBluetoothController,
     private val messageConverter: IMessageConverter,
-) {
+) : IMessageHandler {
     @get:Synchronized
     @set:Synchronized
     private var isWaitingForResponse = false
@@ -39,8 +46,6 @@ internal class MessageHandler @Inject constructor(
     private val messageQueue: LinkedList<BluetoothMessage> = LinkedList()
 
     private var _errors = MutableSharedFlow<String>(replay = 1)
-    val errors: SharedFlow<String>
-        get() = _errors.asSharedFlow()
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -97,7 +102,7 @@ internal class MessageHandler @Inject constructor(
         }
     }
 
-    fun sendPixel(panelOrder: Int, pixelOrder: Int, r: Int, g: Int, b: Int) {
+    override fun sendPixel(panelOrder: Int, pixelOrder: Int, r: Int, g: Int, b: Int) {
         changeModeIfNeeded(MessageTransactionMode.PIXEL)
 
         messageQueue.add(
@@ -107,7 +112,7 @@ internal class MessageHandler @Inject constructor(
         tryPopMessageQueue()
     }
 
-    fun sendFrames(frameCycle: FrameCycle) {
+    override fun sendFrames(frameCycle: FrameCycle) {
         val messageFrames = messageConverter.convertFramesToMessage(frameCycle)
         sendMessageFrames(messageFrames, frameCycle.interframeDelay)
     }
@@ -135,7 +140,7 @@ internal class MessageHandler @Inject constructor(
         }
     }
 
-    fun updateConfiguration(configuration: Set<PanelMetaData>) {
+    override fun updateConfiguration(configuration: Set<PanelMetaData>) {
         val panelMetaDataMessage = messageConverter.convertPanelMetaDataToMessage(configuration)
         updateConfiguration(panelMetaDataMessage)
     }
@@ -148,17 +153,19 @@ internal class MessageHandler @Inject constructor(
         }
     }
 
-    fun sendTestMessage(message: String) {
+    override fun sendTestMessage(message: String) {
         messageQueue.add(TestMessage(message))
     }
 
-    fun saveCurrentState() {
+    override fun saveCurrentState() {
         messageQueue.add(MessageType.SAVE)
     }
 
-    fun clearCurrentState() {
+    override fun clearCurrentState() {
         messageQueue.add(MessageType.RSTP)
     }
+
+    override fun getErrorFlow(): SharedFlow<String> = _errors.asSharedFlow()
 }
 
 fun LinkedList<BluetoothMessage>.add(

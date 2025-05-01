@@ -1,8 +1,7 @@
-package ru.alexp0111.flexypixel.bluetooth.model
+package ru.alexp0111.bt_service.model
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
-import ru.alexp0111.flexypixel.ui.start.device_pairing.BluetoothDeviceState
 
 @SuppressLint("MissingPermission")
 data class FlexyPixelDevice(
@@ -14,13 +13,6 @@ data class FlexyPixelDevice(
             return FlexyPixelDevice(
                 name = device.name,
                 address = device.address
-            )
-        }
-
-        fun from(deviceState: BluetoothDeviceState): FlexyPixelDevice {
-            return FlexyPixelDevice(
-                name = deviceState.name,
-                address = deviceState.address,
             )
         }
     }

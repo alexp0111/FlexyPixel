@@ -6,9 +6,9 @@ import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import ru.alexp0111.flexypixel.bluetooth.AndroidBluetoothController
+import ru.alexp0111.bt_service.AndroidBluetoothController
 import ru.alexp0111.flexypixel.navigation.Screens
-import ru.alexp0111.flexypixel.util.PermissionResolver
+import ru.alexp0111.bt_service.utils.PermissionResolver
 import javax.inject.Inject
 
 private const val DEBUG_ONLY_SKIP_CONNECTION = false

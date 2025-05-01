@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.bluetooth
+package ru.alexp0111.bt_service
 
 import android.bluetooth.BluetoothSocket
 import com.google.gson.Gson
@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import ru.alexp0111.flexypixel.bluetooth.model.TransferResponse
-import ru.alexp0111.flexypixel.bluetooth.model.TransferResult
-import ru.alexp0111.flexypixel.bluetooth.utils.JsonChecker
+import ru.alexp0111.bt_service.model.transfer.TransferResponse
+import ru.alexp0111.bt_service.model.transfer.TransferResult
+import ru.alexp0111.bt_service.utils.JsonChecker
 import java.io.IOException
 import java.io.InputStream
 
@@ -47,7 +47,7 @@ class BluetoothDataTransferService(
                     emit(TransferResult.Error(e.message.toString()))
                 }
             } catch (e: IOException) {
-                break;
+                break
             }
         }
     }.flowOn(Dispatchers.IO)
