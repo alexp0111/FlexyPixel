@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.media
+package ru.alexp0111.media_loader
 
 import android.content.ContentResolver
 import android.content.Context
@@ -14,12 +14,12 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.core.model.PanelStatus
-import ru.alexp0111.flexypixel.media.model.MediaFileType
+import ru.alexp0111.model.MediaFileType
 import javax.inject.Inject
 
 private const val TAG = "MediaFilesProcessor"
 
-internal class MediaFilesProcessor @Inject constructor(
+class MediaFilesProcessor @Inject constructor(
     private val context: Context,
 ) : IMediaFilesProcessor {
 
@@ -98,8 +98,10 @@ internal class MediaFilesProcessor @Inject constructor(
                     var totalTime = 0
 
                     val gifState = resource.constantState ?: return
-                    val gifFrameLoader = gifState.javaClass.getDeclaredField("frameLoader").apply { isAccessible = true }.get(gifState)
-                    val gifDecoder = gifFrameLoader.javaClass.getDeclaredField("gifDecoder").apply { isAccessible = true }
+                    val gifFrameLoader =
+                        gifState.javaClass.getDeclaredField("frameLoader").apply { isAccessible = true }.get(gifState)
+                    val gifDecoder =
+                        gifFrameLoader.javaClass.getDeclaredField("gifDecoder").apply { isAccessible = true }
                     val standardGifDecoder = gifDecoder.get(gifFrameLoader) as StandardGifDecoder
 
                     repeat(standardGifDecoder.frameCount) {

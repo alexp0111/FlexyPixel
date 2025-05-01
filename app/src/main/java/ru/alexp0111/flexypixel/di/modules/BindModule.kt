@@ -8,8 +8,6 @@ import ru.alexp0111.flexypixel.business.templates.ITemplatesMessageInteractor
 import ru.alexp0111.flexypixel.business.templates.TemplatesMessageInteractor
 import ru.alexp0111.flexypixel.media.BitmapProcessor
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
-import ru.alexp0111.flexypixel.media.IMediaFilesProcessor
-import ru.alexp0111.flexypixel.media.MediaFilesProcessor
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.DisplayLevelConverter
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.IDisplayLevelConverter
 import ru.alexp0111.flexypixel.ui.templates.converter.ITemplatesConverter
@@ -33,9 +31,6 @@ internal interface BindModule {
 
     @Binds
     fun bindPanelPositionValidator(validator: PanelPositionValidator): IPanelPositionValidator
-
-    @Binds
-    fun bindMediaFilesProcessor(processor: MediaFilesProcessor): IMediaFilesProcessor
 
     @Binds
     fun bindTemplatesMessageInteractor(interactor: TemplatesMessageInteractor): ITemplatesMessageInteractor

@@ -22,8 +22,8 @@ import ru.alexp0111.core.model.PanelStatus
 import ru.alexp0111.local_repo.database.schemes.SavedSchemeRepository
 import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
-import ru.alexp0111.flexypixel.media.IMediaFilesProcessor
-import ru.alexp0111.flexypixel.media.model.MediaFileType
+import ru.alexp0111.media_loader.IMediaFilesProcessor
+import ru.alexp0111.model.MediaFileType
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.drawing.DrawingGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelGlobalStateHolder

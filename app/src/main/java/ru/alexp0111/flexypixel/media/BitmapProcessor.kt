@@ -18,7 +18,7 @@ import ru.alexp0111.core.model.FrameCycle
 import ru.alexp0111.core.model.Panel
 import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.core.model.PanelStatus
-import ru.alexp0111.flexypixel.media.model.MediaFileType
+import ru.alexp0111.model.MediaFileType
 import javax.inject.Inject
 import kotlin.math.round
 

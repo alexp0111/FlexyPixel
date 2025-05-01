@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core-ui" />
             <option value="$PROJECT_DIR$/local-repo" />
+            <option value="$PROJECT_DIR$/media-loader" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

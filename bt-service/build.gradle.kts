@@ -37,9 +37,6 @@ dependencies {
     /** Modules */
     implementation(project(":core"))
 
-    /** Base core libraries */
-    implementation(localDeps.kotlin)
-
     /** Dagger2 */
     implementation(localDeps.dagger)
     kapt(localDeps.compiler)
