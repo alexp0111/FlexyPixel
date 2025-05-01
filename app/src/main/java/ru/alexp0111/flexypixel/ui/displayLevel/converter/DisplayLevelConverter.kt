@@ -1,7 +1,7 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.converter
 
-import android.graphics.Bitmap
 import ru.alexp0111.core.matrix.MatrixConverter
+import ru.alexp0111.core.model.DrawingColor
 import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelUiModel
 import javax.inject.Inject
@@ -9,13 +9,13 @@ import javax.inject.Inject
 internal class DisplayLevelConverter @Inject constructor(
 
 ) : IDisplayLevelConverter {
-    override fun convertOrderedPanelsWithBitmapsToUiMatrix(
+    override fun convertOrderedPanelsWithPixelsToUiMatrix(
         panelMetaDataSet: Set<PanelMetaData>,
-        panelOrderToBitmap: Map<Int, Bitmap?>,
+        panelOrderToPixels: Map<Int, List<DrawingColor>?>,
     ): Set<PanelUiModel> =
         panelMetaDataSet.map { panelMetaData ->
             copyGlobalToLocal(PanelUiModel(), panelMetaData).copy(
-                bitmap = panelOrderToBitmap[panelMetaData.order]
+                pixels = panelOrderToPixels[panelMetaData.order]
             )
         }.toSet()
 
@@ -68,7 +68,7 @@ internal class DisplayLevelConverter @Inject constructor(
 
     private fun copyGlobalToLocal(localPanel: PanelUiModel, globalPanel: PanelMetaData): PanelUiModel =
         PanelUiModel(
-            bitmap = localPanel.bitmap,
+            pixels = localPanel.pixels,
             sourceX = globalPanel.localX,
             sourceY = globalPanel.localY,
             order = globalPanel.order,

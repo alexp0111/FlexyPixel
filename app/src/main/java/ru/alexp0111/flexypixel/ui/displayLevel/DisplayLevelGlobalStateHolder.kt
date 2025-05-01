@@ -1,6 +1,6 @@
 package ru.alexp0111.flexypixel.ui.displayLevel
 
-import android.graphics.Bitmap
+import ru.alexp0111.core.model.DrawingColor
 import ru.alexp0111.core.model.PanelMetaData
 
 interface DisplayLevelGlobalStateHolder {
@@ -8,5 +8,5 @@ interface DisplayLevelGlobalStateHolder {
 
     fun getPanelsAmount(): Int
 
-    fun getPanelsImages(segmentNumber: Int): MutableMap<Int, Bitmap?>
+    fun getPanelsImages(segmentNumber: Int): MutableMap<Int, List<DrawingColor>?>
 }

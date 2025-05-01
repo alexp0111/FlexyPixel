@@ -1,9 +1,6 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.screen
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -17,20 +14,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import ru.alexp0111.core.model.DrawingColor
+import ru.alexp0111.core.model.PanelStatus
+import ru.alexp0111.core_ui.common.pixels.PixelImage
 import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.theme.beigeDark
 import ru.alexp0111.core_ui.theme.black
 import ru.alexp0111.core_ui.theme.red
 import ru.alexp0111.core_ui.util.conditional
-import ru.alexp0111.flexypixel.R
-import ru.alexp0111.core.model.PanelStatus
 import ru.alexp0111.flexypixel.ui.displayLevel.model.PanelUiModel
 
 @Composable
@@ -54,10 +49,10 @@ internal fun DisplayLevelPanel(
         if (isStrokeEnabled) {
             StrokeDecorator(panel, cornerRadiusPx)
         }
-        if (panel.bitmap == null) {
+        if (panel.pixels == null) {
             EmptyPanel(isStrokeEnabled, borderPx, cornerRadiusPx, innerCornerRadiusPx)
         } else {
-            BitmapPanel(panel.bitmap, isStrokeEnabled, border, innerCornerRadius, cornerRadius)
+            PixelPanel(panel.pixels, isStrokeEnabled, panelSizeDp, border, borderPx, innerCornerRadius, cornerRadius)
         }
     }
 }
@@ -99,10 +94,12 @@ private fun EmptyPanel(
 }
 
 @Composable
-private fun BitmapPanel(
-    bitmap: Bitmap,
+private fun PixelPanel(
+    pixels: List<DrawingColor>,
     isStrokeEnabled: Boolean,
+    panelSizeDp: Dp,
     border: Dp,
+    borderPx: Float,
     innerCornerRadius: Dp,
     cornerRadius: Dp,
 ) {
@@ -112,12 +109,11 @@ private fun BitmapPanel(
             .conditional(isStrokeEnabled) { padding(border) },
         shape = RoundedCornerShape(if (isStrokeEnabled) innerCornerRadius else cornerRadius)
     ) {
-        Image(
-            modifier = Modifier
-                .fillMaxSize(),
-            bitmap = bitmap.asImageBitmap(),
-            contentScale = ContentScale.Crop,
-            contentDescription = null,
+        PixelImage(
+            size = panelSizeDp,
+            pixels = pixels,
+            offset = Offset(-1 * borderPx, -1 * borderPx)
+                .takeIf { isStrokeEnabled } ?: Offset.Zero
         )
     }
 }
@@ -133,15 +129,13 @@ private fun DisplayLevelPanelPreviewDefault() {
             DisplayLevelPanel(
                 panelSize = 500,
                 panel = PanelUiModel(
-                    bitmap = BitmapFactory.decodeResource(
-                        LocalContext.current.resources,
-                        R.drawable.cat_8_8
-                    )
+                    pixels = Array(64) { listOf("007", "070", "700").random() }
+                        .map { DrawingColor.getFromString(it) }
                 )
             )
             DisplayLevelPanel(
                 panelSize = 500,
-                panel = PanelUiModel(bitmap = null)
+                panel = PanelUiModel(pixels = null)
             )
         }
     }
@@ -159,17 +153,15 @@ private fun DisplayLevelPanelPreviewSelected() {
                 panelSize = 500,
                 panel = PanelUiModel(
                     status = PanelStatus.SELECTED,
-                    bitmap = BitmapFactory.decodeResource(
-                        LocalContext.current.resources,
-                        R.drawable.cat_8_8
-                    )
+                    pixels = Array(64) { listOf("007", "070", "700").random() }
+                        .map { DrawingColor.getFromString(it) }
                 )
             )
             DisplayLevelPanel(
                 panelSize = 500,
                 panel = PanelUiModel(
                     status = PanelStatus.SELECTED,
-                    bitmap = null
+                    pixels = null
                 )
             )
         }
@@ -188,17 +180,15 @@ private fun DisplayLevelPanelPreviewPlacedWrong() {
                 panelSize = 500,
                 panel = PanelUiModel(
                     status = PanelStatus.PLACED_WRONG,
-                    bitmap = BitmapFactory.decodeResource(
-                        LocalContext.current.resources,
-                        R.drawable.cat_8_8
-                    )
+                    pixels = Array(64) { listOf("007", "070", "700").random() }
+                        .map { DrawingColor.getFromString(it) }
                 )
             )
             DisplayLevelPanel(
                 panelSize = 500,
                 panel = PanelUiModel(
                     status = PanelStatus.PLACED_WRONG,
-                    bitmap = null
+                    pixels = null
                 )
             )
         }

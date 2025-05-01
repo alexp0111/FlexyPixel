@@ -95,14 +95,14 @@ internal class GlobalStateHandler @AssistedInject constructor(
         return metaDataSet.size
     }
 
-    override fun getPanelsImages(segmentNumber: Int): MutableMap<Int, Bitmap?> {
-        return mutableMapOf<Int, Bitmap?>().apply {
+    override fun getPanelsImages(segmentNumber: Int): MutableMap<Int, List<DrawingColor>?> {
+        return mutableMapOf<Int, List<DrawingColor>?>().apply {
             getPanelsConfiguration(segmentNumber).map { it.order }.forEach { panelOrder ->
                 if (panelOrder != EMPTY_CELL && panelOrder < frameCycle.frames.first().panels.size) {
                     val panelInStringPixels = frameCycle.frames.first().panels[panelOrder].pixels
                     put(
                         panelOrder,
-                        bitmapProcessor.convertPanelPixelsToPanelBimap(panelInStringPixels)
+                        panelInStringPixels.map(DrawingColor::getFromString)
                     )
                 }
             }
