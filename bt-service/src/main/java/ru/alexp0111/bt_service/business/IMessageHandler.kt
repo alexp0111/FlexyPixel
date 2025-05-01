@@ -12,4 +12,5 @@ interface IMessageHandler {
     fun saveCurrentState()
     fun clearCurrentState()
     fun getErrorFlow(): SharedFlow<String>
+    fun getResponseFlow(): SharedFlow<String>
 }
