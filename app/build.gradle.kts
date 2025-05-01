@@ -47,6 +47,7 @@ dependencies {
     /** Modules */
     implementation(project(":core"))
     implementation(project(":core-ui"))
+    implementation(project(":local-repo"))
 
     /** Base core libraries */
     implementation(localDeps.kotlin)

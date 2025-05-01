@@ -1,6 +1,6 @@
 package ru.alexp0111.flexypixel.ui.drawing
 
-import ru.alexp0111.core_ui.common.model.DrawingColor
+import ru.alexp0111.core.model.DrawingColor
 
 interface DrawingGlobalStateHolder {
     fun getPanelPixels(panelPosition: Int): MutableList<DrawingColor>

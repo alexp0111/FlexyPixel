@@ -67,3 +67,4 @@ rootProject.name = "FlexyPixel"
 include(":app")
 include(":core")
 include(":core-ui")
+include(":local-repo")

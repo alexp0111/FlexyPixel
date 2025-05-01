@@ -8,7 +8,7 @@ import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.viewmodel.MVIViewModel
 import ru.alexp0111.flexypixel.business.GlobalStateHandler
 import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
-import ru.alexp0111.flexypixel.data.model.PanelStatus
+import ru.alexp0111.core.model.PanelStatus
 import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.IDisplayLevelConverter
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop

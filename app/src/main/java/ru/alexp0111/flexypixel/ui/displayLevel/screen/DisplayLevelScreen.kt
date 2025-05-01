@@ -38,7 +38,7 @@ import ru.alexp0111.core_ui.common.text.MediumTextField
 import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.util.conditional
 import ru.alexp0111.flexypixel.R
-import ru.alexp0111.flexypixel.data.model.PanelStatus
+import ru.alexp0111.core.model.PanelStatus
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelViewModel
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop.Down
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelDragAndDrop.Fail

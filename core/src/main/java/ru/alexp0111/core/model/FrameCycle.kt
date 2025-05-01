@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.data.model
+package ru.alexp0111.core.model
 
 data class FrameCycle(
     var configuration: PanelConfiguration,

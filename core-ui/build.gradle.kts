@@ -39,6 +39,9 @@ android {
 }
 
 dependencies {
+    /** Modules */
+    implementation(project(":core"))
+
     /** Base core libraries */
     implementation(localDeps.kotlin)
     implementation(localDeps.lifecycleRuntime)

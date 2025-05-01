@@ -1,8 +1,8 @@
 package ru.alexp0111.flexypixel.media
 
 import android.graphics.Bitmap
-import ru.alexp0111.flexypixel.data.model.FrameCycle
-import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import ru.alexp0111.core.model.FrameCycle
+import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.flexypixel.media.model.MediaFileType
 
 internal interface IBitmapProcessor {

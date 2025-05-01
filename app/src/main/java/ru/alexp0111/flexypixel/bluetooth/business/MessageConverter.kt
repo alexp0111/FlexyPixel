@@ -1,15 +1,15 @@
 package ru.alexp0111.flexypixel.bluetooth.business
 
 import ru.alexp0111.core.CommonSizeConstants
+import ru.alexp0111.core.model.Frame
+import ru.alexp0111.core.model.FrameCycle
+import ru.alexp0111.core.model.Panel
+import ru.alexp0111.core.model.PanelMetaData
+import ru.alexp0111.core.model.PanelOrientation
 import ru.alexp0111.flexypixel.bluetooth.MessageFrame
 import ru.alexp0111.flexypixel.bluetooth.MessageFramesMetaData
 import ru.alexp0111.flexypixel.bluetooth.MessagePanelConfiguration
 import ru.alexp0111.flexypixel.bluetooth.MessagePixel
-import ru.alexp0111.flexypixel.data.model.FrameCycle
-import ru.alexp0111.flexypixel.data.model.Panel
-import ru.alexp0111.flexypixel.data.model.PanelConfiguration
-import ru.alexp0111.flexypixel.data.model.PanelMetaData
-import ru.alexp0111.flexypixel.data.model.PanelOrientation
 import javax.inject.Inject
 
 internal class MessageConverter @Inject constructor() : IMessageConverter {
@@ -45,7 +45,7 @@ internal class MessageConverter @Inject constructor() : IMessageConverter {
             configuration.sortedBy { it.order }.forEach {
                 append(parseIntToMessageString(it.type, 3))
             }
-            while (this.length != PanelConfiguration.MAX_SIZE * 3) {
+            while (this.length != CommonSizeConstants.PANELS_TOTAL_AMOUNT * 3) {
                 append("000")
             }
         }
@@ -91,3 +91,10 @@ internal class MessageConverter @Inject constructor() : IMessageConverter {
     }
 
 }
+
+internal fun Frame.toMessageFrame(): MessageFrame =
+    MessageFrame(
+        buildString {
+            panels.forEach { append(it::asMessage) }
+        }
+    )

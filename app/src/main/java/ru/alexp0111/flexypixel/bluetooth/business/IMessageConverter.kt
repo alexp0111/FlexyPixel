@@ -4,8 +4,8 @@ import ru.alexp0111.flexypixel.bluetooth.MessageFrame
 import ru.alexp0111.flexypixel.bluetooth.MessageFramesMetaData
 import ru.alexp0111.flexypixel.bluetooth.MessagePanelConfiguration
 import ru.alexp0111.flexypixel.bluetooth.MessagePixel
-import ru.alexp0111.flexypixel.data.model.FrameCycle
-import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import ru.alexp0111.core.model.FrameCycle
+import ru.alexp0111.core.model.PanelMetaData
 
 internal interface IMessageConverter {
     fun convertPixelToMessage(panelOrder: Int, pixelOrder: Int, r: Int, g: Int, b: Int): MessagePixel
