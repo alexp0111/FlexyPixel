@@ -37,9 +37,6 @@ dependencies {
     /** Modules */
     implementation(project(":core"))
 
-    /** Base core libraries */
-    implementation(localDeps.kotlin)
-
     /** Gson */
     implementation(localDeps.gson)
 
@@ -50,11 +47,4 @@ dependencies {
     /** Room */
     implementation(localDeps.room)
     kapt(localDeps.roomCompiler)
-
-    /** Unit testing */
-    testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation(platform(unitTestDeps.jUnitBom))
-    testImplementation(unitTestDeps.robolectric)
-    testImplementation(unitTestDeps.mockito)
 }

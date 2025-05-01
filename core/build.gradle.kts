@@ -41,7 +41,7 @@ android {
 
 dependencies {
     /** Base core libraries */
-    implementation(localDeps.kotlin)
+    api(localDeps.kotlin)
     implementation(localDeps.lifecycleRuntime)
     implementation(localDeps.lifecycleViewModel)
     implementation(localDeps.appCompat)

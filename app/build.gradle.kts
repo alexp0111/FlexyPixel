@@ -49,9 +49,9 @@ dependencies {
     implementation(project(":core-ui"))
     implementation(project(":local-repo"))
     implementation(project(":bt-service"))
+    implementation(project(":media-loader"))
 
     /** Base core libraries */
-    implementation(localDeps.kotlin)
     implementation(localDeps.lifecycleRuntime)
     implementation(localDeps.lifecycleViewModel)
     implementation(localDeps.appCompat)

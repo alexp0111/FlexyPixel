@@ -13,8 +13,8 @@ import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.core.model.PanelStatus
 import ru.alexp0111.core.viewmodel.MVIViewModel
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
-import ru.alexp0111.flexypixel.media.IMediaFilesProcessor
-import ru.alexp0111.flexypixel.media.model.MediaFileType
+import ru.alexp0111.media_loader.IMediaFilesProcessor
+import ru.alexp0111.model.MediaFileType
 import ru.alexp0111.flexypixel.ui.test.model.TestFramesModel
 import ru.alexp0111.flexypixel.ui.test.model.TestIntent
 import ru.alexp0111.flexypixel.ui.test.model.TestPixelModel
