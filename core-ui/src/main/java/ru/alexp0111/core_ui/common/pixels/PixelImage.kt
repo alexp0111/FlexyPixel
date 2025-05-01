@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ru.alexp0111.core_ui.common.model.DrawingColor
+import ru.alexp0111.core.model.DrawingColor
 import ru.alexp0111.core_ui.theme.AppTheme
 
 @Composable

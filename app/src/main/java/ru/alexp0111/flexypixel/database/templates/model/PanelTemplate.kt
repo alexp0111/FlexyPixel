@@ -2,8 +2,8 @@ package ru.alexp0111.flexypixel.database.templates.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.alexp0111.core_ui.common.model.DrawingColor
-import ru.alexp0111.flexypixel.data.model.PanelOrientation
+import ru.alexp0111.core.model.DrawingColor
+import ru.alexp0111.core.model.PanelOrientation
 
 @Entity(tableName = "panel_templates")
 internal data class PanelTemplate(

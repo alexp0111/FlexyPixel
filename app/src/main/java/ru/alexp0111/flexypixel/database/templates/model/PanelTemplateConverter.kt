@@ -2,8 +2,8 @@ package ru.alexp0111.flexypixel.database.templates.model
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
-import ru.alexp0111.core_ui.common.model.DrawingColor
-import ru.alexp0111.flexypixel.data.model.PanelOrientation
+import ru.alexp0111.core.model.DrawingColor
+import ru.alexp0111.core.model.PanelOrientation
 
 private const val SEPARATOR = ","
 

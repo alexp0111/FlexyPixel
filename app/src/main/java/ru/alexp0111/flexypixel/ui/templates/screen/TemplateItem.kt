@@ -28,12 +28,12 @@ import androidx.compose.ui.unit.dp
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core_ui.common.NeoCard
 import ru.alexp0111.core_ui.common.NeoSlotRounded
-import ru.alexp0111.core_ui.common.model.DrawingColor
+import ru.alexp0111.core.model.DrawingColor
 import ru.alexp0111.core_ui.common.pixels.PixelImage
 import ru.alexp0111.core_ui.common.text.SmallTextField
 import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.theme.beigeStandard
-import ru.alexp0111.flexypixel.data.model.PanelOrientation
+import ru.alexp0111.core.model.PanelOrientation
 import ru.alexp0111.flexypixel.ui.templates.model.TemplateItemUiModel
 import ru.alexp0111.flexypixel.ui.templates.model.TemplatesIntent
 import ru.alexp0111.core_ui.R as coreDesignR

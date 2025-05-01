@@ -2,9 +2,9 @@ package ru.alexp0111.flexypixel.ui.displayLevel.model
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.Immutable
-import ru.alexp0111.core_ui.common.model.DrawingColor
-import ru.alexp0111.flexypixel.data.model.PanelMetaData.Companion.PALETTE_SIZE
-import ru.alexp0111.flexypixel.data.model.PanelStatus
+import ru.alexp0111.core.model.DrawingColor
+import ru.alexp0111.core.model.PanelMetaData.Companion.PALETTE_SIZE
+import ru.alexp0111.core.model.PanelStatus
 
 @Immutable
 internal data class DisplayLevelUiState(

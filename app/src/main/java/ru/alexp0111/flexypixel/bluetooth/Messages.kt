@@ -1,7 +1,7 @@
 package ru.alexp0111.flexypixel.bluetooth
 
 import com.google.gson.Gson
-import ru.alexp0111.flexypixel.data.model.PanelConfiguration
+import ru.alexp0111.core.CommonSizeConstants
 
 interface BluetoothMessage {
     fun asJson(): String
@@ -84,7 +84,7 @@ data class MessagePixel(
  * ========================================
  * */
 data class MessagePanelConfiguration(
-    private val configuration: String = "000".repeat(PanelConfiguration.MAX_SIZE),
+    private val configuration: String = "000".repeat(CommonSizeConstants.PANELS_TOTAL_AMOUNT),
 ) : BluetoothMessage {
     override fun asJson(): String {
         return Gson().toJson(this)

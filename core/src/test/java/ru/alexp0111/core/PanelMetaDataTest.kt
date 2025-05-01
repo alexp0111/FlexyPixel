@@ -1,9 +1,9 @@
-package ru.alexp0111.flexypixel
+package ru.alexp0111.core
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import ru.alexp0111.flexypixel.data.model.PanelMetaData
-import ru.alexp0111.flexypixel.data.model.PanelOrientation
+import ru.alexp0111.core.model.PanelMetaData
+import ru.alexp0111.core.model.PanelOrientation
 
 class PanelMetaDataTest {
 

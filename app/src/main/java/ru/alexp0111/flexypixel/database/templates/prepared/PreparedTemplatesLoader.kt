@@ -1,8 +1,8 @@
 package ru.alexp0111.flexypixel.database.templates.prepared
 
 import ru.alexp0111.core.CommonSizeConstants
-import ru.alexp0111.core_ui.common.model.DrawingColor
-import ru.alexp0111.flexypixel.data.model.PanelOrientation
+import ru.alexp0111.core.model.DrawingColor
+import ru.alexp0111.core.model.PanelOrientation
 import ru.alexp0111.flexypixel.database.templates.model.PanelTemplate
 
 internal class PreparedTemplatesLoader {

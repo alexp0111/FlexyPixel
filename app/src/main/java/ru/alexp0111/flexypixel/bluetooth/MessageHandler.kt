@@ -9,8 +9,8 @@ import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.bluetooth.business.IMessageConverter
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResponse
 import ru.alexp0111.flexypixel.bluetooth.model.TransferResult
-import ru.alexp0111.flexypixel.data.model.FrameCycle
-import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import ru.alexp0111.core.model.FrameCycle
+import ru.alexp0111.core.model.PanelMetaData
 import java.util.LinkedList
 import javax.inject.Inject
 import javax.inject.Singleton

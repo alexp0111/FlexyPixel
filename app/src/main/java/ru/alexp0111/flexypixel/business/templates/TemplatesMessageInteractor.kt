@@ -2,11 +2,11 @@ package ru.alexp0111.flexypixel.business.templates
 
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.flexypixel.bluetooth.MessageHandler
-import ru.alexp0111.flexypixel.data.model.Frame
-import ru.alexp0111.flexypixel.data.model.FrameCycle
-import ru.alexp0111.flexypixel.data.model.Panel
-import ru.alexp0111.flexypixel.data.model.PanelConfiguration
-import ru.alexp0111.flexypixel.data.model.PanelMetaData
+import ru.alexp0111.core.model.Frame
+import ru.alexp0111.core.model.FrameCycle
+import ru.alexp0111.core.model.Panel
+import ru.alexp0111.core.model.PanelConfiguration
+import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.flexypixel.database.templates.model.PanelTemplate
 import javax.inject.Inject
 
