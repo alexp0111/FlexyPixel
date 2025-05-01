@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.ui.util
+package ru.alexp0111.bt_service.utils
 
 import android.bluetooth.BluetoothDevice
 import android.content.Intent

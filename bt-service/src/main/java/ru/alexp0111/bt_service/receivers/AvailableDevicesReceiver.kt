@@ -1,11 +1,10 @@
-package ru.alexp0111.flexypixel.bluetooth.receivers
+package ru.alexp0111.bt_service.receivers
 
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import ru.alexp0111.flexypixel.ui.util.getBluetoothDevice
+import ru.alexp0111.bt_service.utils.getBluetoothDevice
 
 class AvailableDevicesReceiver(
     private val onDeviceFound: (BluetoothDevice) -> Unit

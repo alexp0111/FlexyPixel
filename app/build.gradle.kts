@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":core-ui"))
     implementation(project(":local-repo"))
+    implementation(project(":bt-service"))
 
     /** Base core libraries */
     implementation(localDeps.kotlin)

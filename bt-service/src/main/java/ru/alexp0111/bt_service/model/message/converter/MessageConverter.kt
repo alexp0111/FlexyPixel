@@ -1,18 +1,18 @@
-package ru.alexp0111.flexypixel.bluetooth.business
+package ru.alexp0111.bt_service.model.message.converter
 
+import ru.alexp0111.bt_service.model.message.MessageFrame
+import ru.alexp0111.bt_service.model.message.MessageFramesMetaData
+import ru.alexp0111.bt_service.model.message.MessagePanelConfiguration
+import ru.alexp0111.bt_service.model.message.MessagePixel
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.model.Frame
 import ru.alexp0111.core.model.FrameCycle
 import ru.alexp0111.core.model.Panel
 import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.core.model.PanelOrientation
-import ru.alexp0111.flexypixel.bluetooth.MessageFrame
-import ru.alexp0111.flexypixel.bluetooth.MessageFramesMetaData
-import ru.alexp0111.flexypixel.bluetooth.MessagePanelConfiguration
-import ru.alexp0111.flexypixel.bluetooth.MessagePixel
 import javax.inject.Inject
 
-internal class MessageConverter @Inject constructor() : IMessageConverter {
+class MessageConverter @Inject constructor() : IMessageConverter {
 
     override fun convertPixelToMessage(panelOrder: Int, pixelOrder: Int, r: Int, g: Int, b: Int): MessagePixel {
         val reversedPixelPosition = CommonSizeConstants.PANEL_PIXEL_TOTAL_AMOUNT - pixelOrder - 1

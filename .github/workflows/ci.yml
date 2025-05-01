@@ -40,3 +40,6 @@ jobs:
 
       - name: Run Core-ui tests
         run: ./gradlew core-ui:testDebugUnitTest
+
+      - name: Run Bluetooth-service tests
+        run: ./gradlew bt-service:testDebugUnitTest

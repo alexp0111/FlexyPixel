@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.bluetooth.model
+package ru.alexp0111.bt_service.model.transfer
 
 sealed interface TransferResult {
     data class TransferSucceeded(val message: String): TransferResult

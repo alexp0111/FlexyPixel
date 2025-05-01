@@ -13,17 +13,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.github.terrakok.cicerone.Router
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import ru.alexp0111.bt_service.business.IMessageHandler
+import ru.alexp0111.bt_service.model.message.MessageFrame
 import ru.alexp0111.core.model.DrawingColor
-import ru.alexp0111.core_ui.util.composeView
-import ru.alexp0111.core_ui.util.setContentAndStrategy
-import ru.alexp0111.flexypixel.bluetooth.MessageFrame
-import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.core.model.PanelOrientation
+import ru.alexp0111.core_ui.util.composeView
+import ru.alexp0111.core_ui.util.setContentAndStrategy
 import ru.alexp0111.flexypixel.databinding.FragmentTestBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
 import ru.alexp0111.flexypixel.ui.test.screen.TestScreen
@@ -42,7 +39,7 @@ internal class TestFragment : Fragment() {
     lateinit var testViewModel: TestViewModel
 
     @Inject
-    lateinit var messageHandler: MessageHandler
+    lateinit var messageHandler: IMessageHandler
 
     private var testNumOfPanels = 0
 
@@ -168,17 +165,6 @@ internal class TestFragment : Fragment() {
     private fun subscribeUI() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    messageHandler.errors.collect {
-                        withContext(Dispatchers.Main) {
-                            Snackbar.make(
-                                requireView(),
-                                it,
-                                Snackbar.LENGTH_SHORT,
-                            ).show()
-                        }
-                    }
-                }
 
                 launch {
                     // mediaFilesProcessor.bitmaps.collect { bitmapList ->

@@ -1,7 +1,7 @@
 package ru.alexp0111.flexypixel.ui.start.device_pairing
 
 import kotlinx.coroutines.flow.StateFlow
-import ru.alexp0111.flexypixel.bluetooth.model.FlexyPixelDevice
+import ru.alexp0111.bt_service.model.FlexyPixelDevice
 
 data class UiState(
     val hasError: Boolean = false,

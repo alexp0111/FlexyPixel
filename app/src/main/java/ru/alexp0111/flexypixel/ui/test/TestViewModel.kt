@@ -3,15 +3,15 @@ package ru.alexp0111.flexypixel.ui.test
 import android.graphics.Bitmap
 import android.net.Uri
 import kotlinx.coroutines.launch
+import ru.alexp0111.bt_service.business.IMessageHandler
 import ru.alexp0111.core.CommonSizeConstants
-import ru.alexp0111.core.viewmodel.MVIViewModel
-import ru.alexp0111.flexypixel.bluetooth.MessageHandler
 import ru.alexp0111.core.model.Frame
 import ru.alexp0111.core.model.FrameCycle
 import ru.alexp0111.core.model.Panel
 import ru.alexp0111.core.model.PanelConfiguration
 import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.core.model.PanelStatus
+import ru.alexp0111.core.viewmodel.MVIViewModel
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
 import ru.alexp0111.flexypixel.media.IMediaFilesProcessor
 import ru.alexp0111.flexypixel.media.model.MediaFileType
@@ -26,12 +26,12 @@ import javax.inject.Inject
 internal class TestViewModel @Inject constructor(
     private val mediaFileProcessor: IMediaFilesProcessor,
     private val bitmapProcessor: IBitmapProcessor,
-    private val messageHandler: MessageHandler,
+    private val messageHandler: IMessageHandler,
 ) : MVIViewModel<TestIntent, TestUiState, Nothing>() {
 
     init {
         launch {
-            messageHandler.errors.collect {
+            messageHandler.getErrorFlow().collect {
                 val terminalList = uiState.value.terminalMessages
                 val newMessage = TestTerminalMessage(
                     text = it,

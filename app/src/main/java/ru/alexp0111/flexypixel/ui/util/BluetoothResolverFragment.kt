@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import com.github.terrakok.cicerone.Router
 import ru.alexp0111.flexypixel.databinding.FragmentBluetoothResolverBinding
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
-import ru.alexp0111.flexypixel.util.PermissionResolver
+import ru.alexp0111.bt_service.utils.PermissionResolver
 import javax.inject.Inject
 
 /*
