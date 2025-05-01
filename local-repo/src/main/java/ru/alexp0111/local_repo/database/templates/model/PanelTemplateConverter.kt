@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.database.templates.model
+package ru.alexp0111.local_repo.database.templates.model
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter

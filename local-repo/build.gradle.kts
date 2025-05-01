@@ -34,8 +34,14 @@ android {
 }
 
 dependencies {
+    /** Modules */
+    implementation(project(":core"))
+
     /** Base core libraries */
     implementation(localDeps.kotlin)
+
+    /** Gson */
+    implementation(localDeps.gson)
 
     /** Dagger2 */
     implementation(localDeps.dagger)

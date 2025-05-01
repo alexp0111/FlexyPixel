@@ -19,8 +19,8 @@ import ru.alexp0111.core.model.FrameCycle
 import ru.alexp0111.core.model.Panel
 import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.core.model.PanelStatus
-import ru.alexp0111.flexypixel.database.schemes.SavedSchemeRepository
-import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
+import ru.alexp0111.local_repo.database.schemes.SavedSchemeRepository
+import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
 import ru.alexp0111.flexypixel.media.IMediaFilesProcessor
 import ru.alexp0111.flexypixel.media.model.MediaFileType

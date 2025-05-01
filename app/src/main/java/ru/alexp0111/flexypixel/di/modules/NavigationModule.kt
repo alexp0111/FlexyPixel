@@ -5,20 +5,20 @@ import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.Router
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
+import ru.alexp0111.core.di.AppScope
 
 @Module
 class NavigationModule {
     private val cicerone: Cicerone<Router> = Cicerone.create()
 
     @Provides
-    @Singleton
+    @AppScope
     fun provideRouter(): Router {
         return cicerone.router
     }
 
     @Provides
-    @Singleton
+    @AppScope
     fun provideNavigatorHolder(): NavigatorHolder {
         return cicerone.getNavigatorHolder()
     }

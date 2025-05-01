@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import ru.alexp0111.core_ui.common.text.LargeTextField
 import ru.alexp0111.core_ui.common.text.MediumTextField
 import ru.alexp0111.core_ui.theme.AppTheme
-import ru.alexp0111.flexypixel.database.templates.prepared.PreparedTemplatesLoader
+import ru.alexp0111.local_repo.database.templates.prepared.PreparedTemplatesLoader
 import ru.alexp0111.flexypixel.ui.templates.TemplatesViewModel
 import ru.alexp0111.flexypixel.ui.templates.model.TemplateItemUiModel
 import ru.alexp0111.flexypixel.ui.templates.model.TemplatesIntent

@@ -6,24 +6,24 @@ import android.content.Context
 import android.location.LocationManager
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
+import ru.alexp0111.core.di.AppScope
 
 @Module
 class BluetoothModule {
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideBluetoothManager(context: Context): BluetoothManager {
         return context.getSystemService(BluetoothManager::class.java)
     }
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideLocationManager(context: Context): LocationManager {
         return context.getSystemService(LocationManager::class.java)
     }
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideBluetoothAdapter(bluetoothManager: BluetoothManager): BluetoothAdapter {
         return bluetoothManager.adapter

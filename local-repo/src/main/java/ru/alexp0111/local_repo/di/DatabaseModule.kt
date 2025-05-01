@@ -1,20 +1,20 @@
-package ru.alexp0111.flexypixel.di.modules
+package ru.alexp0111.local_repo.di
 
 import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
-import ru.alexp0111.flexypixel.database.schemes.UserSavedSchemeDatabase
-import ru.alexp0111.flexypixel.database.schemes.data.FrameCycleConverter
-import ru.alexp0111.flexypixel.database.templates.PanelTemplateDatabase
-import ru.alexp0111.flexypixel.database.templates.model.DrawingColorConverter
-import ru.alexp0111.flexypixel.database.templates.model.PanelOrientationConverter
-import javax.inject.Singleton
+import ru.alexp0111.core.di.AppScope
+import ru.alexp0111.local_repo.database.schemes.UserSavedSchemeDatabase
+import ru.alexp0111.local_repo.database.schemes.data.FrameCycleConverter
+import ru.alexp0111.local_repo.database.templates.PanelTemplateDatabase
+import ru.alexp0111.local_repo.database.templates.model.DrawingColorConverter
+import ru.alexp0111.local_repo.database.templates.model.PanelOrientationConverter
 
 @Module
-internal class DatabaseModule {
+class DatabaseModule {
     @Provides
-    @Singleton
+    @AppScope
     fun provideUserSavedSchemeDatabase(context: Context): UserSavedSchemeDatabase {
         return Room.databaseBuilder(
             context,
@@ -26,7 +26,7 @@ internal class DatabaseModule {
     }
 
     @Provides
-    @Singleton
+    @AppScope
     fun providePanelTemplateDatabase(context: Context): PanelTemplateDatabase {
         return Room.databaseBuilder(
             context,

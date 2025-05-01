@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
+import ru.alexp0111.core.di.AppScope
 
 @Module
 class AppModule(
@@ -12,6 +12,6 @@ class AppModule(
 ) {
 
     @Provides
-    @Singleton
+    @AppScope
     fun provideContext(): Context = this.application
 }

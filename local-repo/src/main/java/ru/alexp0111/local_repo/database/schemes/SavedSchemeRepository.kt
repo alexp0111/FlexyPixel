@@ -1,7 +1,7 @@
-package ru.alexp0111.flexypixel.database.schemes
+package ru.alexp0111.local_repo.database.schemes
 
 import kotlinx.coroutines.flow.Flow
-import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
+import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 import javax.inject.Inject
 
 class SavedSchemeRepository @Inject constructor(

@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.database.schemes
+package ru.alexp0111.local_repo.database.schemes
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import ru.alexp0111.flexypixel.database.schemes.data.UserSavedScheme
+import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 
 @Dao
 interface UserSavedSchemeDao {

@@ -7,7 +7,7 @@ import ru.alexp0111.core.model.FrameCycle
 import ru.alexp0111.core.model.Panel
 import ru.alexp0111.core.model.PanelConfiguration
 import ru.alexp0111.core.model.PanelMetaData
-import ru.alexp0111.flexypixel.database.templates.model.PanelTemplate
+import ru.alexp0111.local_repo.database.templates.model.PanelTemplate
 import javax.inject.Inject
 
 internal class TemplatesMessageInteractor @Inject constructor(
