@@ -13,12 +13,12 @@ import ru.alexp0111.bt_service.model.message.MessagePanelConfiguration
 import ru.alexp0111.bt_service.model.message.MessageTransactionMode
 import ru.alexp0111.bt_service.model.message.MessageType
 import ru.alexp0111.bt_service.model.message.TestMessage
-import ru.alexp0111.core.di.AppScope
-import ru.alexp0111.core.model.FrameCycle
-import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.bt_service.model.message.converter.IMessageConverter
 import ru.alexp0111.bt_service.model.transfer.TransferResponse
 import ru.alexp0111.bt_service.model.transfer.TransferResult
+import ru.alexp0111.core.di.AppScope
+import ru.alexp0111.core.model.FrameCycle
+import ru.alexp0111.core.model.PanelMetaData
 import java.util.LinkedList
 import javax.inject.Inject
 
@@ -46,6 +46,7 @@ class MessageHandler @Inject constructor(
     private val messageQueue: LinkedList<BluetoothMessage> = LinkedList()
 
     private var _errors = MutableSharedFlow<String>(replay = 1)
+    private var _successResponse = MutableSharedFlow<String>(replay = 1)
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -53,6 +54,7 @@ class MessageHandler @Inject constructor(
                 isWaitingForResponse = false
                 when (it) {
                     is TransferResult.TransferSucceeded -> {
+                        _successResponse.tryEmit(it.message)
                         lastSentMessage = null
                         tryPopMessageQueue()
                     }
@@ -166,6 +168,8 @@ class MessageHandler @Inject constructor(
     }
 
     override fun getErrorFlow(): SharedFlow<String> = _errors.asSharedFlow()
+
+    override fun getResponseFlow(): SharedFlow<String> = _successResponse.asSharedFlow()
 }
 
 fun LinkedList<BluetoothMessage>.add(

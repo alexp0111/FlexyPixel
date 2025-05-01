@@ -31,5 +31,6 @@ internal data class TestTerminalMessage(
 
 internal enum class TestTerminalMessageType {
     REQUEST,
-    RESPONSE;
+    RESPONSE_ERROR,
+    RESPONSE_SUCCESS;
 }

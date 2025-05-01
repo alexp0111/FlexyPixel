@@ -101,37 +101,37 @@ internal fun getPreviewTestState(): TestUiState =
 private fun getPreviewList(): List<TestTerminalMessage> =
     listOf(
         TestTerminalMessage("CONF:5,6,7,8", TestTerminalMessageType.REQUEST),
-        TestTerminalMessage("SUCCES", TestTerminalMessageType.RESPONSE),
+        TestTerminalMessage("SUCCES", TestTerminalMessageType.RESPONSE_SUCCESS),
         TestTerminalMessage(
             "VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4",
             TestTerminalMessageType.REQUEST
         ),
         TestTerminalMessage("CONF:5,6,7,8", TestTerminalMessageType.REQUEST),
-        TestTerminalMessage("SUCCES", TestTerminalMessageType.RESPONSE),
+        TestTerminalMessage("ERROR", TestTerminalMessageType.RESPONSE_ERROR),
         TestTerminalMessage(
             "VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4",
             TestTerminalMessageType.REQUEST
         ),
         TestTerminalMessage("CONF:5,6,7,8", TestTerminalMessageType.REQUEST),
-        TestTerminalMessage("SUCCES", TestTerminalMessageType.RESPONSE),
+        TestTerminalMessage("SUCCES", TestTerminalMessageType.RESPONSE_SUCCESS),
         TestTerminalMessage(
             "VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4",
             TestTerminalMessageType.REQUEST
         ),
         TestTerminalMessage("CONF:5,6,7,8", TestTerminalMessageType.REQUEST),
-        TestTerminalMessage("SUCCES", TestTerminalMessageType.RESPONSE),
+        TestTerminalMessage("SUCCES", TestTerminalMessageType.RESPONSE_SUCCESS),
         TestTerminalMessage(
             "VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4",
             TestTerminalMessageType.REQUEST
         ),
         TestTerminalMessage("CONF:5,6,7,8", TestTerminalMessageType.REQUEST),
-        TestTerminalMessage("SUCCES", TestTerminalMessageType.RESPONSE),
+        TestTerminalMessage("SUCCES", TestTerminalMessageType.RESPONSE_SUCCESS),
         TestTerminalMessage(
             "VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4",
             TestTerminalMessageType.REQUEST
         ),
         TestTerminalMessage("CONF:5,6,7,8", TestTerminalMessageType.REQUEST),
-        TestTerminalMessage("SUCCES", TestTerminalMessageType.RESPONSE),
+        TestTerminalMessage("SUCCES", TestTerminalMessageType.RESPONSE_SUCCESS),
         TestTerminalMessage(
             "VERY LONG 123, 345, 34,5 12,4 1,4 ,1 4,23 2,2,5 ,34 5, 34, ,34 6, ,6 3 6,43 6,3 5, 3,24 ,4",
             TestTerminalMessageType.REQUEST

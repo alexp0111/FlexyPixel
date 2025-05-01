@@ -35,7 +35,17 @@ internal class TestViewModel @Inject constructor(
                 val terminalList = uiState.value.terminalMessages
                 val newMessage = TestTerminalMessage(
                     text = it,
-                    type = TestTerminalMessageType.RESPONSE,
+                    type = TestTerminalMessageType.RESPONSE_ERROR,
+                )
+                setState { copy(terminalMessages = terminalList + newMessage) }
+            }
+        }
+        launch {
+            messageHandler.getResponseFlow().collect {
+                val terminalList = uiState.value.terminalMessages
+                val newMessage = TestTerminalMessage(
+                    text = it,
+                    type = TestTerminalMessageType.RESPONSE_SUCCESS,
                 )
                 setState { copy(terminalMessages = terminalList + newMessage) }
             }

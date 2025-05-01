@@ -35,6 +35,7 @@ import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.theme.beigeDark
 import ru.alexp0111.core_ui.theme.beigeStandard
 import ru.alexp0111.core_ui.theme.black
+import ru.alexp0111.core_ui.theme.red
 import ru.alexp0111.flexypixel.ui.test.model.TestIntent
 import ru.alexp0111.flexypixel.ui.test.model.TestTerminalMessageType
 import ru.alexp0111.flexypixel.ui.test.model.TestUiState
@@ -57,7 +58,8 @@ internal fun TerminalScreen(
                     text = it.text,
                     color = when (it.type) {
                         TestTerminalMessageType.REQUEST -> beigeDark
-                        TestTerminalMessageType.RESPONSE -> black
+                        TestTerminalMessageType.RESPONSE_SUCCESS -> black
+                        TestTerminalMessageType.RESPONSE_ERROR -> red
                     }
                 )
             }
