@@ -145,6 +145,7 @@ class MessageHandler @Inject constructor(
     override fun updateConfiguration(configuration: Set<PanelMetaData>) {
         val panelMetaDataMessage = messageConverter.convertPanelMetaDataToMessage(configuration)
         updateConfiguration(panelMetaDataMessage)
+        tryPopMessageQueue()
     }
 
     private fun updateConfiguration(incomingMessagePanelConfiguration: MessagePanelConfiguration) {
@@ -157,14 +158,17 @@ class MessageHandler @Inject constructor(
 
     override fun sendTestMessage(message: String) {
         messageQueue.add(TestMessage(message))
+        tryPopMessageQueue()
     }
 
     override fun saveCurrentState() {
         messageQueue.add(MessageType.SAVE)
+        tryPopMessageQueue()
     }
 
     override fun clearCurrentState() {
         messageQueue.add(MessageType.RSTP)
+        tryPopMessageQueue()
     }
 
     override fun getErrorFlow(): SharedFlow<String> = _errors.asSharedFlow()
