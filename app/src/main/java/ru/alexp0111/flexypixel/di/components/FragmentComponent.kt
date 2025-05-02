@@ -8,6 +8,7 @@ import ru.alexp0111.flexypixel.ui.drawing.DrawingFragment
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelFragment
 
 import ru.alexp0111.flexypixel.ui.menu.MenuFragment
+import ru.alexp0111.flexypixel.ui.profile.ProfileFragment
 import ru.alexp0111.flexypixel.ui.savedScheme.SavedSchemesFragment
 import ru.alexp0111.flexypixel.ui.start.device_pairing.SearchBluetoothDevicesFragment
 import ru.alexp0111.flexypixel.ui.start.resolve_screen.StartFragment
@@ -28,6 +29,7 @@ internal interface FragmentComponent {
     fun inject(fragment: SavedSchemesFragment)
     fun inject(fragment: TemplatesFragment)
     fun inject(fragment: AuthFragment)
+    fun inject(fragment: ProfileFragment)
 
     companion object {
         fun from(fragment: Fragment) : FragmentComponent {

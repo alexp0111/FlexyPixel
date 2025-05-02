@@ -86,8 +86,11 @@ private fun OptionsList(
                 onClick = { intentHandler(MenuIntent.MenuItemClicked(menuItem.menuItemType)) }
             )
         }
-        if (uiState.value.isDebugEnabled) {
-            Box(Modifier.padding(top = 16.dp)) {
+        Row(
+            modifier = Modifier.padding(top = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(32.dp)
+        ) {
+            if (uiState.value.isDebugEnabled) {
                 NeoImageButton(
                     imageId = coreDesignR.drawable.ic_debug,
                     scale = 0.8f,
@@ -95,6 +98,12 @@ private fun OptionsList(
                     onClick = { intentHandler(MenuIntent.MenuItemClicked(MenuItemType.DEBUG)) }
                 )
             }
+            NeoImageButton(
+                imageId = coreDesignR.drawable.ic_profile,
+                scale = 0.8f,
+                modifier = Modifier.size(64.dp),
+                onClick = { intentHandler(MenuIntent.MenuItemClicked(MenuItemType.PROFILE)) }
+            )
         }
     }
 }
