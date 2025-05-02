@@ -49,5 +49,6 @@ class MenuViewModel @Inject constructor(
             MenuItemType.SAVED_SCHEME -> router.navigateTo(Screens.SavedSchemesScreen())
             MenuItemType.TEMPLATE -> router.navigateTo(Screens.TemplatesScreen())
             MenuItemType.DEBUG -> router.navigateTo(Screens.TestScreen())
+            MenuItemType.PROFILE -> router.navigateTo(Screens.ProfileScreen())
         }
 }

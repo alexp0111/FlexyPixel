@@ -2,9 +2,11 @@ package ru.alexp0111.flexypixel.navigation
 
 
 import com.github.terrakok.cicerone.androidx.FragmentScreen
+import ru.alexp0111.flexypixel.ui.auth.AuthFragment
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelFragment
 import ru.alexp0111.flexypixel.ui.drawing.DrawingFragment
 import ru.alexp0111.flexypixel.ui.menu.MenuFragment
+import ru.alexp0111.flexypixel.ui.profile.ProfileFragment
 import ru.alexp0111.flexypixel.ui.savedScheme.SavedSchemesFragment
 import ru.alexp0111.flexypixel.ui.start.device_pairing.SearchBluetoothDevicesFragment
 import ru.alexp0111.flexypixel.ui.start.resolve_screen.StartFragment
@@ -53,5 +55,13 @@ object Screens {
 
     fun SavedSchemesScreen() = FragmentScreen {
         SavedSchemesFragment()
+    }
+
+    fun AuthScreen() = FragmentScreen {
+        AuthFragment.newInstance()
+    }
+
+    fun ProfileScreen() = FragmentScreen {
+        ProfileFragment.newInstance()
     }
 }

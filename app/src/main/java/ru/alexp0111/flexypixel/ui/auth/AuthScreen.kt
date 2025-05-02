@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +24,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -87,7 +89,12 @@ private fun AuthScreenContent(
                 ProfilePicture(uiState)
             }
             UserCredentials(uiState, intentHandler)
-            FlexyPixelLogo()
+            Box(
+                modifier = Modifier.fillMaxHeight(),
+                contentAlignment = Alignment.Center,
+            ) {
+                FlexyPixelLogo()
+            }
         }
     }
 }
@@ -193,10 +200,9 @@ private fun UserCredentials(
 @Composable
 private fun FlexyPixelLogo() {
     Image(
-        modifier = Modifier
-            .fillMaxSize()
-            .scale(0.25f),
+        modifier = Modifier.fillMaxWidth().scale(1.5f),
         painter = painterResource(coreDesignR.drawable.flexy_pixel_logo),
+        contentScale = ContentScale.Fit,
         contentDescription = null
     )
 }

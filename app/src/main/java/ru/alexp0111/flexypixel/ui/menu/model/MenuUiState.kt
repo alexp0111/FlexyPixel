@@ -21,4 +21,5 @@ enum class MenuItemType {
     SAVED_SCHEME,
     TEMPLATE,
     DEBUG,
+    PROFILE,
 }
