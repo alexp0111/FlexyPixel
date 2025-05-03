@@ -6,8 +6,10 @@ import ru.alexp0111.core.viewmodel.MVIViewModel
 import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.ui.auth.model.AuthEffect
 import ru.alexp0111.flexypixel.ui.auth.model.AuthIntent
+import ru.alexp0111.flexypixel.ui.auth.model.AuthScreenType
 import ru.alexp0111.flexypixel.ui.auth.model.AuthUiState
 import ru.alexp0111.remote_repo.auth.model.ApiLoginModel
+import ru.alexp0111.remote_repo.auth.model.ApiRegisterModel
 import ru.alexp0111.remote_repo.auth.repository.IAuthRepository
 import ru.alexp0111.remote_repo.token.TokenManager
 import javax.inject.Inject
@@ -22,17 +24,20 @@ internal class AuthViewModel @Inject constructor(
 
     override fun handleIntent(intent: AuthIntent) =
         when (intent) {
-            is AuthIntent.OnEmailChanged -> setState { copy(email = intent.email) }
+            is AuthIntent.OnLoginChanged -> setState { copy(login = intent.login) }
             is AuthIntent.OnPasswordChanged -> setState { copy(password = intent.password) }
-            is AuthIntent.OnUsernameChanged -> setState { copy(username = intent.username) }
+            is AuthIntent.OnDisplayNameChanged -> setState { copy(displayName = intent.displayName) }
+            is AuthIntent.OnEmailChanged -> setState { copy(email = intent.email) }
             AuthIntent.OnLoginClicked -> login()
-            AuthIntent.OnRegisterClicked -> { /* todo */ }
+            AuthIntent.OnRegisterClicked -> register()
             AuthIntent.OnResetPasswordClicked -> { /* todo */ }
+            AuthIntent.OnGoToRegisterClicked -> setState { copy(type = AuthScreenType.REGISTER) }
+            AuthIntent.OnGoToLoginClicked -> setState { copy(type = AuthScreenType.LOGIN) }
         }
 
     private fun login() {
         val loginModel = ApiLoginModel(
-            loginOrEmail = uiState.value.username,
+            loginOrEmail = uiState.value.login,
             password = uiState.value.password,
         )
         launch {
@@ -44,6 +49,25 @@ internal class AuthViewModel @Inject constructor(
                 tokenManager.saveToken(TokenManager.REFRESH, it)
             }
             router.newRootScreen(Screens.StartScreen())
+        }
+    }
+
+    private fun register() {
+        val registerModel = ApiRegisterModel(
+            email = uiState.value.email,
+            displayName = uiState.value.displayName,
+            login = uiState.value.login,
+            password = uiState.value.password,
+        )
+        launch {
+            authRepository.register(registerModel)
+            // todo: notify register successfully
+            setState {
+                copy(
+                    type = AuthScreenType.LOGIN,
+                    password = "",
+                )
+            }
         }
     }
 }

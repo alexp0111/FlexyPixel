@@ -14,7 +14,7 @@ class ProfileInteractor @Inject constructor(
     override suspend fun getUser(): UserModel {
         val apiUser = profileRepository.getUser()
         return UserModel(
-            username = apiUser?.username.orEmpty(),
+            displayName = apiUser?.displayName.orEmpty(),
             email = apiUser?.email.orEmpty(),
             registerDate = getFormattedDate(apiUser?.createdAt.orEmpty()),
             profileUri = apiUser?.avatarUrl?.toUri(),
