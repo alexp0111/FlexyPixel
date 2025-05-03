@@ -21,7 +21,7 @@ internal class ProfileViewModel @Inject constructor(
             profileInteractor.getUser().let { user ->
                 setState {
                     copy(
-                        username = user.username,
+                        username = user.displayName,
                         email = user.email,
                         registerDate = user.registerDate,
                         profileUri = user.profileUri,

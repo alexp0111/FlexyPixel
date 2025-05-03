@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,7 @@ fun LargeEditTextField(
     align: TextAlign = TextAlign.Start,
     imeAction: ImeAction = ImeAction.Done,
     inputType: KeyboardType = KeyboardType.Unspecified,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     singleLine: Boolean = true,
     indicatorColor: Color = black,
     onValueChanged: (String) -> Unit,
@@ -43,6 +45,7 @@ fun LargeEditTextField(
         singleLine = singleLine,
         onValueChange = onValueChanged,
         keyboardOptions = KeyboardOptions(imeAction = imeAction, keyboardType = inputType),
+        visualTransformation = visualTransformation,
         colors = TextFieldDefaults.colors().copy(
             unfocusedContainerColor = flexyPixelColorScheme.background,
             focusedContainerColor = flexyPixelColorScheme.background,
@@ -70,6 +73,7 @@ fun MediumEditTextField(
     align: TextAlign = TextAlign.Start,
     imeAction: ImeAction = ImeAction.Done,
     inputType: KeyboardType = KeyboardType.Unspecified,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     singleLine: Boolean = true,
     indicatorColor: Color = black,
     onValueChanged: (String) -> Unit,
@@ -82,6 +86,7 @@ fun MediumEditTextField(
         singleLine = singleLine,
         onValueChange = onValueChanged,
         keyboardOptions = KeyboardOptions(imeAction = imeAction, keyboardType = inputType),
+        visualTransformation = visualTransformation,
         colors = TextFieldDefaults.colors().copy(
             unfocusedContainerColor = flexyPixelColorScheme.background,
             focusedContainerColor = flexyPixelColorScheme.background,

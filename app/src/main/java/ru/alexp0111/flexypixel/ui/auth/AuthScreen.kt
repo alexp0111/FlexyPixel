@@ -27,6 +27,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,6 +46,7 @@ import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.theme.beigeDark
 import ru.alexp0111.core_ui.theme.beigeStandard
 import ru.alexp0111.flexypixel.ui.auth.model.AuthIntent
+import ru.alexp0111.flexypixel.ui.auth.model.AuthScreenType
 import ru.alexp0111.flexypixel.ui.auth.model.AuthUiState
 import ru.alexp0111.core_ui.R as coreDesignR
 
@@ -68,12 +71,20 @@ private fun AuthScreenContent(
             }
         },
         bottomBar = {
+            val text = when (uiState.value.type) {
+                AuthScreenType.LOGIN -> "Forget your password?"
+                AuthScreenType.REGISTER -> "Back to login"
+            }
+            val intent = when (uiState.value.type) {
+                AuthScreenType.LOGIN -> AuthIntent.OnResetPasswordClicked
+                AuthScreenType.REGISTER -> AuthIntent.OnGoToLoginClicked
+            }
             SmallTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(32.dp)
-                    .clickable { intentHandler(AuthIntent.OnResetPasswordClicked) },
-                text = "Forget your password?",
+                    .clickable { intentHandler(intent) },
+                text = text,
                 align = TextAlign.Center,
                 color = beigeDark,
             )
@@ -139,13 +150,43 @@ private fun UserCredentials(
                 .padding(horizontal = 32.dp, vertical = 8.dp)
         ) {
             MediumEditTextField(
-                hint = "Username",
-                initialText = uiState.value.username,
+                hint = "Login",
+                initialText = uiState.value.login,
                 modifier = Modifier.fillMaxWidth(),
                 indicatorColor = beigeStandard,
                 imeAction = ImeAction.Next,
-                onValueChanged = { intentHandler(AuthIntent.OnUsernameChanged(it)) },
+                onValueChanged = { intentHandler(AuthIntent.OnLoginChanged(it)) },
             )
+        }
+        if (uiState.value.type == AuthScreenType.REGISTER) {
+            NeoSlot(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp, vertical = 8.dp)
+            ) {
+                MediumEditTextField(
+                    hint = "Display name",
+                    initialText = uiState.value.displayName,
+                    modifier = Modifier.fillMaxWidth(),
+                    indicatorColor = beigeStandard,
+                    imeAction = ImeAction.Next,
+                    onValueChanged = { intentHandler(AuthIntent.OnDisplayNameChanged(it)) },
+                )
+            }
+            NeoSlot(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp, vertical = 8.dp)
+            ) {
+                MediumEditTextField(
+                    hint = "Email",
+                    initialText = uiState.value.email,
+                    modifier = Modifier.fillMaxWidth(),
+                    indicatorColor = beigeStandard,
+                    imeAction = ImeAction.Next,
+                    onValueChanged = { intentHandler(AuthIntent.OnEmailChanged(it)) },
+                )
+            }
         }
         Row(
             modifier = Modifier
@@ -160,38 +201,38 @@ private fun UserCredentials(
                     initialText = uiState.value.password,
                     modifier = Modifier.fillMaxWidth(),
                     indicatorColor = beigeStandard,
-                    imeAction = ImeAction.Next,
+                    inputType = KeyboardType.Password,
+                    imeAction = ImeAction.Done,
+                    visualTransformation = PasswordVisualTransformation(),
                     onValueChanged = { intentHandler(AuthIntent.OnPasswordChanged(it)) },
                 )
             }
-            NeoImageButton(
-                imageId = R.drawable.ic_done,
-                scale = 0.8f,
-                modifier = Modifier.size(64.dp),
-                onClick = { intentHandler(AuthIntent.OnLoginClicked) }
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            NeoSlot(modifier = Modifier.weight(1f)) {
-                MediumEditTextField(
-                    hint = "Email",
-                    initialText = uiState.value.email,
-                    modifier = Modifier.fillMaxWidth(),
-                    indicatorColor = beigeStandard,
-                    onValueChanged = { intentHandler(AuthIntent.OnEmailChanged(it)) },
-                )
+            val icon = when (uiState.value.type) {
+                AuthScreenType.LOGIN -> R.drawable.ic_done
+                AuthScreenType.REGISTER -> R.drawable.ic_add_account
             }
             NeoImageButton(
-                imageId = R.drawable.ic_add_account,
+                imageId = icon,
                 scale = 0.8f,
                 modifier = Modifier.size(64.dp),
-                onClick = { intentHandler(AuthIntent.OnRegisterClicked) }
+                onClick = {
+                    val intent = when (uiState.value.type) {
+                        AuthScreenType.LOGIN -> AuthIntent.OnLoginClicked
+                        AuthScreenType.REGISTER -> AuthIntent.OnRegisterClicked
+                    }
+                    intentHandler(intent)
+                }
+            )
+        }
+        if (uiState.value.type == AuthScreenType.LOGIN) {
+            SmallTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+                    .clickable { intentHandler(AuthIntent.OnGoToRegisterClicked) },
+                text = "Or register",
+                align = TextAlign.Center,
+                color = beigeDark,
             )
         }
     }
@@ -200,7 +241,9 @@ private fun UserCredentials(
 @Composable
 private fun FlexyPixelLogo() {
     Image(
-        modifier = Modifier.fillMaxWidth().scale(1.5f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .scale(1.5f),
         painter = painterResource(coreDesignR.drawable.flexy_pixel_logo),
         contentScale = ContentScale.Fit,
         contentDescription = null
@@ -225,7 +268,9 @@ private fun AuthScreenContentPreview() {
             uiState = remember {
                 mutableStateOf(
                     AuthUiState(
-                        username = "Username",
+                        type = AuthScreenType.REGISTER,
+                        login = "Login",
+                        displayName = "My name",
                         password = "123456",
                         email = "email@mail.ru",
                         profileUri = Uri.EMPTY,
