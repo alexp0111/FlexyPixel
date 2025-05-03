@@ -157,7 +157,7 @@ private fun UserCredentials(
             NeoSlot(modifier = Modifier.weight(1f)) {
                 MediumEditTextField(
                     hint = "Password",
-                    initialText = uiState.value.username,
+                    initialText = uiState.value.password,
                     modifier = Modifier.fillMaxWidth(),
                     indicatorColor = beigeStandard,
                     imeAction = ImeAction.Next,

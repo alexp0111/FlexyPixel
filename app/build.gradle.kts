@@ -34,6 +34,7 @@ android {
     buildFeatures {
         viewBinding = true
         compose = true
+        buildConfig = true
     }
     kotlinOptions {
         jvmTarget = "17"
@@ -50,6 +51,7 @@ dependencies {
     implementation(project(":local-repo"))
     implementation(project(":bt-service"))
     implementation(project(":media-loader"))
+    implementation(project(":remote-repo"))
 
     /** Base core libraries */
     implementation(localDeps.lifecycleRuntime)
@@ -84,6 +86,14 @@ dependencies {
 
     /** Gson */
     implementation(localDeps.gson)
+
+    /** Retrofit */
+    implementation(localDeps.retrofit)
+    implementation(localDeps.retrofitConverter)
+    implementation(localDeps.loggingInterceptor)
+
+    /** Security */
+    implementation(localDeps.securityCrypto)
 
     /** Room */
     implementation(localDeps.room)

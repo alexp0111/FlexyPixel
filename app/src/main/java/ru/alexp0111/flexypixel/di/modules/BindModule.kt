@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
 import ru.alexp0111.flexypixel.business.panel_validation.PanelPositionValidator
+import ru.alexp0111.flexypixel.business.profile.IProfileInteractor
+import ru.alexp0111.flexypixel.business.profile.ProfileInteractor
 import ru.alexp0111.flexypixel.business.templates.ITemplatesMessageInteractor
 import ru.alexp0111.flexypixel.business.templates.TemplatesMessageInteractor
 import ru.alexp0111.flexypixel.media.BitmapProcessor
@@ -34,4 +36,7 @@ internal interface BindModule {
 
     @Binds
     fun bindTemplatesMessageInteractor(interactor: TemplatesMessageInteractor): ITemplatesMessageInteractor
+
+    @Binds
+    fun bindProfileInteractor(interactor: ProfileInteractor): IProfileInteractor
 }

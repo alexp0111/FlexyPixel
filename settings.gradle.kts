@@ -40,6 +40,13 @@ dependencyResolutionManagement {
 
             library("composeNeomorphism", "me.nikhilchaudhari:composeNeumorphism:1.0.0-alpha02")
 
+            library("retrofit", "com.squareup.retrofit2:retrofit:2.11.0")
+            library("retrofitConverter", "com.squareup.retrofit2:converter-gson:2.11.0")
+            library("loggingInterceptor", "com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+
+            library("securityCrypto", "androidx.security:security-crypto:1.0.0")
+
             library("composeRuntime", "androidx.compose.runtime:runtime:1.7.0")
             library("composeMaterial", "androidx.compose.material3:material3-android:1.3.1")
             library("composeFoundation", "androidx.compose.foundation:foundation-android:1.7.0")
@@ -70,3 +77,4 @@ include(":core-ui")
 include(":local-repo")
 include(":bt-service")
 include(":media-loader")
+include(":remote-repo")
