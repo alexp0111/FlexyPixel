@@ -109,6 +109,7 @@ private fun ProfilePicture(uiState: State<ProfileUiState>) {
             } else {
                 GlideImage(
                     model = uri,
+                    contentScale = ContentScale.Crop,
                     contentDescription = null
                 )
             }
