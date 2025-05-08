@@ -32,7 +32,7 @@ import ru.alexp0111.core.model.DrawingColor
 import ru.alexp0111.core.model.PanelStatus
 import ru.alexp0111.core_ui.common.NeoImageButton
 import ru.alexp0111.core_ui.common.NeoSlot
-import ru.alexp0111.core_ui.common.model.Coordinate
+import ru.alexp0111.core.model.Coordinate
 import ru.alexp0111.core_ui.common.text.LargeTextField
 import ru.alexp0111.core_ui.common.text.MediumTextField
 import ru.alexp0111.core_ui.theme.AppTheme

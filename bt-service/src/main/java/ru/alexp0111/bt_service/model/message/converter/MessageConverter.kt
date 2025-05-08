@@ -5,6 +5,7 @@ import ru.alexp0111.bt_service.model.message.MessageFramesMetaData
 import ru.alexp0111.bt_service.model.message.MessagePanelConfiguration
 import ru.alexp0111.bt_service.model.message.MessagePixel
 import ru.alexp0111.core.CommonSizeConstants
+import ru.alexp0111.core.model.Coordinate
 import ru.alexp0111.core.model.Frame
 import ru.alexp0111.core.model.FrameCycle
 import ru.alexp0111.core.model.Panel
@@ -14,11 +15,42 @@ import javax.inject.Inject
 
 class MessageConverter @Inject constructor() : IMessageConverter {
 
-    override fun convertPixelToMessage(panelOrder: Int, pixelOrder: Int, r: Int, g: Int, b: Int): MessagePixel {
-        val reversedPixelPosition = CommonSizeConstants.PANEL_PIXEL_TOTAL_AMOUNT - pixelOrder - 1
+    override fun convertPixelToMessage(
+        panelOrder: Int,
+        orientation: PanelOrientation,
+        pixelOrder: Int,
+        r: Int,
+        g: Int,
+        b: Int
+    ): MessagePixel {
+        // get coordinates
+        val coordinate = Coordinate(
+            x = pixelOrder % CommonSizeConstants.PANEL_PIXEL_SIDE,
+            y = pixelOrder / CommonSizeConstants.PANEL_PIXEL_SIDE
+        )
+        // rotate left
+        val rotatedLeftCoordinate = Coordinate(
+            x = coordinate.y,
+            y = CommonSizeConstants.PANEL_PIXEL_SIDE - coordinate.x - 1
+        )
+        // mirror x
+        var mirroredCoordinate = Coordinate(
+            x = CommonSizeConstants.PANEL_PIXEL_SIDE - rotatedLeftCoordinate.x - 1,
+            y = rotatedLeftCoordinate.y,
+        )
+        // rotate with orientation
+        repeat(getRotationTimesByOrientation(orientation)) {
+            mirroredCoordinate = Coordinate(
+                x = CommonSizeConstants.PANEL_PIXEL_SIDE - mirroredCoordinate.y - 1,
+                y = mirroredCoordinate.x
+            )
+        }
+        // convert to list position
+        val trimmedOrder = mirroredCoordinate.y * CommonSizeConstants.PANEL_PIXEL_SIDE + mirroredCoordinate.x
+
         return MessagePixel(
             panelPosition = panelOrder,
-            pixelPosition = parseIntToMessageString(reversedPixelPosition),
+            pixelPosition = parseIntToMessageString(trimmedOrder),
             pixelColor = "$r$g$b"
         )
     }
@@ -63,18 +95,20 @@ class MessageConverter @Inject constructor() : IMessageConverter {
     }
 
     private fun applyRotationToPanel(panel: Panel, orientation: PanelOrientation): Panel {
-        val rotationTimes = when (orientation) {
-            PanelOrientation.LEFT -> 0
-            PanelOrientation.DOWN -> 1
-            PanelOrientation.RIGHT -> 2
-            PanelOrientation.UP -> 3
-        }
-
-        val pixels = rotateMatrixByClock(panel.pixels, rotationTimes)
-            .reversedArray() // Specialty of panel hardware organization
-
+        val preRotated = rotateMatrixByClock(panel.pixels, 3)
+        val mirrored = mirrorMatrixByVertical(preRotated)
+        val rotationTimes = getRotationTimesByOrientation(orientation)
+        val pixels = rotateMatrixByClock(mirrored, rotationTimes)
         return Panel(pixels)
     }
+
+    private fun getRotationTimesByOrientation(orientation: PanelOrientation) =
+        when (orientation) {
+            PanelOrientation.LEFT -> 0
+            PanelOrientation.DOWN -> 3
+            PanelOrientation.RIGHT -> 2
+            PanelOrientation.UP -> 1
+        }
 
     private fun rotateMatrixByClock(pixels: Array<String>, times: Int): Array<String> {
         if (times == 0) return pixels
@@ -90,11 +124,19 @@ class MessageConverter @Inject constructor() : IMessageConverter {
         return rotateMatrixByClock(rotatedMatrix.toTypedArray(), times - 1)
     }
 
+    private fun mirrorMatrixByVertical(pixels: Array<String>): Array<String> {
+        val mirroredMatrix = mutableListOf<String>()
+        pixels.toList().windowed(CommonSizeConstants.PANEL_PIXEL_SIDE, CommonSizeConstants.PANEL_PIXEL_SIDE) {
+            mirroredMatrix.addAll(it.reversed())
+        }
+        return mirroredMatrix.toTypedArray()
+    }
+
 }
 
 internal fun Frame.toMessageFrame(): MessageFrame =
     MessageFrame(
         buildString {
-            panels.forEach { append(it::asMessage) }
+            panels.forEach { append(it.pixels.joinToString("")) }
         }
     )

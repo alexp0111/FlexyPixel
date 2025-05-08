@@ -24,7 +24,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
-import ru.alexp0111.core_ui.common.model.Coordinate
+import ru.alexp0111.core.model.Coordinate
 
 private class DraggableItemInfo {
     var dndObject by mutableStateOf<(@Composable (Int) -> Unit)?>(null)

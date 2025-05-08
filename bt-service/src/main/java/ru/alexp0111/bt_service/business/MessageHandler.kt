@@ -19,6 +19,7 @@ import ru.alexp0111.bt_service.model.transfer.TransferResult
 import ru.alexp0111.core.di.AppScope
 import ru.alexp0111.core.model.FrameCycle
 import ru.alexp0111.core.model.PanelMetaData
+import ru.alexp0111.core.model.PanelOrientation
 import java.util.LinkedList
 import javax.inject.Inject
 
@@ -104,12 +105,12 @@ class MessageHandler @Inject constructor(
         }
     }
 
-    override fun sendPixel(panelOrder: Int, pixelOrder: Int, r: Int, g: Int, b: Int) {
+    override fun sendPixel(panelOrder: Int, orientation: PanelOrientation, pixelOrder: Int, r: Int, g: Int, b: Int) {
         changeModeIfNeeded(MessageTransactionMode.PIXEL)
 
         messageQueue.add(
             type = MessageType.DATA,
-            message = messageConverter.convertPixelToMessage(panelOrder, pixelOrder, r, g, b)
+            message = messageConverter.convertPixelToMessage(panelOrder, orientation, pixelOrder, r, g, b)
         )
         tryPopMessageQueue()
     }
@@ -145,7 +146,6 @@ class MessageHandler @Inject constructor(
     override fun updateConfiguration(configuration: Set<PanelMetaData>) {
         val panelMetaDataMessage = messageConverter.convertPanelMetaDataToMessage(configuration)
         updateConfiguration(panelMetaDataMessage)
-        tryPopMessageQueue()
     }
 
     private fun updateConfiguration(incomingMessagePanelConfiguration: MessagePanelConfiguration) {
@@ -157,8 +157,8 @@ class MessageHandler @Inject constructor(
     }
 
     override fun sendTestMessage(message: String) {
-        messageQueue.add(TestMessage(message))
-        tryPopMessageQueue()
+         messageQueue.add(TestMessage(message))
+         tryPopMessageQueue()
     }
 
     override fun saveCurrentState() {

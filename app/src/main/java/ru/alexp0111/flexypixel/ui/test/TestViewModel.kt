@@ -10,6 +10,7 @@ import ru.alexp0111.core.model.FrameCycle
 import ru.alexp0111.core.model.Panel
 import ru.alexp0111.core.model.PanelConfiguration
 import ru.alexp0111.core.model.PanelMetaData
+import ru.alexp0111.core.model.PanelOrientation
 import ru.alexp0111.core.model.PanelStatus
 import ru.alexp0111.core.viewmodel.MVIViewModel
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
@@ -83,6 +84,7 @@ internal class TestViewModel @Inject constructor(
         messageHandler.sendPixel(
             panelOrder = testPixelModel.panel ?: 0,
             pixelOrder = testPixelModel.pixel ?: 0,
+            orientation = PanelOrientation.LEFT,
             r = testPixelModel.r ?: 0,
             g = testPixelModel.g ?: 0,
             b = testPixelModel.b ?: 0,

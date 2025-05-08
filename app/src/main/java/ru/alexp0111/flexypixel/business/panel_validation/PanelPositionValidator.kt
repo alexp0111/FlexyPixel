@@ -1,6 +1,6 @@
 package ru.alexp0111.flexypixel.business.panel_validation
 
-import ru.alexp0111.core_ui.common.model.Coordinate
+import ru.alexp0111.core.model.Coordinate
 import ru.alexp0111.core.model.PanelMetaData
 import ru.alexp0111.core.model.PanelOrientation
 import ru.alexp0111.core.model.PanelStatus

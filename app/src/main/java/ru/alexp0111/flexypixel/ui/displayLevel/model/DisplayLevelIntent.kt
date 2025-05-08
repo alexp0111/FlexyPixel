@@ -1,7 +1,7 @@
 package ru.alexp0111.flexypixel.ui.displayLevel.model
 
 import android.net.Uri
-import ru.alexp0111.core_ui.common.model.Coordinate
+import ru.alexp0111.core.model.Coordinate
 
 internal sealed interface DisplayLevelIntent {
     data class InitSegment(val segmentNumber: Int): DisplayLevelIntent
