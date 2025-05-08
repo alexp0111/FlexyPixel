@@ -1,6 +1,7 @@
 package ru.alexp0111.flexypixel.business.panel_validation
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -23,6 +24,11 @@ internal class PanelPositionValidatorTest {
         expected: Boolean,
     ) {
         assertEquals(expected, validator.checkIfSelectedAreaSquare(incomingPanels))
+    }
+
+    @Test
+    fun brokenTest() {
+        assertEquals(true, false)
     }
 
     @ParameterizedTest
