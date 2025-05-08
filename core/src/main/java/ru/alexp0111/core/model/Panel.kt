@@ -15,9 +15,4 @@ data class Panel(
     override fun hashCode(): Int {
         return pixels.contentHashCode()
     }
-
-    fun asMessage(): String {
-        return pixels.joinToString("")
-    }
-
 }

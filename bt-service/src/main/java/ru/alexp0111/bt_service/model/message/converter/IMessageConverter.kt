@@ -6,9 +6,10 @@ import ru.alexp0111.bt_service.model.message.MessagePanelConfiguration
 import ru.alexp0111.bt_service.model.message.MessagePixel
 import ru.alexp0111.core.model.FrameCycle
 import ru.alexp0111.core.model.PanelMetaData
+import ru.alexp0111.core.model.PanelOrientation
 
 interface IMessageConverter {
-    fun convertPixelToMessage(panelOrder: Int, pixelOrder: Int, r: Int, g: Int, b: Int): MessagePixel
+    fun convertPixelToMessage(panelOrder: Int, orientation: PanelOrientation, pixelOrder: Int, r: Int, g: Int, b: Int): MessagePixel
     fun convertFramesToMetaDataMessage(frames: List<MessageFrame>, interframeDelay: Int): MessageFramesMetaData
     fun convertFramesToMessage(frameCycle: FrameCycle): List<MessageFrame>
     fun convertPanelMetaDataToMessage(configuration: Set<PanelMetaData>): MessagePanelConfiguration

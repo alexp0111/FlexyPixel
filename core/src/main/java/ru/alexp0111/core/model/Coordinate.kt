@@ -1,4 +1,4 @@
-package ru.alexp0111.core_ui.common.model
+package ru.alexp0111.core.model
 
 import androidx.compose.runtime.Immutable
 
