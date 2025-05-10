@@ -167,6 +167,11 @@ class MessageHandler @Inject constructor(
     }
 
     override fun clearCurrentState() {
+        configuration = null
+        lastSentMessage = null
+        lastSentMessageType = null
+        mode = null
+
         messageQueue.add(MessageType.RSTP)
         tryPopMessageQueue()
     }

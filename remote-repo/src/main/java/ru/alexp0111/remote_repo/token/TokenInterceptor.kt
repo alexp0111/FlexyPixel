@@ -7,6 +7,7 @@ import ru.alexp0111.remote_repo.auth.AuthService
 import ru.alexp0111.remote_repo.token.model.ApiRefreshToken
 import javax.inject.Inject
 
+private const val TOKEN_EXPIRED_ERROR_CODE = 401
 
 class TokenInterceptor @Inject constructor(
     private val tokenManager: TokenManager,
@@ -24,7 +25,7 @@ class TokenInterceptor @Inject constructor(
             try {
                 val response = chain.proceed(request)
 
-                if (response.code == 401) {
+                if (response.code == TOKEN_EXPIRED_ERROR_CODE) {
                     updateToken()
                     val newAccessToken = tokenManager.getToken(TokenManager.ACCESS).orEmpty()
 

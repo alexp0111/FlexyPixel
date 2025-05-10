@@ -96,6 +96,7 @@ class TokenManager @Inject constructor(
         val decryptedContent = cipher.doFinal(content)
         return decryptedContent.decodeToString()
     }
+
     fun saveToken(tokenType: String, token: String) {
         val encryptedToken = encryptToken(token)
         val sharedPrefs = context.getSharedPreferences("token_storage", Context.MODE_PRIVATE)

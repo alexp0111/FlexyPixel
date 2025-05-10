@@ -63,8 +63,8 @@ internal class GlobalStateHandler @AssistedInject constructor(
         Log.d(TAG, "in init block")
         scope.launch {
             val id = schemeId
+            messageHandler.clearCurrentState()
             frameCycle = if (id == null) {
-                messageHandler.clearCurrentState()
                 FrameCycle.getNewInstance()
             } else {
                 val cycle = databaseRepository.getSchemeById(id).frameCycle
