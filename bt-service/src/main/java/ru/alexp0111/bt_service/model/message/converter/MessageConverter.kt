@@ -6,11 +6,11 @@ import ru.alexp0111.bt_service.model.message.MessagePanelConfiguration
 import ru.alexp0111.bt_service.model.message.MessagePixel
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.model.Coordinate
-import ru.alexp0111.core.model.Frame
-import ru.alexp0111.core.model.FrameCycle
-import ru.alexp0111.core.model.Panel
-import ru.alexp0111.core.model.PanelMetaData
-import ru.alexp0111.core.model.PanelOrientation
+import ru.alexp0111.core.model.main.Frame
+import ru.alexp0111.core.model.main.FrameCycle
+import ru.alexp0111.core.model.main.Panel
+import ru.alexp0111.core.model.main.PanelMetaData
+import ru.alexp0111.core.model.main.PanelOrientation
 import javax.inject.Inject
 
 class MessageConverter @Inject constructor() : IMessageConverter {

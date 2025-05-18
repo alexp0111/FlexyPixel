@@ -3,7 +3,7 @@ package ru.alexp0111.local_repo.database.schemes.data
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import ru.alexp0111.core.model.FrameCycle
+import ru.alexp0111.core.model.main.FrameCycle
 
 @ProvidedTypeConverter
 class FrameCycleConverter {

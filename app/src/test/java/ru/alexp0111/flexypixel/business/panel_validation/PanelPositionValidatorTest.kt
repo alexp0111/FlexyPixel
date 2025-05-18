@@ -5,9 +5,9 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import ru.alexp0111.core.model.PanelMetaData
-import ru.alexp0111.core.model.PanelOrientation
-import ru.alexp0111.core.model.PanelStatus
+import ru.alexp0111.core.model.main.PanelMetaData
+import ru.alexp0111.core.model.main.PanelOrientation
+import ru.alexp0111.core.model.main.PanelStatus
 import java.util.stream.Stream
 
 

@@ -1,9 +1,9 @@
 package ru.alexp0111.flexypixel.business.panel_validation
 
 import ru.alexp0111.core.model.Coordinate
-import ru.alexp0111.core.model.PanelMetaData
-import ru.alexp0111.core.model.PanelOrientation
-import ru.alexp0111.core.model.PanelStatus
+import ru.alexp0111.core.model.main.PanelMetaData
+import ru.alexp0111.core.model.main.PanelOrientation
+import ru.alexp0111.core.model.main.PanelStatus
 import javax.inject.Inject
 import kotlin.math.abs
 

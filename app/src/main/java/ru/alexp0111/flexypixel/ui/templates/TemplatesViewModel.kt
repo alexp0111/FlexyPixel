@@ -4,7 +4,7 @@ import kotlinx.coroutines.launch
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.viewmodel.MVIViewModel
 import ru.alexp0111.flexypixel.business.templates.ITemplatesMessageInteractor
-import ru.alexp0111.core.model.PanelOrientation
+import ru.alexp0111.core.model.main.PanelOrientation
 import ru.alexp0111.local_repo.database.templates.PanelTemplateRepository
 import ru.alexp0111.flexypixel.ui.templates.converter.ITemplatesConverter
 import ru.alexp0111.flexypixel.ui.templates.model.TemplateItemUiModel

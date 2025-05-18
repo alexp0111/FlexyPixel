@@ -14,10 +14,10 @@ import ru.alexp0111.core.model.DrawingColor
 import ru.alexp0111.core_ui.theme.beigeDark
 import ru.alexp0111.core_ui.theme.black
 import ru.alexp0111.core_ui.theme.red
-import ru.alexp0111.core.model.FrameCycle
-import ru.alexp0111.core.model.Panel
-import ru.alexp0111.core.model.PanelMetaData
-import ru.alexp0111.core.model.PanelStatus
+import ru.alexp0111.core.model.main.FrameCycle
+import ru.alexp0111.core.model.main.Panel
+import ru.alexp0111.core.model.main.PanelMetaData
+import ru.alexp0111.core.model.main.PanelStatus
 import ru.alexp0111.model.MediaFileType
 import javax.inject.Inject
 import kotlin.math.round

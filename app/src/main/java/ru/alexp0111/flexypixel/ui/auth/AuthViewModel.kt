@@ -61,7 +61,7 @@ internal class AuthViewModel @Inject constructor(
         )
         launch {
             authRepository.register(registerModel)
-            // todo: notify register successfully
+            setEffect { AuthEffect.ShowSnackBar("Registered successfully") }
             setState {
                 copy(
                     type = AuthScreenType.LOGIN,
@@ -69,5 +69,10 @@ internal class AuthViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    override fun httpErrorHandler(errorMessage: String, errorCode: Int) {
+        super.httpErrorHandler(errorMessage, errorCode)
+        setEffect { AuthEffect.ShowSnackBar(errorMessage) }
     }
 }

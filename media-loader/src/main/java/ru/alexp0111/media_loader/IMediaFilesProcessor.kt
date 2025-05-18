@@ -2,7 +2,7 @@ package ru.alexp0111.media_loader
 
 import android.graphics.Bitmap
 import android.net.Uri
-import ru.alexp0111.core.model.PanelMetaData
+import ru.alexp0111.core.model.main.PanelMetaData
 import ru.alexp0111.model.MediaFileType
 
 interface IMediaFilesProcessor {

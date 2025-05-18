@@ -49,6 +49,12 @@ dependencies {
     implementation(localDeps.constraintLayout)
     implementation(localDeps.swipeRefreshLayout)
 
+    /** Retrofit */
+    implementation(localDeps.retrofit)
+
+    /** Gson */
+    implementation(localDeps.gson)
+
     /** Dagger2 */
     implementation(localDeps.dagger)
     kapt(localDeps.compiler)

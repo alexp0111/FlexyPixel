@@ -14,7 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,6 +48,7 @@ import ru.alexp0111.core_ui.common.text.SmallTextField
 import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.theme.beigeDark
 import ru.alexp0111.core_ui.theme.beigeStandard
+import ru.alexp0111.flexypixel.ui.auth.model.AuthEffect
 import ru.alexp0111.flexypixel.ui.auth.model.AuthIntent
 import ru.alexp0111.flexypixel.ui.auth.model.AuthScreenType
 import ru.alexp0111.flexypixel.ui.auth.model.AuthUiState
@@ -53,17 +57,28 @@ import ru.alexp0111.core_ui.R as coreDesignR
 @Composable
 internal fun AuthScreen(viewModel: AuthViewModel) {
     val uiState = viewModel.uiState.collectAsState()
+    val snackBarHostState = remember { SnackbarHostState() }
     val intentHandler by rememberUpdatedState(viewModel::sendIntent)
 
-    AuthScreenContent(uiState, intentHandler)
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect {
+            when (it) {
+                is AuthEffect.ShowSnackBar -> snackBarHostState.showSnackbar(it.message)
+            }
+        }
+    }
+
+    AuthScreenContent(uiState, snackBarHostState, intentHandler)
 }
 
 @Composable
 private fun AuthScreenContent(
     uiState: State<AuthUiState>,
+    snackBarHostState: SnackbarHostState,
     intentHandler: (AuthIntent) -> Unit = {},
 ) {
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             Column(Modifier.padding(32.dp)) {
                 LargeTextField("Welcome")
@@ -255,7 +270,8 @@ private fun FlexyPixelLogo() {
 private fun AuthScreenContentPreviewEmpty() {
     AppTheme {
         AuthScreenContent(
-            uiState = remember { mutableStateOf(AuthUiState()) }
+            uiState = remember { mutableStateOf(AuthUiState()) },
+            snackBarHostState = SnackbarHostState()
         )
     }
 }
@@ -276,7 +292,8 @@ private fun AuthScreenContentPreview() {
                         profileUri = Uri.EMPTY,
                     )
                 )
-            }
+            },
+            snackBarHostState = SnackbarHostState()
         )
     }
 }

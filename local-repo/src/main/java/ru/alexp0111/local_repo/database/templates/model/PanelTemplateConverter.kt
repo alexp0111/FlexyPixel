@@ -3,7 +3,7 @@ package ru.alexp0111.local_repo.database.templates.model
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import ru.alexp0111.core.model.DrawingColor
-import ru.alexp0111.core.model.PanelOrientation
+import ru.alexp0111.core.model.main.PanelOrientation
 
 private const val SEPARATOR = ","
 

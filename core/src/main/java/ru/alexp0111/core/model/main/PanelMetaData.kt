@@ -1,6 +1,8 @@
-package ru.alexp0111.core.model
+package ru.alexp0111.core.model.main
 
 import ru.alexp0111.core.CommonSizeConstants
+import ru.alexp0111.core.model.Coordinate
+import ru.alexp0111.core.model.DrawingColor
 
 data class PanelMetaData(
     var order: Int = 0,

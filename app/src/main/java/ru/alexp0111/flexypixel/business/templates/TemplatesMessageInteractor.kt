@@ -2,11 +2,11 @@ package ru.alexp0111.flexypixel.business.templates
 
 import ru.alexp0111.bt_service.business.IMessageHandler
 import ru.alexp0111.core.CommonSizeConstants
-import ru.alexp0111.core.model.Frame
-import ru.alexp0111.core.model.FrameCycle
-import ru.alexp0111.core.model.Panel
-import ru.alexp0111.core.model.PanelConfiguration
-import ru.alexp0111.core.model.PanelMetaData
+import ru.alexp0111.core.model.main.Frame
+import ru.alexp0111.core.model.main.FrameCycle
+import ru.alexp0111.core.model.main.Panel
+import ru.alexp0111.core.model.main.PanelConfiguration
+import ru.alexp0111.core.model.main.PanelMetaData
 import ru.alexp0111.local_repo.database.templates.model.PanelTemplate
 import javax.inject.Inject
 

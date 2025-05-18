@@ -12,8 +12,8 @@ import com.bumptech.glide.gifdecoder.StandardGifDecoder
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import ru.alexp0111.core.model.PanelMetaData
-import ru.alexp0111.core.model.PanelStatus
+import ru.alexp0111.core.model.main.PanelMetaData
+import ru.alexp0111.core.model.main.PanelStatus
 import ru.alexp0111.model.MediaFileType
 import javax.inject.Inject
 
