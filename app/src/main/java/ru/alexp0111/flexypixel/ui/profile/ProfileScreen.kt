@@ -36,8 +36,10 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import ru.alexp0111.core_ui.common.NeoSlotRounded
+import ru.alexp0111.core_ui.common.shimmer.ShimmeringItem
 import ru.alexp0111.core_ui.common.text.LargeTextField
 import ru.alexp0111.core_ui.common.text.MediumTextField
+import ru.alexp0111.core_ui.common.text.MediumTextFieldShimmering
 import ru.alexp0111.core_ui.common.text.SmallTextField
 import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.theme.beigeDark
@@ -97,7 +99,14 @@ private fun ProfileScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(Modifier.padding(top = 16.dp)) {
-                ProfilePicture(uiState, intentHandler)
+                if (uiState.value.isLoading) {
+                    ShimmeringItem(
+                        shimmerWidth = 160.dp,
+                        shimmerHeight = 160.dp,
+                    )
+                } else {
+                    ProfilePicture(uiState, intentHandler)
+                }
             }
             UserCredentials(uiState)
             Box(
@@ -171,9 +180,11 @@ private fun UserCredentials(
                 text = "Username",
                 color = beigeDark
             )
-            MediumTextField(
-                text = uiState.value.username
-            )
+            if (uiState.value.isLoading) {
+                MediumTextFieldShimmering()
+            } else {
+                MediumTextField(text = uiState.value.username)
+            }
         }
         Column(
             modifier = Modifier
@@ -184,9 +195,11 @@ private fun UserCredentials(
                 text = "Email",
                 color = beigeDark
             )
-            MediumTextField(
-                text = uiState.value.email
-            )
+            if (uiState.value.isLoading) {
+                MediumTextFieldShimmering()
+            } else {
+                MediumTextField(text = uiState.value.email)
+            }
         }
         Column(
             modifier = Modifier
@@ -197,9 +210,11 @@ private fun UserCredentials(
                 text = "Register date",
                 color = beigeDark
             )
-            MediumTextField(
-                text = uiState.value.registerDate
-            )
+            if (uiState.value.isLoading) {
+                MediumTextFieldShimmering()
+            } else {
+                MediumTextField(text = uiState.value.registerDate)
+            }
         }
     }
 }
@@ -231,6 +246,17 @@ private fun ProfileScreenContentPreview() {
                     )
                 )
             },
+            snackBarHostState = SnackbarHostState()
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ProfileScreenContentShimmeringPreview() {
+    AppTheme {
+        ProfileScreenContent(
+            uiState = remember { mutableStateOf(ProfileUiState(isLoading = true)) },
             snackBarHostState = SnackbarHostState()
         )
     }

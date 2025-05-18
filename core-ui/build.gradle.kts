@@ -57,4 +57,7 @@ dependencies {
     implementation(localDeps.composeUiToolingPreview)
     implementation(localDeps.composeUiTooling)
     implementation(localDeps.composeNeomorphism)
+
+    /** Shimmering */
+    implementation(localDeps.shimmering)
 }

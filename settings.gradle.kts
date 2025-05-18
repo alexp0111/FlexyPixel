@@ -40,6 +40,8 @@ dependencyResolutionManagement {
 
             library("composeNeomorphism", "me.nikhilchaudhari:composeNeumorphism:1.0.0-alpha02")
 
+            library("shimmering", "com.valentinilk.shimmer:compose-shimmer:1.3.0")
+
             library("retrofit", "com.squareup.retrofit2:retrofit:2.11.0")
             library("retrofitConverter", "com.squareup.retrofit2:converter-gson:2.11.0")
             library("loggingInterceptor", "com.squareup.okhttp3:logging-interceptor:4.12.0")

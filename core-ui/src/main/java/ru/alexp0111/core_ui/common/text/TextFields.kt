@@ -1,6 +1,7 @@
 package ru.alexp0111.core_ui.common.text
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
@@ -11,6 +12,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import ru.alexp0111.core_ui.common.shimmer.ShimmeringItem
 import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.theme.flexyPixelTypography
 
@@ -65,14 +68,41 @@ fun SmallTextField(
         fontWeight = weight,
     )
 
+@Composable
+fun LargeTextFieldShimmering() {
+    ShimmeringItem(
+        shimmerHeight = 44.dp,
+        paddingValues = PaddingValues(vertical = 2.dp)
+    )
+}
+
+@Composable
+fun MediumTextFieldShimmering() {
+    ShimmeringItem(
+        shimmerHeight = 28.dp,
+        paddingValues = PaddingValues(vertical = 2.dp)
+    )
+}
+
+@Composable
+fun SmallTextFieldShimmering() {
+    ShimmeringItem(
+        shimmerHeight = 18.dp,
+        paddingValues = PaddingValues(vertical = 2.dp)
+    )
+}
+
 @Preview
 @Composable
 private fun TextFieldPreview() {
     AppTheme {
         Column(Modifier.fillMaxSize()) {
             LargeTextField("LargeTextField", Modifier.fillMaxWidth())
+            LargeTextFieldShimmering()
             MediumTextField("MediumTextField", Modifier.fillMaxWidth())
+            MediumTextFieldShimmering()
             SmallTextField("SmallTextField", Modifier.fillMaxWidth())
+            SmallTextFieldShimmering()
         }
     }
 }
