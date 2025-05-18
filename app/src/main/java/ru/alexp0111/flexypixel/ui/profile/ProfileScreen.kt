@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,6 +39,7 @@ import ru.alexp0111.core_ui.common.text.SmallTextField
 import ru.alexp0111.core_ui.theme.AppTheme
 import ru.alexp0111.core_ui.theme.beigeDark
 import ru.alexp0111.core_ui.theme.red
+import ru.alexp0111.flexypixel.ui.profile.model.ProfileEffect
 import ru.alexp0111.flexypixel.ui.profile.model.ProfileIntent
 import ru.alexp0111.flexypixel.ui.profile.model.ProfileUiState
 import ru.alexp0111.core_ui.R as coreDesignR
@@ -43,17 +47,28 @@ import ru.alexp0111.core_ui.R as coreDesignR
 @Composable
 internal fun ProfileScreen(viewModel: ProfileViewModel) {
     val uiState = viewModel.uiState.collectAsState()
+    val snackBarHostState = remember { SnackbarHostState() }
     val intentHandler by rememberUpdatedState(viewModel::sendIntent)
 
-    ProfileScreenContent(uiState, intentHandler)
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect {
+            when (it) {
+                is ProfileEffect.ShowSnackBar -> snackBarHostState.showSnackbar(it.message)
+            }
+        }
+    }
+
+    ProfileScreenContent(uiState, snackBarHostState, intentHandler)
 }
 
 @Composable
 private fun ProfileScreenContent(
     uiState: State<ProfileUiState>,
+    snackBarHostState: SnackbarHostState,
     intentHandler: (ProfileIntent) -> Unit = {},
 ) {
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             Column(Modifier.padding(32.dp)) {
                 LargeTextField("Profile")
@@ -192,7 +207,8 @@ private fun ProfileScreenContentPreview() {
                         profileUri = Uri.EMPTY,
                     )
                 )
-            }
+            },
+            snackBarHostState = SnackbarHostState()
         )
     }
 }

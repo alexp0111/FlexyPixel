@@ -5,6 +5,7 @@ import kotlinx.coroutines.launch
 import ru.alexp0111.core.viewmodel.MVIViewModel
 import ru.alexp0111.flexypixel.business.profile.IProfileInteractor
 import ru.alexp0111.flexypixel.navigation.Screens
+import ru.alexp0111.flexypixel.ui.profile.model.ProfileEffect
 import ru.alexp0111.flexypixel.ui.profile.model.ProfileIntent
 import ru.alexp0111.flexypixel.ui.profile.model.ProfileUiState
 import ru.alexp0111.remote_repo.token.TokenManager
@@ -14,7 +15,7 @@ internal class ProfileViewModel @Inject constructor(
     private val profileInteractor: IProfileInteractor,
     private val tokenManager: TokenManager,
     private val router: Router,
-) : MVIViewModel<ProfileIntent, ProfileUiState, Nothing>() {
+) : MVIViewModel<ProfileIntent, ProfileUiState, ProfileEffect>() {
 
     init {
         launch {
@@ -42,5 +43,10 @@ internal class ProfileViewModel @Inject constructor(
         tokenManager.deleteToken(TokenManager.ACCESS)
         tokenManager.deleteToken(TokenManager.REFRESH)
         router.newRootScreen(Screens.StartScreen())
+    }
+
+    override fun httpErrorHandler(errorMessage: String, errorCode: Int) {
+        super.httpErrorHandler(errorMessage, errorCode)
+        setEffect { ProfileEffect.ShowSnackBar(errorMessage) }
     }
 }
