@@ -52,7 +52,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
 
     private lateinit var frameCycle: FrameCycle
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Log.d("TAG", throwable.message.toString())
+        Log.d(TAG, throwable.message.toString())
     }
     private val scope = CoroutineScope(Dispatchers.IO + errorHandler)
 
@@ -285,7 +285,6 @@ internal class GlobalStateHandler @AssistedInject constructor(
         messageHandler.updateConfiguration(cycle.configuration.listOfMetaData)
         messageHandler.sendFrames(cycle)
     }
-
 
     companion object {
         private var instance: GlobalStateHandler? = null

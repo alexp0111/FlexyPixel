@@ -41,6 +41,7 @@ import ru.alexp0111.core_ui.R
 import ru.alexp0111.core_ui.common.NeoImageButton
 import ru.alexp0111.core_ui.common.NeoSlot
 import ru.alexp0111.core_ui.common.NeoSlotRounded
+import ru.alexp0111.core_ui.common.shimmer.ShimmeringItem
 import ru.alexp0111.core_ui.common.text.LargeTextField
 import ru.alexp0111.core_ui.common.text.MediumEditTextField
 import ru.alexp0111.core_ui.common.text.MediumTextField
@@ -112,7 +113,14 @@ private fun AuthScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(Modifier.padding(top = 16.dp)) {
-                ProfilePicture(uiState)
+                if (uiState.value.isLoading) {
+                    ShimmeringItem(
+                        shimmerWidth = 160.dp,
+                        shimmerHeight = 160.dp,
+                    )
+                } else {
+                    ProfilePicture(uiState)
+                }
             }
             UserCredentials(uiState, intentHandler)
             Box(
@@ -164,14 +172,18 @@ private fun UserCredentials(
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 8.dp)
         ) {
-            MediumEditTextField(
-                hint = "Login",
-                initialText = uiState.value.login,
-                modifier = Modifier.fillMaxWidth(),
-                indicatorColor = beigeStandard,
-                imeAction = ImeAction.Next,
-                onValueChanged = { intentHandler(AuthIntent.OnLoginChanged(it)) },
-            )
+            if (uiState.value.isLoading) {
+                ShimmeringItem(shimmerHeight = 64.dp)
+            } else {
+                MediumEditTextField(
+                    hint = "Login",
+                    initialText = uiState.value.login,
+                    modifier = Modifier.fillMaxWidth(),
+                    indicatorColor = beigeStandard,
+                    imeAction = ImeAction.Next,
+                    onValueChanged = { intentHandler(AuthIntent.OnLoginChanged(it)) },
+                )
+            }
         }
         if (uiState.value.type == AuthScreenType.REGISTER) {
             NeoSlot(
@@ -179,28 +191,36 @@ private fun UserCredentials(
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp, vertical = 8.dp)
             ) {
-                MediumEditTextField(
-                    hint = "Display name",
-                    initialText = uiState.value.displayName,
-                    modifier = Modifier.fillMaxWidth(),
-                    indicatorColor = beigeStandard,
-                    imeAction = ImeAction.Next,
-                    onValueChanged = { intentHandler(AuthIntent.OnDisplayNameChanged(it)) },
-                )
+                if (uiState.value.isLoading) {
+                    ShimmeringItem(shimmerHeight = 64.dp)
+                } else {
+                    MediumEditTextField(
+                        hint = "Display name",
+                        initialText = uiState.value.displayName,
+                        modifier = Modifier.fillMaxWidth(),
+                        indicatorColor = beigeStandard,
+                        imeAction = ImeAction.Next,
+                        onValueChanged = { intentHandler(AuthIntent.OnDisplayNameChanged(it)) },
+                    )
+                }
             }
             NeoSlot(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp, vertical = 8.dp)
             ) {
-                MediumEditTextField(
-                    hint = "Email",
-                    initialText = uiState.value.email,
-                    modifier = Modifier.fillMaxWidth(),
-                    indicatorColor = beigeStandard,
-                    imeAction = ImeAction.Next,
-                    onValueChanged = { intentHandler(AuthIntent.OnEmailChanged(it)) },
-                )
+                if (uiState.value.isLoading) {
+                    ShimmeringItem(shimmerHeight = 64.dp)
+                } else {
+                    MediumEditTextField(
+                        hint = "Email",
+                        initialText = uiState.value.email,
+                        modifier = Modifier.fillMaxWidth(),
+                        indicatorColor = beigeStandard,
+                        imeAction = ImeAction.Next,
+                        onValueChanged = { intentHandler(AuthIntent.OnEmailChanged(it)) },
+                    )
+                }
             }
         }
         Row(
@@ -211,16 +231,20 @@ private fun UserCredentials(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             NeoSlot(modifier = Modifier.weight(1f)) {
-                MediumEditTextField(
-                    hint = "Password",
-                    initialText = uiState.value.password,
-                    modifier = Modifier.fillMaxWidth(),
-                    indicatorColor = beigeStandard,
-                    inputType = KeyboardType.Password,
-                    imeAction = ImeAction.Done,
-                    visualTransformation = PasswordVisualTransformation(),
-                    onValueChanged = { intentHandler(AuthIntent.OnPasswordChanged(it)) },
-                )
+                if (uiState.value.isLoading) {
+                    ShimmeringItem(shimmerHeight = 64.dp)
+                } else {
+                    MediumEditTextField(
+                        hint = "Password",
+                        initialText = uiState.value.password,
+                        modifier = Modifier.fillMaxWidth(),
+                        indicatorColor = beigeStandard,
+                        inputType = KeyboardType.Password,
+                        imeAction = ImeAction.Done,
+                        visualTransformation = PasswordVisualTransformation(),
+                        onValueChanged = { intentHandler(AuthIntent.OnPasswordChanged(it)) },
+                    )
+                }
             }
             val icon = when (uiState.value.type) {
                 AuthScreenType.LOGIN -> R.drawable.ic_done
@@ -278,12 +302,46 @@ private fun AuthScreenContentPreviewEmpty() {
 
 @Preview
 @Composable
+private fun AuthScreenContentShimmeringPreviewEmpty() {
+    AppTheme {
+        AuthScreenContent(
+            uiState = remember { mutableStateOf(AuthUiState(isLoading = true)) },
+            snackBarHostState = SnackbarHostState()
+        )
+    }
+}
+
+@Preview
+@Composable
 private fun AuthScreenContentPreview() {
     AppTheme {
         AuthScreenContent(
             uiState = remember {
                 mutableStateOf(
                     AuthUiState(
+                        type = AuthScreenType.REGISTER,
+                        login = "Login",
+                        displayName = "My name",
+                        password = "123456",
+                        email = "email@mail.ru",
+                        profileUri = Uri.EMPTY,
+                    )
+                )
+            },
+            snackBarHostState = SnackbarHostState()
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun AuthScreenContentShimmeringPreview() {
+    AppTheme {
+        AuthScreenContent(
+            uiState = remember {
+                mutableStateOf(
+                    AuthUiState(
+                        isLoading = true,
                         type = AuthScreenType.REGISTER,
                         login = "Login",
                         displayName = "My name",

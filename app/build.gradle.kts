@@ -84,6 +84,9 @@ dependencies {
     /** Neumorphism */
     implementation(localDeps.neumorphism)
 
+    /** Shimmering */
+    implementation(localDeps.shimmering)
+
     /** Gson */
     implementation(localDeps.gson)
 

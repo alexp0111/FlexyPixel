@@ -12,6 +12,7 @@ import ru.alexp0111.flexypixel.ui.profile.model.ProfileIntent
 import ru.alexp0111.flexypixel.ui.profile.model.ProfileUiState
 import ru.alexp0111.remote_repo.token.TokenManager
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 internal class ProfileViewModel @Inject constructor(
     private val profileInteractor: IProfileInteractor,
@@ -21,9 +22,11 @@ internal class ProfileViewModel @Inject constructor(
 
     init {
         launch {
+            setState { copy(isLoading = true) }
             profileInteractor.getUser().let { user ->
                 setState {
                     copy(
+                        isLoading = false,
                         username = user.displayName,
                         email = user.email,
                         registerDate = user.registerDate,
@@ -50,9 +53,15 @@ internal class ProfileViewModel @Inject constructor(
 
     private fun setProfilePicture(uri: Uri) {
         launch {
+            setState { copy(isLoading = true) }
             val avatar = profileInteractor.loadProfilePicture(uri)?.avatarUrl
-            avatar?.let { setState { copy(profileUri = it.toUri()) } }
+            avatar?.let { setState { copy(isLoading = false, profileUri = it.toUri()) } }
         }
+    }
+
+    override fun errorHandler(context: CoroutineContext, throwable: Throwable) {
+        super.errorHandler(context, throwable)
+        setState { copy(isLoading = false) }
     }
 
     override fun httpErrorHandler(errorMessage: String, errorCode: Int) {

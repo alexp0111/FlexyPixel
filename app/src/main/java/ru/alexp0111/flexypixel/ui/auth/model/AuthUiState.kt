@@ -3,6 +3,7 @@ package ru.alexp0111.flexypixel.ui.auth.model
 import android.net.Uri
 
 internal data class AuthUiState(
+    val isLoading: Boolean = false,
     val type: AuthScreenType = AuthScreenType.LOGIN,
     val login: String = "",
     val displayName: String = "",
