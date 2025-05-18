@@ -1,5 +1,6 @@
 package ru.alexp0111.core.viewmodel
 
+import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,9 @@ abstract class MVIViewModel<Intent, State, Effect> : CoroutineViewModel() {
     val effect: Flow<Effect> = _effect
 
     protected abstract fun setInitialState(): State
-    protected abstract fun handleIntent(intent: Intent)
+
+    @VisibleForTesting
+    abstract fun handleIntent(intent: Intent)
 
     init {
         launch {

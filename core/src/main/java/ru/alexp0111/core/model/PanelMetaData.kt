@@ -31,12 +31,12 @@ data class PanelMetaData(
         fun getAbsoluteCoordinates(
             indexIn3By3MatrixRepresentedAsList: Int,
             segmentNum: Int,
-        ): Pair<Int, Int> {
+        ): Coordinate {
             val xOffset = segmentNum % 3 * 3
             val yOffset = (segmentNum / 3) * 3
             val x = indexIn3By3MatrixRepresentedAsList % 3 + xOffset
             val y = indexIn3By3MatrixRepresentedAsList / 3 + yOffset
-            return Pair(x, y)
+            return Coordinate(x, y)
         }
 
         fun getDefaultPalette(): MutableList<DrawingColor> {

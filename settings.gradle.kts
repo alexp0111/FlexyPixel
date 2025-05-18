@@ -55,14 +55,11 @@ dependencyResolutionManagement {
         }
         create("unitTestDeps") {
             library("jUnitBom", "org.junit:junit-bom:5.11.4")
-            library("robolectric", "org.robolectric:robolectric:4.4")
-            library("mockito", "org.mockito:mockito-core:5.1.1")
-        }
-        create("uiTestDeps") {
+            library("jupiter", "org.junit.jupiter", "junit-jupiter").withoutVersion()
             library("extJUnit", "androidx.test.ext:junit:1.1.5")
-            library("espresso", "androidx.test.espresso:espresso-core:3.5.1")
-            library("rules", "androidx.test:rules:1.5.0")
-            library("runner", "androidx.test:runner:1.5.2")
+            library("mockk", "io.mockk:mockk:1.14.2")
+            library("testCoroutine", "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+            library("robolectric", "org.robolectric:robolectric:4.9")
         }
         create("docs") {
             library("kotlinDoc", "org.jetbrains.dokka:android-documentation-plugin:1.9.20")

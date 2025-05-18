@@ -46,8 +46,6 @@ dependencies {
 
     /** Unit testing */
     testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation(unitTestDeps.jupiter)
     testImplementation(platform(unitTestDeps.jUnitBom))
-    testImplementation(unitTestDeps.robolectric)
-    testImplementation(unitTestDeps.mockito)
 }

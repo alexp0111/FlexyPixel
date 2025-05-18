@@ -1,6 +1,7 @@
 package ru.alexp0111.flexypixel.ui.displayLevel
 
 import android.net.Uri
+import androidx.annotation.VisibleForTesting
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -24,7 +25,8 @@ internal class DisplayLevelViewModel @Inject constructor(
     private val displayLevelConverter: IDisplayLevelConverter,
 ) : MVIViewModel<DisplayLevelIntent, DisplayLevelUiState, DisplayLevelEffect>() {
 
-    private val globalStateHandler by lazy {
+    @VisibleForTesting
+    val globalStateHandler by lazy {
         GlobalStateHandler.getInstance(globalStateHandlerFactory, null)
     }
 
