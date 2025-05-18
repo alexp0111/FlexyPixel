@@ -17,9 +17,9 @@ import ru.alexp0111.bt_service.model.message.converter.IMessageConverter
 import ru.alexp0111.bt_service.model.transfer.TransferResponse
 import ru.alexp0111.bt_service.model.transfer.TransferResult
 import ru.alexp0111.core.di.AppScope
-import ru.alexp0111.core.model.FrameCycle
-import ru.alexp0111.core.model.PanelMetaData
-import ru.alexp0111.core.model.PanelOrientation
+import ru.alexp0111.core.model.main.FrameCycle
+import ru.alexp0111.core.model.main.PanelMetaData
+import ru.alexp0111.core.model.main.PanelOrientation
 import java.util.LinkedList
 import javax.inject.Inject
 

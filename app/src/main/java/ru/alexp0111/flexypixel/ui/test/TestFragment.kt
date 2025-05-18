@@ -17,8 +17,8 @@ import kotlinx.coroutines.launch
 import ru.alexp0111.bt_service.business.IMessageHandler
 import ru.alexp0111.bt_service.model.message.MessageFrame
 import ru.alexp0111.core.model.DrawingColor
-import ru.alexp0111.core.model.PanelMetaData
-import ru.alexp0111.core.model.PanelOrientation
+import ru.alexp0111.core.model.main.PanelMetaData
+import ru.alexp0111.core.model.main.PanelOrientation
 import ru.alexp0111.core_ui.util.composeView
 import ru.alexp0111.core_ui.util.setContentAndStrategy
 import ru.alexp0111.flexypixel.databinding.FragmentTestBinding

@@ -2,7 +2,7 @@ package ru.alexp0111.local_repo.database.templates.prepared
 
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.model.DrawingColor
-import ru.alexp0111.core.model.PanelOrientation
+import ru.alexp0111.core.model.main.PanelOrientation
 import ru.alexp0111.local_repo.database.templates.model.PanelTemplate
 
 class PreparedTemplatesLoader {

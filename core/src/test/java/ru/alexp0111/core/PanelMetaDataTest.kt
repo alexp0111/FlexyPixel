@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import ru.alexp0111.core.model.Coordinate
-import ru.alexp0111.core.model.PanelMetaData
+import ru.alexp0111.core.model.main.PanelMetaData
 import java.util.stream.Stream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

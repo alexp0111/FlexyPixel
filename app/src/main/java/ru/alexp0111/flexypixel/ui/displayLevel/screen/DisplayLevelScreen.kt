@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.model.DrawingColor
-import ru.alexp0111.core.model.PanelStatus
+import ru.alexp0111.core.model.main.PanelStatus
 import ru.alexp0111.core_ui.common.NeoImageButton
 import ru.alexp0111.core_ui.common.NeoSlot
 import ru.alexp0111.core.model.Coordinate
