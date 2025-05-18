@@ -1,5 +1,7 @@
 package ru.alexp0111.flexypixel.ui.profile
 
+import android.net.Uri
+import androidx.core.net.toUri
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
 import ru.alexp0111.core.viewmodel.MVIViewModel
@@ -37,12 +39,20 @@ internal class ProfileViewModel @Inject constructor(
     override fun handleIntent(intent: ProfileIntent) =
         when (intent) {
             ProfileIntent.OnExitClicked -> logout()
+            is ProfileIntent.OnProfilePictureChosen -> setProfilePicture(intent.uri)
         }
 
     private fun logout() {
         tokenManager.deleteToken(TokenManager.ACCESS)
         tokenManager.deleteToken(TokenManager.REFRESH)
         router.newRootScreen(Screens.StartScreen())
+    }
+
+    private fun setProfilePicture(uri: Uri) {
+        launch {
+            val avatar = profileInteractor.loadProfilePicture(uri)?.avatarUrl
+            avatar?.let { setState { copy(profileUri = it.toUri()) } }
+        }
     }
 
     override fun httpErrorHandler(errorMessage: String, errorCode: Int) {

@@ -1,6 +1,9 @@
 package ru.alexp0111.flexypixel.ui.profile
 
+import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -94,7 +97,7 @@ private fun ProfileScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(Modifier.padding(top = 16.dp)) {
-                ProfilePicture(uiState)
+                ProfilePicture(uiState, intentHandler)
             }
             UserCredentials(uiState)
             Box(
@@ -109,16 +112,34 @@ private fun ProfileScreenContent(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun ProfilePicture(uiState: State<ProfileUiState>) {
+private fun ProfilePicture(
+    uiState: State<ProfileUiState>,
+    intentHandler: (ProfileIntent) -> Unit = {},
+) {
     val uri = uiState.value.profileUri
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        it.data?.data?.let { uri ->
+            intentHandler(ProfileIntent.OnProfilePictureChosen(uri))
+        }
+    }
+    val mediaIntent = remember {
+        Intent(Intent.ACTION_GET_CONTENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "gif/*"))
+        }
+    }
 
-    NeoSlotRounded(
-        modifier = Modifier.size(160.dp)
-    ) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    NeoSlotRounded(Modifier.size(160.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable { launcher.launch(mediaIntent) },
+            contentAlignment = Alignment.Center
+        ) {
             if (uri == null) {
                 Image(
-                    painter = painterResource(coreDesignR.drawable.ic_profile),
+                    painter = painterResource(coreDesignR.drawable.ic_add_file),
                     contentDescription = null
                 )
             } else {
@@ -186,7 +207,9 @@ private fun UserCredentials(
 @Composable
 private fun FlexyPixelLogo() {
     Image(
-        modifier = Modifier.fillMaxWidth().scale(1.5f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .scale(1.5f),
         painter = painterResource(coreDesignR.drawable.flexy_pixel_logo),
         contentScale = ContentScale.Fit,
         contentDescription = null
