@@ -1,45 +1,52 @@
 package ru.alexp0111.core
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
+import ru.alexp0111.core.model.Coordinate
 import ru.alexp0111.core.model.PanelMetaData
-import ru.alexp0111.core.model.PanelOrientation
+import java.util.stream.Stream
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PanelMetaDataTest {
 
-    @Test
-    fun `Check coordinates convert`() {
-        assertEquals(Pair(0, 0), PanelMetaData.getAbsoluteCoordinates(0, 0))
-        assertEquals(Pair(8, 0), PanelMetaData.getAbsoluteCoordinates(2, 2))
-        assertEquals(Pair(0, 8), PanelMetaData.getAbsoluteCoordinates(6, 6))
-        assertEquals(Pair(8, 8), PanelMetaData.getAbsoluteCoordinates(8, 8))
+    private val panel = PanelMetaData(
+        absoluteX = 0,
+        absoluteY = 0,
+    )
 
-        assertEquals(Pair(5, 2), PanelMetaData.getAbsoluteCoordinates(8, 1))
-        assertEquals(Pair(2, 5), PanelMetaData.getAbsoluteCoordinates(8, 3))
-
-        assertEquals(Pair(6, 3), PanelMetaData.getAbsoluteCoordinates(0, 5))
-        assertEquals(Pair(3, 6), PanelMetaData.getAbsoluteCoordinates(0, 7))
+    @ParameterizedTest
+    @MethodSource("localToAbsoluteCoordinates")
+    fun `Check coordinates convert`(absCoordinate: Coordinate, localIndex: Int, segment: Int) {
+        assertEquals(absCoordinate, PanelMetaData.getAbsoluteCoordinates(localIndex, segment))
     }
 
-    @Test
-    fun `Check segment determination`() {
-        val panel = PanelMetaData(
-            order = 0,
-            type = PanelMetaData.TYPE_64,
-            absoluteX = 0,
-            absoluteY = 0,
-            orientation = PanelOrientation.LEFT,
-            palette = PanelMetaData.getDefaultPalette(),
-        )
-        assertEquals(0, panel.copy(absoluteX = 0, absoluteY = 0).segment)
-        assertEquals(2, panel.copy(absoluteX = 8, absoluteY = 0).segment)
-        assertEquals(6, panel.copy(absoluteX = 0, absoluteY = 8).segment)
-        assertEquals(8, panel.copy(absoluteX = 8, absoluteY = 8).segment)
-
-        assertEquals(1, panel.copy(absoluteX = 5, absoluteY = 2).segment)
-        assertEquals(3, panel.copy(absoluteX = 2, absoluteY = 5).segment)
-
-        assertEquals(5, panel.copy(absoluteX = 6, absoluteY = 3).segment)
-        assertEquals(7, panel.copy(absoluteX = 3, absoluteY = 6).segment)
+    @ParameterizedTest
+    @MethodSource("determineSegment")
+    fun `Check segment determination`(expectedSegment: Int, coordinate: Coordinate) {
+        assertEquals(expectedSegment, panel.copy(absoluteX = coordinate.x, absoluteY = coordinate.y).segment)
     }
+
+    private fun localToAbsoluteCoordinates(): Stream<Arguments> = Stream.of(
+        Arguments.of(Coordinate(0, 0), 0, 0),
+        Arguments.of(Coordinate(8, 0), 2, 2),
+        Arguments.of(Coordinate(0, 8), 6, 6),
+        Arguments.of(Coordinate(8, 8), 8, 8),
+        Arguments.of(Coordinate(5, 2), 8, 1),
+        Arguments.of(Coordinate(2, 5), 8, 3),
+        Arguments.of(Coordinate(6, 3), 0, 5),
+        Arguments.of(Coordinate(3, 6), 0, 7),
+    )
+
+    private fun determineSegment(): Stream<Arguments> = Stream.of(
+        Arguments.of(2, Coordinate(8, 0)),
+        Arguments.of(6, Coordinate(0, 8)),
+        Arguments.of(8, Coordinate(8, 8)),
+        Arguments.of(1, Coordinate(5, 2)),
+        Arguments.of(3, Coordinate(2, 5)),
+        Arguments.of(5, Coordinate(6, 3)),
+        Arguments.of(7, Coordinate(3, 6)),
+    )
 }
