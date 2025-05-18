@@ -24,29 +24,19 @@ class MessageConverter @Inject constructor() : IMessageConverter {
         b: Int
     ): MessagePixel {
         // get coordinates
-        val coordinate = Coordinate(
+        var coordinate = Coordinate(
             x = pixelOrder % CommonSizeConstants.PANEL_PIXEL_SIDE,
             y = pixelOrder / CommonSizeConstants.PANEL_PIXEL_SIDE
         )
-        // rotate left
-        val rotatedLeftCoordinate = Coordinate(
-            x = coordinate.y,
-            y = CommonSizeConstants.PANEL_PIXEL_SIDE - coordinate.x - 1
-        )
-        // mirror x
-        var mirroredCoordinate = Coordinate(
-            x = CommonSizeConstants.PANEL_PIXEL_SIDE - rotatedLeftCoordinate.x - 1,
-            y = rotatedLeftCoordinate.y,
-        )
         // rotate with orientation
         repeat(getRotationTimesByOrientation(orientation)) {
-            mirroredCoordinate = Coordinate(
-                x = CommonSizeConstants.PANEL_PIXEL_SIDE - mirroredCoordinate.y - 1,
-                y = mirroredCoordinate.x
+            coordinate = Coordinate(
+                x = CommonSizeConstants.PANEL_PIXEL_SIDE - coordinate.y - 1,
+                y = coordinate.x
             )
         }
         // convert to list position
-        val trimmedOrder = mirroredCoordinate.y * CommonSizeConstants.PANEL_PIXEL_SIDE + mirroredCoordinate.x
+        val trimmedOrder = coordinate.y * CommonSizeConstants.PANEL_PIXEL_SIDE + coordinate.x
 
         return MessagePixel(
             panelPosition = panelOrder,
@@ -95,18 +85,16 @@ class MessageConverter @Inject constructor() : IMessageConverter {
     }
 
     private fun applyRotationToPanel(panel: Panel, orientation: PanelOrientation): Panel {
-        val preRotated = rotateMatrixByClock(panel.pixels, 3)
-        val mirrored = mirrorMatrixByVertical(preRotated)
         val rotationTimes = getRotationTimesByOrientation(orientation)
-        val pixels = rotateMatrixByClock(mirrored, rotationTimes)
+        val pixels = rotateMatrixByClock(panel.pixels, rotationTimes)
         return Panel(pixels)
     }
 
     private fun getRotationTimesByOrientation(orientation: PanelOrientation) =
         when (orientation) {
-            PanelOrientation.LEFT -> 0
+            PanelOrientation.LEFT -> 2
             PanelOrientation.DOWN -> 3
-            PanelOrientation.RIGHT -> 2
+            PanelOrientation.RIGHT -> 0
             PanelOrientation.UP -> 1
         }
 
@@ -123,15 +111,6 @@ class MessageConverter @Inject constructor() : IMessageConverter {
 
         return rotateMatrixByClock(rotatedMatrix.toTypedArray(), times - 1)
     }
-
-    private fun mirrorMatrixByVertical(pixels: Array<String>): Array<String> {
-        val mirroredMatrix = mutableListOf<String>()
-        pixels.toList().windowed(CommonSizeConstants.PANEL_PIXEL_SIDE, CommonSizeConstants.PANEL_PIXEL_SIDE) {
-            mirroredMatrix.addAll(it.reversed())
-        }
-        return mirroredMatrix.toTypedArray()
-    }
-
 }
 
 internal fun Frame.toMessageFrame(): MessageFrame =

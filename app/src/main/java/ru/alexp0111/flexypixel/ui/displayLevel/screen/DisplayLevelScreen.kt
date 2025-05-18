@@ -270,7 +270,20 @@ private fun DisplayLevelScreenContentEmptyPreview() {
 private fun DisplayLevelScreenContentPanelLimitAchieved() {
     AppTheme {
         DisplayLevelScreenContent(
-            uiState = remember { mutableStateOf(DisplayLevelUiState(isPanelLimitAchieved = true)) },
+            uiState = remember { mutableStateOf(DisplayLevelUiState(
+                panels = setOf(
+                    PanelUiModel(sourceX = 0, sourceY = 0),
+                    PanelUiModel(sourceX = 0, sourceY = 1),
+                    PanelUiModel(sourceX = 1, sourceY = 0),
+                    PanelUiModel(sourceX = 1, sourceY = 1),
+                    PanelUiModel(sourceX = 1, sourceY = 2),
+                    PanelUiModel(sourceX = 2, sourceY = 1),
+                    PanelUiModel(sourceX = 2, sourceY = 2),
+                    PanelUiModel(sourceX = 0, sourceY = 2),
+                    PanelUiModel(sourceX = 2, sourceY = 0),
+                ),
+                isPanelLimitAchieved = true,
+            )) },
         )
     }
 }

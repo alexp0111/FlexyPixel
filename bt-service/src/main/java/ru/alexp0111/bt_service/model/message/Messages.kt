@@ -57,10 +57,10 @@ data class MessageTransactionMode(
 
 
 /**
- * Information about specific pixel pixel.
+ * Information about specific pixel.
  *
  * ======================================================================
- * @Example: {"panelPosition":9,"pixelColor":"967","pixelPosition":"000"}
+ * @Example: {"panelPosition":8,"pixelColor":"967","pixelPosition":"000"}
  * ======================================================================
  * */
 data class MessagePixel(
@@ -71,7 +71,6 @@ data class MessagePixel(
     override fun asJson(): String {
         return Gson().toJson(this)
     }
-
 }
 
 
