@@ -28,11 +28,14 @@ import ru.alexp0111.model.MediaFileType
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.drawing.DrawingGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelGlobalStateHolder
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import kotlin.math.abs
 
 @AssistedFactory
 internal interface GlobalStateHandlerFactory {
-    fun create(schemeId: Int?): GlobalStateHandler
+    fun create(schemeId: String?): GlobalStateHandler
 }
 
 private const val TAG = "GlobalStateHandler"
@@ -44,7 +47,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
     private val bitmapProcessor: IBitmapProcessor,
     private val mediaFileProcessor: IMediaFilesProcessor,
     private val panelValidator: IPanelPositionValidator,
-    @Assisted var schemeId: Int?,
+    @Assisted var schemeId: String?,
 ) : UpperAbstractionLevelGlobalStateHolder,
     DrawingGlobalStateHolder,
     IPanelPositionValidator by panelValidator,
@@ -237,19 +240,31 @@ internal class GlobalStateHandler @AssistedInject constructor(
     }
 
     private suspend fun save(title: String) {
-        schemeId = databaseRepository.insertNewScheme(
-            UserSavedScheme(
-                title = title,
-                frameCycle = frameCycle,
-            )
-        ).toInt()
+        val scheme = UserSavedScheme(
+            title = title,
+            createdAt = getFormattedDate(),
+            preview = null,
+            frameCycle = frameCycle,
+        )
+        databaseRepository.insertNewScheme(scheme).also {
+            schemeId = scheme.id
+        }
     }
 
-    private suspend fun update(schemeId: Int, title: String) {
+    private fun getFormattedDate(): String {
+        val date = Calendar.getInstance().time
+        val mobileFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
+        return mobileFormat.format(date)
+    }
+
+    private suspend fun update(schemeId: String, title: String) {
+        val scheme = databaseRepository.getSchemeById(schemeId)
         databaseRepository.updateExistingScheme(
             UserSavedScheme(
                 id = schemeId,
                 title = title,
+                createdAt = scheme.createdAt,
+                preview = scheme.preview,
                 frameCycle = frameCycle,
             )
         )
@@ -288,7 +303,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
 
     companion object {
         private var instance: GlobalStateHandler? = null
-        fun getInstance(factory: GlobalStateHandlerFactory, schemeId: Int?): GlobalStateHandler {
+        fun getInstance(factory: GlobalStateHandlerFactory, schemeId: String?): GlobalStateHandler {
             return instance ?: factory.create(schemeId).also {
                 instance = it
             }

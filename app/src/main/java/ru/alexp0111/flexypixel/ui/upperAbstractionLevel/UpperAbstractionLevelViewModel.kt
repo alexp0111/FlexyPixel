@@ -3,21 +3,20 @@ package ru.alexp0111.flexypixel.ui.upperAbstractionLevel
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.matrix.MatrixConverter
 import ru.alexp0111.core.viewmodel.MVIViewModel
-import ru.alexp0111.local_repo.database.schemes.SavedSchemeRepository
-import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
-import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.business.GlobalStateHandler
 import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
+import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.converter.IUpperAbstractionLevelConverter
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelEffect
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelIntent
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelUiState
+import ru.alexp0111.local_repo.database.schemes.SavedSchemeRepository
+import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 import javax.inject.Inject
 
 internal class UpperAbstractionLevelViewModel @Inject constructor(
@@ -43,12 +42,12 @@ internal class UpperAbstractionLevelViewModel @Inject constructor(
             is UpperAbstractionLevelIntent.CardClicked -> goToDisplayLevel(intent.x, intent.y)
         }
 
-    private fun initScheme(schemeId: Int?) {
+    private fun initScheme(schemeId: String?) {
         globalStateHandler = GlobalStateHandler.getInstance(globalStateHandlerFactory, schemeId)
         launch { schemeId?.let { setUpTitle(it) } }
     }
 
-    private suspend fun setUpTitle(schemeId: Int) = withContext(Dispatchers.IO) {
+    private suspend fun setUpTitle(schemeId: String) = withContext(Dispatchers.IO) {
         val title = databaseRepository.getSchemeById(schemeId).title
         viewModelScope.launch {
             setState { uiState.value.copy(title = title) }
@@ -90,9 +89,7 @@ internal class UpperAbstractionLevelViewModel @Inject constructor(
     }
 
     private suspend fun validTitle(currentTitle: String): Boolean {
-        val allSchemesTitles = withContext(Dispatchers.IO) {
-            databaseRepository.getAllSchemes().first()
-        }.map { it }
+        val allSchemesTitles = databaseRepository.getAllSchemes()
         return currentTitle.isNotEmpty()
                 && currentTitle.isNotBlank()
                 && !conflictWithExistingScheme(allSchemesTitles, currentTitle)

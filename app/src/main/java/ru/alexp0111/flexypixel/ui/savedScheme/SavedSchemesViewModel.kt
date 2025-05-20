@@ -1,33 +1,38 @@
 package ru.alexp0111.flexypixel.ui.savedScheme
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.alexp0111.local_repo.database.schemes.SavedSchemeRepository
-import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
+import ru.alexp0111.core.viewmodel.MVIViewModel
+import ru.alexp0111.flexypixel.business.saved_scheme.ISavedSchemeInteractor
 import ru.alexp0111.flexypixel.navigation.Screens
+import ru.alexp0111.flexypixel.ui.savedScheme.converter.ISavedSchemeConvertor
+import ru.alexp0111.flexypixel.ui.savedScheme.model.SavedSchemeEffect
+import ru.alexp0111.flexypixel.ui.savedScheme.model.SavedSchemeIntent
+import ru.alexp0111.flexypixel.ui.savedScheme.model.SavedSchemeUiState
 import javax.inject.Inject
 
-class SavedSchemesViewModel @Inject constructor(
-    private val databaseRepository: SavedSchemeRepository,
+internal class SavedSchemesViewModel @Inject constructor(
+    private val savedSchemeInteractor: ISavedSchemeInteractor,
+    private val savedSchemeConvertor: ISavedSchemeConvertor,
     private val router: Router,
-) : ViewModel() {
+) : MVIViewModel<SavedSchemeIntent, SavedSchemeUiState, SavedSchemeEffect>() {
 
-    var savedSchemesList = MutableStateFlow(mutableListOf<UserSavedScheme>())
-
-    fun fillUpSavedSchemesList() {
-        viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.getAllSchemes().collect { incomingList ->
-                savedSchemesList.update { incomingList.toMutableList() }
-            }
+    init {
+        launch {
+            setState { copy(isLoading = true) }
+            val schemes = savedSchemeInteractor.getAllSchemes().map(savedSchemeConvertor::convertToUiModel)
+            setState { copy(isLoading = false, schemeItems = schemes) }
         }
     }
 
-    fun goToUpperLevelScreen(schemeId: Int) {
+    override fun setInitialState(): SavedSchemeUiState = SavedSchemeUiState()
+
+    override fun handleIntent(intent: SavedSchemeIntent) =
+        when(intent) {
+            is SavedSchemeIntent.SchemeItemClicked -> goToUpperLevelScreen(intent.uuid)
+        }
+
+    private fun goToUpperLevelScreen(schemeId: String) {
         router.navigateTo(Screens.UpperAbstractionLevelScreen(schemeId))
     }
 }
