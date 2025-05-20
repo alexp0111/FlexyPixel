@@ -41,11 +41,12 @@ dependencyResolutionManagement {
             library("composeNeomorphism", "me.nikhilchaudhari:composeNeumorphism:1.0.0-alpha02")
 
             library("shimmering", "com.valentinilk.shimmer:compose-shimmer:1.3.0")
+            library("coilCompose", "io.coil-kt:coil-compose:2.2.2")
+            library("coilSvg", "io.coil-kt:coil-svg:2.2.2")
 
             library("retrofit", "com.squareup.retrofit2:retrofit:2.11.0")
             library("retrofitConverter", "com.squareup.retrofit2:converter-gson:2.11.0")
             library("loggingInterceptor", "com.squareup.okhttp3:logging-interceptor:4.12.0")
-
 
             library("securityCrypto", "androidx.security:security-crypto:1.0.0")
 
