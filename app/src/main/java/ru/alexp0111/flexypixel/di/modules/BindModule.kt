@@ -6,12 +6,16 @@ import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
 import ru.alexp0111.flexypixel.business.panel_validation.PanelPositionValidator
 import ru.alexp0111.flexypixel.business.profile.IProfileInteractor
 import ru.alexp0111.flexypixel.business.profile.ProfileInteractor
+import ru.alexp0111.flexypixel.business.saved_scheme.ISavedSchemeInteractor
+import ru.alexp0111.flexypixel.business.saved_scheme.SavedSchemeInteractor
 import ru.alexp0111.flexypixel.business.templates.ITemplatesMessageInteractor
 import ru.alexp0111.flexypixel.business.templates.TemplatesMessageInteractor
 import ru.alexp0111.flexypixel.media.BitmapProcessor
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.DisplayLevelConverter
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.IDisplayLevelConverter
+import ru.alexp0111.flexypixel.ui.savedScheme.converter.ISavedSchemeConvertor
+import ru.alexp0111.flexypixel.ui.savedScheme.converter.SavedSchemeConvertor
 import ru.alexp0111.flexypixel.ui.templates.converter.ITemplatesConverter
 import ru.alexp0111.flexypixel.ui.templates.converter.TemplatesConverter
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.converter.IUpperAbstractionLevelConverter
@@ -39,4 +43,10 @@ internal interface BindModule {
 
     @Binds
     fun bindProfileInteractor(interactor: ProfileInteractor): IProfileInteractor
+
+    @Binds
+    fun bindSavedSchemeConvertor(converter: SavedSchemeConvertor): ISavedSchemeConvertor
+
+    @Binds
+    fun bindSavedSchemeInteractor(interactor: SavedSchemeInteractor): ISavedSchemeInteractor
 }

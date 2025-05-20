@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import kotlinx.coroutines.flow.Flow
 import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 
 @Dao
@@ -21,8 +20,8 @@ interface UserSavedSchemeDao {
     suspend fun deleteExistingScheme(userSavedScheme: UserSavedScheme)
 
     @Query("SELECT * FROM user_saved_schemes")
-    fun getAllSchemes(): Flow<List<UserSavedScheme>>
+    suspend fun getAllSchemes(): List<UserSavedScheme>
 
     @Query("SELECT * FROM user_saved_schemes WHERE id=:schemeId")
-    suspend fun getSchemeById(schemeId: Int): UserSavedScheme
+    suspend fun getSchemeById(schemeId: String): UserSavedScheme
 }

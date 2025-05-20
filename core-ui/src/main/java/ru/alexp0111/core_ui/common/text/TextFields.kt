@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.alexp0111.core_ui.common.shimmer.ShimmeringItem
@@ -21,6 +22,7 @@ import ru.alexp0111.core_ui.theme.flexyPixelTypography
 fun LargeTextField(
     text: String,
     modifier: Modifier = Modifier,
+    maxLines: Int = 1,
     style: TextStyle = flexyPixelTypography.displayLarge,
     align: TextAlign = TextAlign.Start,
     color: Color = Color.Unspecified,
@@ -30,6 +32,8 @@ fun LargeTextField(
         modifier = modifier,
         text = text,
         color = color,
+        maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis,
         style = style.copy(textAlign = align),
         fontWeight = weight,
     )
@@ -38,6 +42,7 @@ fun LargeTextField(
 fun MediumTextField(
     text: String,
     modifier: Modifier = Modifier,
+    maxLines: Int = 1,
     style: TextStyle = flexyPixelTypography.displayMedium,
     align: TextAlign = TextAlign.Start,
     color: Color = Color.Unspecified,
@@ -47,6 +52,8 @@ fun MediumTextField(
         modifier = modifier,
         text = text,
         color = color,
+        maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis,
         style = style.copy(textAlign = align),
         fontWeight = weight,
     )
@@ -55,6 +62,7 @@ fun MediumTextField(
 fun SmallTextField(
     text: String,
     modifier: Modifier = Modifier,
+    maxLines: Int = 1,
     style: TextStyle = flexyPixelTypography.displaySmall,
     align: TextAlign = TextAlign.Start,
     color: Color = Color.Unspecified,
@@ -64,6 +72,8 @@ fun SmallTextField(
         modifier = modifier,
         text = text,
         color = color,
+        maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis,
         style = style.copy(textAlign = align),
         fontWeight = weight,
     )
@@ -97,7 +107,7 @@ fun SmallTextFieldShimmering() {
 private fun TextFieldPreview() {
     AppTheme {
         Column(Modifier.fillMaxSize()) {
-            LargeTextField("LargeTextField", Modifier.fillMaxWidth())
+            LargeTextField("LargeTextField and words words words", Modifier.fillMaxWidth())
             LargeTextFieldShimmering()
             MediumTextField("MediumTextField", Modifier.fillMaxWidth())
             MediumTextFieldShimmering()

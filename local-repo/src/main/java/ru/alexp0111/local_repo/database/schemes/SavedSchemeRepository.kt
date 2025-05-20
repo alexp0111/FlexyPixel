@@ -1,6 +1,7 @@
 package ru.alexp0111.local_repo.database.schemes
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 import javax.inject.Inject
 
@@ -11,23 +12,23 @@ class SavedSchemeRepository @Inject constructor(
         userSavedSchemeDatabase.userSavedSchemeDao()
     }
 
-    suspend fun insertNewScheme(userSavedScheme: UserSavedScheme): Long {
-        return userSavedSchemeDao.insertNewScheme(userSavedScheme)
+    suspend fun insertNewScheme(userSavedScheme: UserSavedScheme): Long = withContext(Dispatchers.IO) {
+        userSavedSchemeDao.insertNewScheme(userSavedScheme)
     }
 
-    suspend fun updateExistingScheme(userSavedScheme: UserSavedScheme) {
+    suspend fun updateExistingScheme(userSavedScheme: UserSavedScheme) = withContext(Dispatchers.IO) {
         userSavedSchemeDao.updateExistingScheme(userSavedScheme)
     }
 
-    suspend fun deleteExistingScheme(userSavedScheme: UserSavedScheme) {
+    suspend fun deleteExistingScheme(userSavedScheme: UserSavedScheme) = withContext(Dispatchers.IO) {
         userSavedSchemeDao.deleteExistingScheme(userSavedScheme)
     }
 
-    fun getAllSchemes(): Flow<List<UserSavedScheme>> {
-        return userSavedSchemeDao.getAllSchemes()
+    suspend fun getAllSchemes(): List<UserSavedScheme> = withContext(Dispatchers.IO) {
+        userSavedSchemeDao.getAllSchemes()
     }
 
-    suspend fun getSchemeById(schemeId: Int): UserSavedScheme {
-        return userSavedSchemeDao.getSchemeById(schemeId)
+    suspend fun getSchemeById(schemeId: String): UserSavedScheme = withContext(Dispatchers.IO) {
+        userSavedSchemeDao.getSchemeById(schemeId)
     }
 }

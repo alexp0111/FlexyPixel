@@ -20,7 +20,7 @@ internal class UpperAbstractionLevelFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectSelf()
-        val schemeId = arguments?.getInt(SCHEME_ID_KEY)
+        val schemeId = arguments?.getString(SCHEME_ID_KEY)
         viewModel.sendIntent(UpperAbstractionLevelIntent.InitScheme(schemeId))
         super.onCreate(savedInstanceState)
     }
@@ -44,11 +44,11 @@ internal class UpperAbstractionLevelFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(schemeId: Int?): UpperAbstractionLevelFragment {
+        fun newInstance(schemeId: String?): UpperAbstractionLevelFragment {
             return UpperAbstractionLevelFragment().apply {
                 schemeId?.let {
                     arguments = Bundle().apply {
-                        putInt(SCHEME_ID_KEY, it)
+                        putString(SCHEME_ID_KEY, it)
                     }
                 }
             }

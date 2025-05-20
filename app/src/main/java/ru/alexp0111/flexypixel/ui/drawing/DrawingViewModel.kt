@@ -16,11 +16,11 @@ import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
 
 @AssistedFactory
 internal interface DrawingViewModelFactory {
-    fun create(schemeId: Int? = null): DrawingViewModel
+    fun create(schemeId: String? = null): DrawingViewModel
 }
 
 internal class DrawingViewModel @AssistedInject constructor(
-    @Assisted private val schemeId: Int?,
+    @Assisted private val schemeId: String?,
     globalStateHandlerFactory: GlobalStateHandlerFactory,
 ) : ViewModel(), DrawingActionConsumer, StateHolder {
 
