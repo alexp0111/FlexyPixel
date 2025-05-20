@@ -15,6 +15,9 @@ import ru.alexp0111.remote_repo.auth.repository.IAuthRepository
 import ru.alexp0111.remote_repo.profile.ProfileService
 import ru.alexp0111.remote_repo.profile.repository.IProfileRepository
 import ru.alexp0111.remote_repo.profile.repository.ProfileRepository
+import ru.alexp0111.remote_repo.scheme.SchemeService
+import ru.alexp0111.remote_repo.scheme.repository.ISchemeRepository
+import ru.alexp0111.remote_repo.scheme.repository.SchemeRepository
 import ru.alexp0111.remote_repo.token.TokenInterceptor
 import ru.alexp0111.remote_repo.util.PrettyLogger
 
@@ -69,6 +72,11 @@ class RemoteRepoModule {
     @Provides
     fun provideProfileService(@TokenRetrofit retrofit: Retrofit): ProfileService =
         retrofit.create(ProfileService::class.java)
+
+    @AppScope
+    @Provides
+    fun provideSchemeService(@TokenRetrofit retrofit: Retrofit): SchemeService =
+        retrofit.create(SchemeService::class.java)
 }
 
 @Module
@@ -80,4 +88,8 @@ interface RemoteRepoBindsModule {
     @AppScope
     @Binds
     fun bindProfileRepository(repo: ProfileRepository): IProfileRepository
+
+    @AppScope
+    @Binds
+    fun bindSchemeRepository(repo: SchemeRepository): ISchemeRepository
 }

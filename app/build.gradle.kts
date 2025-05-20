@@ -78,6 +78,10 @@ dependencies {
     implementation(localDeps.glide)
     implementation(localDeps.glideCompose)
 
+    /** Coil */
+    implementation(localDeps.coilCompose)
+    implementation(localDeps.coilSvg)
+
     /** Cicerone */
     implementation(localDeps.cicerone)
 

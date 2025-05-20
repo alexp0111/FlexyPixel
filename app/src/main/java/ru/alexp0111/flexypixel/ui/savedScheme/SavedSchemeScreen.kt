@@ -21,12 +21,14 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
+import coil.compose.AsyncImage
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import ru.alexp0111.core_ui.common.NeoCard
 import ru.alexp0111.core_ui.common.shimmer.ShimmeringItem
 import ru.alexp0111.core_ui.common.text.LargeTextField
@@ -97,9 +99,12 @@ private fun SavedSchemeItem(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             model.preview?.let {
-                GlideImage(
-                    model = it,
+                AsyncImage(
                     modifier = Modifier.size(90.dp),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(it)
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build(),
                     contentScale = ContentScale.Crop,
                     contentDescription = null
                 )
@@ -141,7 +146,7 @@ private fun SavedSchemeScreenContentPreview() {
                                 uuid = "",
                                 title = "First scheme and one more words or a few more",
                                 createdAt = "12.04.2025",
-                                preview = "https://flexypixelapi.fun/uploads/avatars/14.jpg".toUri(),
+                                preview = null,
                             ),
                             SavedSchemeUiModel(
                                 uuid = "",
