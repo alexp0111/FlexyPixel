@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import ru.alexp0111.core.model.main.PanelMetaData
 import ru.alexp0111.core.model.main.PanelOrientation
 import ru.alexp0111.core.model.main.PanelStatus
+import ru.alexp0111.flexypixel.business.global_state.panel_validation.PanelPositionValidator
 import java.util.stream.Stream
 
 

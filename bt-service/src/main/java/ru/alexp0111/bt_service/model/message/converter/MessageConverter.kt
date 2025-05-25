@@ -75,7 +75,7 @@ class MessageConverter @Inject constructor() : IMessageConverter {
         return MessagePanelConfiguration(stringConfiguration.toString())
     }
 
-    override fun parseIntToMessageString(num: Int, totalAmountOfSigns: Int): String {
+    private fun parseIntToMessageString(num: Int, totalAmountOfSigns: Int = 3): String {
         val stringNumber = num.toString()
         return when {
             stringNumber.length == totalAmountOfSigns -> stringNumber

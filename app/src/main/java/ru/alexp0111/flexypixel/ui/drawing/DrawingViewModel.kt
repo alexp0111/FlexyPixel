@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.alexp0111.flexypixel.business.GlobalStateHandler
-import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
+import ru.alexp0111.flexypixel.business.global_state.GlobalStateHandler
+import ru.alexp0111.flexypixel.business.global_state.GlobalStateHandlerFactory
 
 @AssistedFactory
 internal interface DrawingViewModelFactory {

@@ -8,8 +8,8 @@ import kotlinx.coroutines.withContext
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.matrix.MatrixConverter
 import ru.alexp0111.core.viewmodel.MVIViewModel
-import ru.alexp0111.flexypixel.business.GlobalStateHandler
-import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
+import ru.alexp0111.flexypixel.business.global_state.GlobalStateHandler
+import ru.alexp0111.flexypixel.business.global_state.GlobalStateHandlerFactory
 import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.converter.IUpperAbstractionLevelConverter
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLevelEffect

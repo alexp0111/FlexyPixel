@@ -1,6 +1,7 @@
 package ru.alexp0111.remote_repo.scheme.repository
 
 import ru.alexp0111.remote_repo.scheme.SchemeService
+import ru.alexp0111.remote_repo.scheme.model.ApiConfiguration
 import ru.alexp0111.remote_repo.scheme.model.ApiScheme
 import javax.inject.Inject
 
@@ -9,4 +10,7 @@ class SchemeRepository @Inject constructor(
 ) : ISchemeRepository {
     override suspend fun getSchemeList(): List<ApiScheme> =
         schemeService.getSchemeList() ?: emptyList()
+
+    override suspend fun getConfigById(id: String): ApiConfiguration? =
+        schemeService.getConfigById(id)
 }

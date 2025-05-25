@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import ru.alexp0111.core_ui.util.composeView
 import ru.alexp0111.core_ui.util.setContentAndStrategy
 import ru.alexp0111.flexypixel.di.components.FragmentComponent
-import ru.alexp0111.flexypixel.business.GlobalStateHandler
+import ru.alexp0111.flexypixel.business.global_state.GlobalStateHandler
 import javax.inject.Inject
 
 internal class SavedSchemesFragment : Fragment() {

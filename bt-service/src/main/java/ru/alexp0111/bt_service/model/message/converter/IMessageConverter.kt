@@ -13,5 +13,4 @@ interface IMessageConverter {
     fun convertFramesToMetaDataMessage(frames: List<MessageFrame>, interframeDelay: Int): MessageFramesMetaData
     fun convertFramesToMessage(frameCycle: FrameCycle): List<MessageFrame>
     fun convertPanelMetaDataToMessage(configuration: Set<PanelMetaData>): MessagePanelConfiguration
-    fun parseIntToMessageString(num: Int, totalAmountOfSigns: Int = 3): String
 }

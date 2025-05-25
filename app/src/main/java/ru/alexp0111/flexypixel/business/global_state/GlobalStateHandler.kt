@@ -1,4 +1,4 @@
-package ru.alexp0111.flexypixel.business
+package ru.alexp0111.flexypixel.business.global_state
 
 import android.graphics.Bitmap
 import android.net.Uri
@@ -8,18 +8,22 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import ru.alexp0111.bt_service.business.IMessageHandler
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.model.DrawingColor
-import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
 import ru.alexp0111.core.model.main.Frame
 import ru.alexp0111.core.model.main.FrameCycle
 import ru.alexp0111.core.model.main.Panel
 import ru.alexp0111.core.model.main.PanelMetaData
 import ru.alexp0111.core.model.main.PanelOrientation
 import ru.alexp0111.core.model.main.PanelStatus
+import ru.alexp0111.flexypixel.business.global_state.convertor.IApiConfigurationConverter
+import ru.alexp0111.flexypixel.business.global_state.panel_validation.IPanelPositionValidator
 import ru.alexp0111.local_repo.database.schemes.SavedSchemeRepository
 import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 import ru.alexp0111.flexypixel.media.IBitmapProcessor
@@ -28,6 +32,7 @@ import ru.alexp0111.model.MediaFileType
 import ru.alexp0111.flexypixel.ui.displayLevel.DisplayLevelGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.drawing.DrawingGlobalStateHolder
 import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.UpperAbstractionLevelGlobalStateHolder
+import ru.alexp0111.remote_repo.scheme.repository.ISchemeRepository
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -41,45 +46,54 @@ internal interface GlobalStateHandlerFactory {
 private const val TAG = "GlobalStateHandler"
 const val EMPTY_CELL = -1
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class GlobalStateHandler @AssistedInject constructor(
     private val databaseRepository: SavedSchemeRepository,
+    private val schemeRepository: ISchemeRepository,
     private val messageHandler: IMessageHandler,
     private val bitmapProcessor: IBitmapProcessor,
     private val mediaFileProcessor: IMediaFilesProcessor,
     private val panelValidator: IPanelPositionValidator,
+    private val schemeConvertor: IApiConfigurationConverter,
     @Assisted var schemeId: String?,
 ) : UpperAbstractionLevelGlobalStateHolder,
     DrawingGlobalStateHolder,
     IPanelPositionValidator by panelValidator,
     DisplayLevelGlobalStateHolder {
 
-    private lateinit var frameCycle: FrameCycle
+    private lateinit var frameCycle: Deferred<FrameCycle>
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         Log.d(TAG, throwable.message.toString())
     }
     private val scope = CoroutineScope(Dispatchers.IO + errorHandler)
 
     private val metaDataSet: MutableSet<PanelMetaData>
-        get() = frameCycle.configuration.listOfMetaData
+        get() = frameCycle.getCompleted().configuration.listOfMetaData
 
     init {
         Log.d(TAG, "in init block")
         scope.launch {
             val id = schemeId
             messageHandler.clearCurrentState()
-            frameCycle = if (id == null) {
-                FrameCycle.getNewInstance()
-            } else {
-                val cycle = databaseRepository.getSchemeById(id).frameCycle
-                tryToSendConfigurationToMC(cycle)
-                cycle
+            frameCycle = async {
+                if (id == null) {
+                    FrameCycle.getNewInstance()
+                } else {
+                    // val cycle = databaseRepository.getSchemeById(id).frameCycle
+                    val cycle = schemeRepository.getConfigById(id)
+                        ?.let(schemeConvertor::convertApiToCycle)
+                        ?: FrameCycle.getNewInstance()
+                    tryToSendConfigurationToMC(cycle)
+                    cycle
+                }
             }
         }
     }
 
     /** Upper Abstraction Level */
 
-    override fun getSegmentsBitmapImages(size: Int): List<Bitmap?> {
+    override suspend fun getSegmentsBitmapImages(size: Int): List<Bitmap?> {
+        frameCycle.await()
         val bitmapList = MutableList<Bitmap?>(CommonSizeConstants.SEGMENTS_TOTAL_AMOUNT) { null }
         for (segment in 0..bitmapList.lastIndex) {
             val panelMetaDataSet = getPanelsConfiguration(segment)
@@ -102,8 +116,8 @@ internal class GlobalStateHandler @AssistedInject constructor(
     override fun getPanelsImages(segmentNumber: Int): MutableMap<Int, List<DrawingColor>?> {
         return mutableMapOf<Int, List<DrawingColor>?>().apply {
             getPanelsConfiguration(segmentNumber).map { it.order }.forEach { panelOrder ->
-                if (panelOrder != EMPTY_CELL && panelOrder < frameCycle.frames.first().panels.size) {
-                    val panelInStringPixels = frameCycle.frames.first().panels[panelOrder].pixels
+                if (panelOrder != EMPTY_CELL && panelOrder < frameCycle.getCompleted().frames.first().panels.size) {
+                    val panelInStringPixels = frameCycle.getCompleted().frames.first().panels[panelOrder].pixels
                     put(
                         panelOrder,
                         panelInStringPixels.map(DrawingColor::getFromString)
@@ -122,7 +136,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
     }
 
     fun deleteAndGetValidatedConfig(): Set<PanelMetaData> {
-        val currentConfig = frameCycle.configuration.listOfMetaData.toSet()
+        val currentConfig = frameCycle.getCompleted().configuration.listOfMetaData.toSet()
         var removedPanels = 0
         for (order in currentConfig.map { it.order }.sorted()) {
             val currentPanel = currentConfig.find { it.order == order } ?: continue
@@ -167,33 +181,33 @@ internal class GlobalStateHandler @AssistedInject constructor(
 
     private fun handleBitmapUpdate(bitmap: Bitmap) {
         bitmapProcessor.applyBitmapsToFrameCycle(
-            frameCycle = frameCycle,
+            frameCycle = frameCycle.getCompleted(),
             type = MediaFileType.IMAGE,
             bitmaps = listOf(bitmap),
         )
-        tryToSendConfigurationToMC(frameCycle)
+        tryToSendConfigurationToMC(frameCycle.getCompleted())
     }
 
     private fun handleGIFUpdate(bitmapList: List<Bitmap>, interframeDelay: Int) {
-        frameCycle.interframeDelay = interframeDelay
+        frameCycle.getCompleted().interframeDelay = interframeDelay
         bitmapProcessor.applyBitmapsToFrameCycle(
-            frameCycle = frameCycle,
+            frameCycle = frameCycle.getCompleted(),
             type = MediaFileType.GIF,
             bitmaps = bitmapList,
         )
-        tryToSendConfigurationToMC(frameCycle)
+        tryToSendConfigurationToMC(frameCycle.getCompleted())
     }
 
     private fun validatedConfig(): Set<PanelMetaData> {
         val validatedConfig = validate(metaDataSet).toMutableSet()
-        return validatedConfig.also { frameCycle.configuration.listOfMetaData = it }
+        return validatedConfig.also { frameCycle.getCompleted().configuration.listOfMetaData = it }
     }
 
     /** Drawing Level */
 
     override fun getPanelPixels(panelPosition: Int): MutableList<DrawingColor> {
         refreshFramesWithMetaData()
-        val stringPixels = frameCycle.frames.first().panels[panelPosition].pixels
+        val stringPixels = frameCycle.getCompleted().frames.first().panels[panelPosition].pixels
         return stringPixels.map { DrawingColor.getFromString(it) }.toMutableList()
     }
 
@@ -207,7 +221,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
         pixelPosition: Int
     ) {
         refreshFramesWithMetaData()
-        frameCycle.frames.onEachIndexed { index, frame ->
+        frameCycle.getCompleted().frames.onEachIndexed { index, frame ->
             frame.panels[panelPosition].pixels[pixelPosition] = color.asString()
         }
         val orientation = metaDataSet.find { it.order == panelPosition }?.orientation ?: PanelOrientation.LEFT
@@ -244,7 +258,7 @@ internal class GlobalStateHandler @AssistedInject constructor(
             title = title,
             createdAt = getFormattedDate(),
             preview = null,
-            frameCycle = frameCycle,
+            frameCycle = frameCycle.getCompleted(),
         )
         databaseRepository.insertNewScheme(scheme).also {
             schemeId = scheme.id
@@ -265,35 +279,35 @@ internal class GlobalStateHandler @AssistedInject constructor(
                 title = title,
                 createdAt = scheme.createdAt,
                 preview = scheme.preview,
-                frameCycle = frameCycle,
+                frameCycle = frameCycle.getCompleted(),
             )
         )
     }
 
     /* Add empty panel to frames & remove if needed */
     private fun refreshFramesWithMetaData() {
-        frameCycle.frames.forEachIndexed { frameIndex, frame ->
+        frameCycle.getCompleted().frames.forEachIndexed { frameIndex, frame ->
             val sizeDifference = metaDataSet.size - frame.panels.size
             val trimmedPanels = when {
                 sizeDifference > 0 -> frame.panels + List(sizeDifference) { Panel() }
                 sizeDifference < 0 -> frame.panels.dropLast(abs(sizeDifference))
                 else -> frame.panels
             }
-            frameCycle.frames[frameIndex].panels = trimmedPanels.toMutableList()
+            frameCycle.getCompleted().frames[frameIndex].panels = trimmedPanels.toMutableList()
         }
     }
 
     /* Add empty frames & remove if needed */
     private fun refreshFramesWithAmount(framesAmount: Int) {
         val panelsAmount = metaDataSet.size
-        val sizeDifference = framesAmount - frameCycle.framesAmount
+        val sizeDifference = framesAmount - frameCycle.getCompleted().framesAmount
         val trimmedFrames = when {
-            sizeDifference > 0 -> frameCycle.frames + MutableList(sizeDifference) { Frame(MutableList(panelsAmount) { Panel() }) }
-            sizeDifference < 0 -> frameCycle.frames.dropLast(abs(sizeDifference))
-            else -> frameCycle.frames
+            sizeDifference > 0 -> frameCycle.getCompleted().frames + MutableList(sizeDifference) { Frame(MutableList(panelsAmount) { Panel() }) }
+            sizeDifference < 0 -> frameCycle.getCompleted().frames.dropLast(abs(sizeDifference))
+            else -> frameCycle.getCompleted().frames
         }
-        frameCycle.frames = trimmedFrames.toMutableList()
-        frameCycle.framesAmount = framesAmount
+        frameCycle.getCompleted().frames = trimmedFrames.toMutableList()
+        frameCycle.getCompleted().framesAmount = framesAmount
     }
 
     private fun tryToSendConfigurationToMC(cycle: FrameCycle) {
