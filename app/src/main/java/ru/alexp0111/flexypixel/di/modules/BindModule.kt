@@ -2,8 +2,10 @@ package ru.alexp0111.flexypixel.di.modules
 
 import dagger.Binds
 import dagger.Module
-import ru.alexp0111.flexypixel.business.panel_validation.IPanelPositionValidator
-import ru.alexp0111.flexypixel.business.panel_validation.PanelPositionValidator
+import ru.alexp0111.flexypixel.business.global_state.convertor.ApiConfigurationConverter
+import ru.alexp0111.flexypixel.business.global_state.convertor.IApiConfigurationConverter
+import ru.alexp0111.flexypixel.business.global_state.panel_validation.IPanelPositionValidator
+import ru.alexp0111.flexypixel.business.global_state.panel_validation.PanelPositionValidator
 import ru.alexp0111.flexypixel.business.profile.IProfileInteractor
 import ru.alexp0111.flexypixel.business.profile.ProfileInteractor
 import ru.alexp0111.flexypixel.business.saved_scheme.ISavedSchemeInteractor
@@ -49,4 +51,7 @@ internal interface BindModule {
 
     @Binds
     fun bindSavedSchemeInteractor(interactor: SavedSchemeInteractor): ISavedSchemeInteractor
+
+    @Binds
+    fun bindApiConfigurationConverter(converter: ApiConfigurationConverter): IApiConfigurationConverter
 }

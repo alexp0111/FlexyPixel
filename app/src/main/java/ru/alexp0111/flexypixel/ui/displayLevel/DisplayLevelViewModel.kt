@@ -7,8 +7,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.viewmodel.MVIViewModel
-import ru.alexp0111.flexypixel.business.GlobalStateHandler
-import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
+import ru.alexp0111.flexypixel.business.global_state.GlobalStateHandler
+import ru.alexp0111.flexypixel.business.global_state.GlobalStateHandlerFactory
 import ru.alexp0111.core.model.main.PanelStatus
 import ru.alexp0111.flexypixel.navigation.Screens
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.IDisplayLevelConverter
@@ -46,6 +46,13 @@ internal class DisplayLevelViewModel @Inject constructor(
             DisplayLevelIntent.GoToPanel -> goToSelectedPanel()
         }
 
+    private fun handleDragAndDropIntent(intent: DisplayLevelDragAndDrop) =
+        when (intent) {
+            is DisplayLevelDragAndDrop.Up -> handlePanelDrag(intent.panel)
+            is DisplayLevelDragAndDrop.Down -> handlePanelDrop(intent.dropCoordinate.x, intent.dropCoordinate.y)
+            DisplayLevelDragAndDrop.Fail -> handlePanelDropFail()
+        }
+
     /* Init */
 
     private fun loadConfiguration(segmentNumber: Int) {
@@ -68,13 +75,6 @@ internal class DisplayLevelViewModel @Inject constructor(
             }
         }
     }
-
-    private fun handleDragAndDropIntent(intent: DisplayLevelDragAndDrop) =
-        when (intent) {
-            is DisplayLevelDragAndDrop.Up -> handlePanelDrag(intent.panel)
-            is DisplayLevelDragAndDrop.Down -> handlePanelDrop(intent.dropCoordinate.x, intent.dropCoordinate.y)
-            DisplayLevelDragAndDrop.Fail -> handlePanelDropFail()
-        }
 
     /* Drag and drop */
 

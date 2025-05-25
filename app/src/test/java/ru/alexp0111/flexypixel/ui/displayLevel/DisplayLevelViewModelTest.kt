@@ -20,8 +20,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import ru.alexp0111.core.model.DrawingColor
 import ru.alexp0111.core.model.main.PanelMetaData
-import ru.alexp0111.flexypixel.business.GlobalStateHandler
-import ru.alexp0111.flexypixel.business.GlobalStateHandlerFactory
+import ru.alexp0111.flexypixel.business.global_state.GlobalStateHandler
+import ru.alexp0111.flexypixel.business.global_state.GlobalStateHandlerFactory
 import ru.alexp0111.flexypixel.ui.displayLevel.converter.IDisplayLevelConverter
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelIntent
 import ru.alexp0111.flexypixel.ui.displayLevel.model.DisplayLevelUiState
