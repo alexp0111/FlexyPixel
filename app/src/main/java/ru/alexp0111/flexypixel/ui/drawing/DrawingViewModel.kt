@@ -2,9 +2,6 @@ package ru.alexp0111.flexypixel.ui.drawing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,19 +10,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.alexp0111.flexypixel.business.global_state.GlobalStateHandler
 import ru.alexp0111.flexypixel.business.global_state.GlobalStateHandlerFactory
+import javax.inject.Inject
 
-@AssistedFactory
-internal interface DrawingViewModelFactory {
-    fun create(schemeId: String? = null): DrawingViewModel
-}
-
-internal class DrawingViewModel @AssistedInject constructor(
-    @Assisted private val schemeId: String?,
+internal class DrawingViewModel @Inject constructor(
     globalStateHandlerFactory: GlobalStateHandlerFactory,
 ) : ViewModel(), DrawingActionConsumer, StateHolder {
 
     private val globalStateHandler =
-        GlobalStateHandler.getInstance(globalStateHandlerFactory, schemeId)
+        GlobalStateHandler.getInstance(globalStateHandlerFactory)
 
     private val _actions: MutableSharedFlow<DrawingAction> by lazy {
         MutableSharedFlow(extraBufferCapacity = 1)

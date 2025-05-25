@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import ru.alexp0111.core_ui.common.NeoCard
 import ru.alexp0111.core_ui.common.shimmer.ShimmeringItem
 import ru.alexp0111.core_ui.common.text.LargeTextField
@@ -80,7 +79,6 @@ private fun SavedSchemeScreenContent(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun SavedSchemeItem(
     model: SavedSchemeUiModel,
@@ -90,7 +88,14 @@ private fun SavedSchemeItem(
         modifier = Modifier
             .padding(horizontal = 32.dp, vertical = 16.dp)
             .height(160.dp),
-        onClick = { intentHandler(SavedSchemeIntent.SchemeItemClicked(model.uuid)) },
+        onClick = {
+            val clickIntent = SavedSchemeIntent.SchemeItemClicked(
+                model.uuid,
+                model.preview.toString(),
+                model.createdAt
+            )
+            intentHandler(clickIntent)
+        },
     ) {
         Row(
             modifier = Modifier

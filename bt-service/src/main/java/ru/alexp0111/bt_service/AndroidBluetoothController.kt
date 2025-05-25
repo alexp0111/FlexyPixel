@@ -33,7 +33,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "AndroidBluetoothController"
-private const val DEVICE_NAME_REGEX = "Flexy Pixel.*"
+private const val DEVICE_NAME_REGEX = "MY_TEST_HC06"
 private const val SERVICE_UUID = "00001101-0000-1000-8000-00805F9B34FB"
 
 @SuppressLint("MissingPermission")

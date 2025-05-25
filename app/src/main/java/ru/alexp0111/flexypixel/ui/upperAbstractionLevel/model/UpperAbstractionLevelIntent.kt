@@ -5,6 +5,6 @@ internal sealed interface UpperAbstractionLevelIntent {
     data class CardClicked(val x: Int, val y: Int): UpperAbstractionLevelIntent
     data class CardSizeMeasured(val size: Int): UpperAbstractionLevelIntent
     data object RefreshSegmentInfo: UpperAbstractionLevelIntent
-    data class InitScheme(val schemeId: String?): UpperAbstractionLevelIntent
+    data class InitScheme(val schemeId: String?, val preview: String?, val createdAt: String?): UpperAbstractionLevelIntent
     data object Save: UpperAbstractionLevelIntent
 }

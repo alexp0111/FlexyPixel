@@ -12,6 +12,8 @@ import ru.alexp0111.flexypixel.ui.upperAbstractionLevel.model.UpperAbstractionLe
 import javax.inject.Inject
 
 private const val SCHEME_ID_KEY = "SCHEME_ID_KEY"
+private const val SCHEME_PREVIEW_KEY = "SCHEME_PREVIEW_KEY"
+private const val SCHEME_DATE_KEY = "SCHEME_DATE_KEY"
 
 internal class UpperAbstractionLevelFragment : Fragment() {
 
@@ -21,7 +23,9 @@ internal class UpperAbstractionLevelFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         injectSelf()
         val schemeId = arguments?.getString(SCHEME_ID_KEY)
-        viewModel.sendIntent(UpperAbstractionLevelIntent.InitScheme(schemeId))
+        val preview = arguments?.getString(SCHEME_PREVIEW_KEY)
+        val date = arguments?.getString(SCHEME_DATE_KEY)
+        viewModel.sendIntent(UpperAbstractionLevelIntent.InitScheme(schemeId, preview, date))
         super.onCreate(savedInstanceState)
     }
 
@@ -44,13 +48,13 @@ internal class UpperAbstractionLevelFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(schemeId: String?): UpperAbstractionLevelFragment {
+        fun newInstance(schemeId: String?, preview: String?, createdAt: String?): UpperAbstractionLevelFragment {
             return UpperAbstractionLevelFragment().apply {
-                schemeId?.let {
                     arguments = Bundle().apply {
-                        putString(SCHEME_ID_KEY, it)
+                        schemeId?.let { putString(SCHEME_ID_KEY, it) }
+                        preview?.let { putString(SCHEME_PREVIEW_KEY, it) }
+                        createdAt?.let { putString(SCHEME_DATE_KEY, it) }
                     }
-                }
             }
         }
     }

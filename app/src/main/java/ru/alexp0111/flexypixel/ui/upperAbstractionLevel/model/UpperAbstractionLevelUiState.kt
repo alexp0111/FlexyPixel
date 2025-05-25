@@ -6,6 +6,7 @@ import ru.alexp0111.core.CommonSizeConstants
 
 @Immutable
 internal data class UpperAbstractionLevelUiState(
+    val isLoading: Boolean = false,
     val title: String = "",
     val cardSizePx: Int = 0,
     val segmentMatrix: List<List<SegmentUiState>> =

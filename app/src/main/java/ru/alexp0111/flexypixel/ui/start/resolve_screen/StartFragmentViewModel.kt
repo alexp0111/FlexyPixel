@@ -12,7 +12,7 @@ import ru.alexp0111.bt_service.utils.PermissionResolver
 import ru.alexp0111.remote_repo.token.TokenManager
 import javax.inject.Inject
 
-private const val DEBUG_ONLY_SKIP_CONNECTION = true
+private const val DEBUG_ONLY_SKIP_CONNECTION = false
 
 class StartFragmentViewModel @Inject constructor(
     private val controller: AndroidBluetoothController,

@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.alexp0111.core.CommonSizeConstants
 import ru.alexp0111.core.matrix.MatrixConverter
 import ru.alexp0111.core.viewmodel.MVIViewModel
@@ -34,7 +33,7 @@ internal class UpperAbstractionLevelViewModel @Inject constructor(
 
     override fun handleIntent(intent: UpperAbstractionLevelIntent) =
         when (intent) {
-            is UpperAbstractionLevelIntent.InitScheme -> initScheme(intent.schemeId)
+            is UpperAbstractionLevelIntent.InitScheme -> initScheme(intent.schemeId, intent.preview, intent.createdAt)
             is UpperAbstractionLevelIntent.TitleChanged -> updateTitle(intent.newTitle)
             is UpperAbstractionLevelIntent.CardSizeMeasured -> initSegmentBitmaps(intent.size)
             UpperAbstractionLevelIntent.RefreshSegmentInfo -> refreshSegmentBitmaps()
@@ -42,15 +41,13 @@ internal class UpperAbstractionLevelViewModel @Inject constructor(
             is UpperAbstractionLevelIntent.CardClicked -> goToDisplayLevel(intent.x, intent.y)
         }
 
-    private fun initScheme(schemeId: String?) {
-        globalStateHandler = GlobalStateHandler.getInstance(globalStateHandlerFactory, schemeId)
-        launch { schemeId?.let { setUpTitle(it) } }
-    }
-
-    private suspend fun setUpTitle(schemeId: String) = withContext(Dispatchers.IO) {
-        val title = databaseRepository.getSchemeById(schemeId).title
-        viewModelScope.launch {
-            setState { uiState.value.copy(title = title) }
+    private fun initScheme(schemeId: String?, preview: String?, createdAt: String?) {
+        globalStateHandler = GlobalStateHandler.getInstance(globalStateHandlerFactory)
+        launch {
+            setState { copy(isLoading = true) }
+            globalStateHandler?.init(schemeId, preview, createdAt)
+            refreshSegmentBitmaps()
+            setState { copy(isLoading = false, title = globalStateHandler?.title.orEmpty()) }
         }
     }
 
