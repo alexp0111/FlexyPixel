@@ -15,8 +15,10 @@ class SavedSchemeInteractor @Inject constructor(
     private val schemeRepository: ISchemeRepository,
 ) : ISavedSchemeInteractor {
     override suspend fun getAllSchemes(): List<SavedSchemeBusinessModel> {
-        val localSchemes =  databaseRepository.getAllSchemes().map(::localModelToBusiness)
-        val remoteSchemes = schemeRepository.getSchemeList().filter { it.publicId != null }.map(::remoteToBusiness)
+        val localSchemes = databaseRepository.getAllSchemes().map(::localModelToBusiness)
+        val remoteSchemes = runCatching {
+            schemeRepository.getSchemeList().filter { it.publicId != null }.map(::remoteToBusiness)
+        }.getOrNull() ?: return localSchemes
         val remoteSchemeIds = remoteSchemes.map { it.uuid }.toSet()
 
         return buildList {

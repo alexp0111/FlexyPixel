@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import ru.alexp0111.core_ui.common.NeoButton
 import ru.alexp0111.core_ui.common.NeoCard
 import ru.alexp0111.core_ui.common.divider.VerticalEmptyDivider
+import ru.alexp0111.core_ui.common.shimmer.ShimmeringItem
 import ru.alexp0111.core_ui.common.text.LargeEditTextField
 import ru.alexp0111.core_ui.common.text.MediumTextField
 import ru.alexp0111.core_ui.theme.AppTheme
@@ -136,13 +137,17 @@ private fun UpperAbstractionLevelScreenSegmentMatrix(
                             .padding(8.dp),
                         onClick = { onCardClicked(x, y) }
                     ) {
-                        segmentMatrixState[y][x].bitmap?.let {
-                            Image(
-                                modifier = Modifier.fillMaxSize().padding(8.dp),
-                                bitmap = it.asImageBitmap(),
-                                contentScale = ContentScale.Crop,
-                                contentDescription = null,
-                            )
+                        if (uiState.value.isLoading) {
+                            ShimmeringItem(cornerRadius = 0.dp)
+                        } else {
+                            segmentMatrixState[y][x].bitmap?.let {
+                                Image(
+                                    modifier = Modifier.fillMaxSize().padding(8.dp),
+                                    bitmap = it.asImageBitmap(),
+                                    contentScale = ContentScale.Crop,
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     }
                 }

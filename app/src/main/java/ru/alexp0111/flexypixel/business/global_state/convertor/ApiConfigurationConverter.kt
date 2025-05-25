@@ -7,13 +7,28 @@ import ru.alexp0111.core.model.main.Panel
 import ru.alexp0111.core.model.main.PanelConfiguration
 import ru.alexp0111.core.model.main.PanelMetaData
 import ru.alexp0111.core.model.main.PanelOrientation
+import ru.alexp0111.local_repo.database.schemes.data.UserSavedScheme
 import ru.alexp0111.remote_repo.scheme.model.ApiConfiguration
 import ru.alexp0111.remote_repo.scheme.model.ApiFrameInfo
 import ru.alexp0111.remote_repo.scheme.model.ApiPaletteItem
 import ru.alexp0111.remote_repo.scheme.model.ApiPanelsInfo
+import java.util.UUID
 import javax.inject.Inject
 
 class ApiConfigurationConverter @Inject constructor() : IApiConfigurationConverter {
+
+    override fun convertApiToUserSavedScheme(
+        apiConfiguration: ApiConfiguration,
+        createdAt: String,
+        preview: String?
+    ): UserSavedScheme = UserSavedScheme(
+        id = apiConfiguration.publicId ?: UUID.randomUUID().toString(),
+        title = apiConfiguration.name ?: "",
+        createdAt = createdAt,
+        preview = preview,
+        frameCycle = apiConfiguration.let(::convertApiToCycle)
+    )
+
     override fun convertApiToCycle(apiConfiguration: ApiConfiguration): FrameCycle {
         val panelConfiguration = toPanelConfig(apiConfiguration.panelsInfo)
         val frames = toPanelFrames(apiConfiguration.frameInfo)

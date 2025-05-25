@@ -25,9 +25,7 @@ private const val PANEL_NUMBER_KEY = "PANEL_NUMBER_KEY"
 internal class DrawingFragment @Inject constructor() : Fragment() {
 
     @Inject
-    lateinit var stateHolderFactory: DrawingViewModelFactory
-
-    private var stateHolder: DrawingViewModel? = null
+    lateinit var stateHolder: DrawingViewModel
 
     private var _binding: FragmentDrawingBinding? = null
     private val binding get() = _binding!!
@@ -43,9 +41,8 @@ internal class DrawingFragment @Inject constructor() : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectSelf()
-        stateHolder = stateHolderFactory.create()
         val panelPosition = arguments?.getInt(PANEL_NUMBER_KEY) ?: 0
-        stateHolder?.setPanelPosition(panelPosition)
+        stateHolder.setPanelPosition(panelPosition)
         super.onCreate(savedInstanceState)
     }
 
@@ -64,24 +61,24 @@ internal class DrawingFragment @Inject constructor() : Fragment() {
         setPaletteOnClick()
         fillUpDrawingPanel()
         setUpSlidersOnChanged()
-        stateHolder?.consumeAction(DrawingAction.RequestDisplayConfiguration)
+        stateHolder.consumeAction(DrawingAction.RequestDisplayConfiguration)
         subscribeUI()
     }
 
     private fun setUpSlidersOnChanged() {
         binding.apply {
             sliderRed.addOnChangeListener { _, value, _ ->
-                stateHolder?.consumeAction(
+                stateHolder.consumeAction(
                     DrawingAction.RequestChangePaletteItemColor(ColorChannel.RED, value.toInt())
                 )
             }
             sliderGreen.addOnChangeListener { _, value, _ ->
-                stateHolder?.consumeAction(
+                stateHolder.consumeAction(
                     DrawingAction.RequestChangePaletteItemColor(ColorChannel.GREEN, value.toInt())
                 )
             }
             sliderBlue.addOnChangeListener { _, value, _ ->
-                stateHolder?.consumeAction(
+                stateHolder.consumeAction(
                     DrawingAction.RequestChangePaletteItemColor(ColorChannel.BLUE, value.toInt())
                 )
             }
@@ -91,7 +88,7 @@ internal class DrawingFragment @Inject constructor() : Fragment() {
     private fun setPaletteOnClick() {
         for ((index, paletteItem) in paletteList.withIndex()) {
             paletteItem.setOnClickListener {
-                stateHolder?.consumeAction(DrawingAction.PickPaletteItem(index))
+                stateHolder.consumeAction(DrawingAction.PickPaletteItem(index))
             }
         }
     }
@@ -134,7 +131,7 @@ internal class DrawingFragment @Inject constructor() : Fragment() {
                 pixel.layoutParams = params
 
                 pixel.setOnClickListener {
-                    stateHolder?.consumeAction(DrawingAction.RequestPixelColorUpdate(pixelPosition = i))
+                    stateHolder.consumeAction(DrawingAction.RequestPixelColorUpdate(pixelPosition = i))
                 }
 
                 pixels.add(pixel)
@@ -148,7 +145,7 @@ internal class DrawingFragment @Inject constructor() : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    stateHolder?.state?.collect { state: DrawingUIState ->
+                    stateHolder.state.collect { state: DrawingUIState ->
 
                         for ((index, pixel) in pixels.withIndex()) {
                             pixel.setCardBackgroundColor(state.pixelPanel[index].toColor())

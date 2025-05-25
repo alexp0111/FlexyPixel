@@ -27,7 +27,7 @@ internal class DisplayLevelViewModel @Inject constructor(
 
     @VisibleForTesting
     val globalStateHandler by lazy {
-        GlobalStateHandler.getInstance(globalStateHandlerFactory, null)
+        GlobalStateHandler.getInstance(globalStateHandlerFactory)
     }
 
     private val isGlobalPanelLimitAchieved

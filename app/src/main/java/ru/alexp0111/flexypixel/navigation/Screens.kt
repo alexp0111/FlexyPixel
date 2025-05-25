@@ -25,9 +25,10 @@ object Screens {
         DisplayLevelFragment.newInstance(segmentNumber)
     }
 
-    fun UpperAbstractionLevelScreen(schemeId: String? = null) = FragmentScreen("UpperAbstractionLevelScreen_$schemeId") {
-        UpperAbstractionLevelFragment.newInstance(schemeId)
-    }
+    fun UpperAbstractionLevelScreen(schemeId: String? = null, preview: String? = null, date: String? = null) =
+        FragmentScreen("UpperAbstractionLevelScreen_$schemeId") {
+            UpperAbstractionLevelFragment.newInstance(schemeId, preview, date)
+        }
 
     fun StartScreen() = FragmentScreen {
         StartFragment()

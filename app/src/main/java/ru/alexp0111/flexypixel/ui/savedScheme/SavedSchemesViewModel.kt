@@ -29,10 +29,10 @@ internal class SavedSchemesViewModel @Inject constructor(
 
     override fun handleIntent(intent: SavedSchemeIntent) =
         when(intent) {
-            is SavedSchemeIntent.SchemeItemClicked -> goToUpperLevelScreen(intent.uuid)
+            is SavedSchemeIntent.SchemeItemClicked -> goToUpperLevelScreen(intent.uuid, intent.preview, intent.date)
         }
 
-    private fun goToUpperLevelScreen(schemeId: String) {
-        router.navigateTo(Screens.UpperAbstractionLevelScreen(schemeId))
+    private fun goToUpperLevelScreen(schemeId: String, preview: String?, date: String?) {
+        router.navigateTo(Screens.UpperAbstractionLevelScreen(schemeId, preview, date))
     }
 }
