@@ -1,6 +1,7 @@
 package ru.alexp0111.flexypixel.ui.menu
 
 import com.github.terrakok.cicerone.Router
+import kotlinx.coroutines.launch
 import ru.alexp0111.core.viewmodel.MVIViewModel
 import ru.alexp0111.flexypixel.R
 import ru.alexp0111.flexypixel.navigation.Screens
@@ -8,14 +9,23 @@ import ru.alexp0111.flexypixel.ui.menu.model.MenuIntent
 import ru.alexp0111.flexypixel.ui.menu.model.MenuItem
 import ru.alexp0111.flexypixel.ui.menu.model.MenuItemType
 import ru.alexp0111.flexypixel.ui.menu.model.MenuUiState
+import ru.alexp0111.remote_repo.profile.repository.IProfileRepository
 import javax.inject.Inject
 
 class MenuViewModel @Inject constructor(
     private val router: Router,
+    private val profileRepository: IProfileRepository,
 ) : MVIViewModel<MenuIntent, MenuUiState, Nothing>() {
 
+    init {
+        launch {
+            val isDebugger = profileRepository.getUser()?.mobileRole == UserRole.DEVELOPER.name
+            setState { copy(isDebugEnabled = isDebugger) }
+        }
+    }
+
     override fun setInitialState(): MenuUiState = MenuUiState(
-        isDebugEnabled = true, // FIXME: Replace with checking USER Role
+        isDebugEnabled = false,
         menuItems = listOf(
             MenuItem(
                 menuItemType = MenuItemType.NEW_SCHEME,
@@ -51,4 +61,8 @@ class MenuViewModel @Inject constructor(
             MenuItemType.DEBUG -> router.navigateTo(Screens.TestScreen())
             MenuItemType.PROFILE -> router.navigateTo(Screens.ProfileScreen())
         }
+}
+
+private enum class UserRole {
+    USER, DEVELOPER;
 }
